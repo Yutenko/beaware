@@ -1,6 +1,6 @@
 <script>
     import { draggable } from "@neodrag/svelte";
-    import { FileUploader } from "$components/index";
+    import { FileUploader, FileTypeOptions } from "$components/index";
     import { t } from "$lib/translations";
     import { tick, onMount } from "svelte";
     import { resizeText } from "$lib/helper";
@@ -12,11 +12,11 @@
     let oldOrientation;
     let groups = [];
     let elements = [];
-    let draggableElement;
+    let draggableelement;
     let isDragOverMe = Array(groups.length).fill(false);
     let zIndex = 0;
     let latestGroup = -1;
-    let currentElement;
+    let currentelement;
     let startX;
     let startY;
 
@@ -72,8 +72,8 @@
     function onClose(data) {
         if (data) {
             const { url, type } = data;
-            currentElement.src = url;
-            currentElement.type = type;
+            currentelement.src = url;
+            currentelement.type = type;
             elements = elements;
         }
 
@@ -95,31 +95,45 @@
     function addGroup(id) {
         groups = [
             ...groups,
-            { id, type: "text", src: "Gewinn- und Verlustrechnung " + id },
+            {
+                id,
+                type: "text",
+                src: "Gewinn- und Verlustrechnung " + id,
+                isEditing: false,
+            },
         ];
     }
-    function addElement(group) {
+    function addelement(group) {
         const { x, y } = getPosition(group);
         zIndex++;
         elements = [...elements, { group, x, y, zIndex, type: null }];
     }
+    function deleteelement(el) {
+        elements.splice(elements.indexOf(el), 1);
+        elements = elements;
+    }
+
+    function toggleEdit(group) {
+        group.isEditing = !group.isEditing;
+        groups = groups;
+    }
 
     function handleCardDragStart(e, el) {
         el.zIndex = zIndex++;
-        draggableElement = e.target;
-        draggableElement.style.zIndex = el.zIndex;
+        draggableelement = e.target;
+        draggableelement.style.zIndex = el.zIndex;
     }
     function handleCardDragEnd(e, el) {
-        draggableElement = null;
+        draggableelement = null;
         if (latestGroup !== -1) {
-            if (currentElement.group !== latestGroup) {
-                currentElement.group = latestGroup;
+            if (currentelement.group !== latestGroup) {
+                currentelement.group = latestGroup;
             }
         }
         isDragOverMe = Array(groups.length).fill(false);
     }
     function handleCardMouseDown(e, el) {
-        currentElement = el;
+        currentelement = el;
         startX = e.pageX;
         startY = e.pageY;
     }
@@ -130,7 +144,7 @@
 
         if (diffX < delta && diffY < delta) {
             // counts as a click
-            draggableElement = null;
+            draggableelement = null;
         } else {
             // counts as a drag
             handleCardDragEnd(e);
@@ -138,7 +152,7 @@
     }
 
     function handleMouseMove(e, el) {
-        if (!draggableElement) return;
+        if (!draggableelement) return;
 
         const { clientX, clientY } = e;
 
@@ -227,11 +241,12 @@
             <button
                 type="button"
                 class="absolute right-2 bottom-2 btn btn-circle btn-primary"
+                on:click={() => toggleEdit(g)}
             >
-                <i class="fal fa-edit" />
+                <i class="fal fa-cog" />
             </button>
             <button
-                on:click={() => addElement(g.id)}
+                on:click={() => addelement(g.id)}
                 type="button"
                 class="absolute right-2 bottom-16 btn btn-circle btn-primary"
             >
@@ -239,10 +254,10 @@
             </button>
 
             {#each elements as el}
-                {#if el.group == g.id}
+                {#if el.group == g.id && !g.isEditing}
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <div
-                        class="absolute card bg-white shadow border cursor-grab usercard"
+                        class="absolute card bg-white shadow border cursor-grab usercard display-inline-block"
                         use:draggable={draggableOptions}
                         on:neodrag:start={(e) => handleCardDragStart(e, el)}
                         on:mousedown={(e) => handleCardMouseDown(e, el)}
@@ -250,19 +265,14 @@
                         style="top: {el.y}px; left: {el.x}px; z-index: {el.zIndex};"
                     >
                         {#if !el.type}
-                            <div class="join justify-center">
-                                <button
-                                    class="btn btn-accent join-item"
-                                    on:click={(e) => {
-                                        editText(e, el);
-                                    }}>{$t("core.fileuploader.text")}</button
-                                >
-                                <button
-                                    class="btn btn-accent join-item"
-                                    on:click={(e) => onOpen(e, el)}
-                                    >{$t("core.fileuploader.media")}</button
-                                >
-                            </div>
+                            <FileTypeOptions
+                                handleTextOption={(e) => {
+                                    editText(e, el);
+                                }}
+                                handleMediaOption={(e) => {
+                                    onOpen(e, el);
+                                }}
+                            />
                         {:else if el.type == "text"}
                             <div
                                 contenteditable="true"
@@ -295,6 +305,11 @@
                                 <source src={el.src} type={el.type} />
                             </audio>
                         {/if}
+                        <button
+                            class="absolute btn btn-circle btn-secondary btn-sm deletecard"
+                            on:click={(e) => deleteelement(el)}
+                            ><i class="fal fa-skull-crossbones" /></button
+                        >
                     </div>
                 {/if}
             {/each}
@@ -308,7 +323,7 @@
         min-width: 200px;
         min-height: 50px;
         max-height: 30vmin;
-        padding: 1%;
+        padding: 5%;
         touch-action: none;
         user-select: none;
     }
@@ -325,5 +340,15 @@
     .usergroup {
         font-size: 5vmin;
         word-break: break-word;
+    }
+    .deletecard {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        transition: all 0.2s;
+        display: none;
+    }
+    .usercard:hover .deletecard {
+        display: block;
     }
 </style>

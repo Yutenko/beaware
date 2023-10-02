@@ -1,6 +1,3 @@
-import { browser } from '$app/environment'
-
-
 /** Dispatch event on click outside of node */
 export function clickoutside(node) {
 

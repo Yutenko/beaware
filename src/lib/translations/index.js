@@ -1,23 +1,37 @@
 import i18n from 'sveltekit-i18n';
+import lang from './lang.json';
 
-const DE = "de";
-const FR = "fr";
-
-const config = ({
-    fallbackLocale: DE,
-    translations: {
-      de: DE,
+export const config = {
+  fallbackLocale: 'de',
+  translations: {
+    de: { lang }
+  },
+  loaders: [
+    {
+      locale: 'de',
+      key: 'core',
+      routes: ['', '/'],
+      loader: async () => (await import('./de/core.json')).default,
     },
-    loaders: [
-        {
-            locale: DE,
-            key: 'core',
-            loader: async () => (
-                await import('./de/core.json')
-            ).default,
-        },
-    ],
-});
+    {
+      locale: 'de',
+      key: 'quiz',
+      routes: ['', '/'],
+      loader: async () => (await import('./de/quiz.json')).default,
+    },
 
-export const { t, locale, locales, loading, loadTranslations } = new i18n(config);
-loading.subscribe(($loading) => $loading && console.log('Loading translations for the main instance...'));
+  ],
+};
+export const defaultLocale = 'de';
+
+export const { t, locale, locales, loading, addTranslations, loadTranslations, translations, setRoute, setLocale } = new i18n(config);
+
+// Translations logs
+loading.subscribe(async ($loading) => {
+  if ($loading) {
+    console.log('Loading translations...');
+
+    await loading.toPromise();
+    console.log('Updated translations', translations.get());
+  }
+});

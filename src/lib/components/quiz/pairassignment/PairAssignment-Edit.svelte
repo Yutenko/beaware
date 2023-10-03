@@ -1,10 +1,12 @@
 <script>
     import { draggable } from "@neodrag/svelte";
-    import { FileUploader, FileTypeOptions } from "$components/index";
+    import { FileUploader, FileTypeOptions, Modal } from "$components/index";
     import { tick } from "svelte";
+    import { t } from '$lib/translations';
     import { resizeText, linkify, focus } from "$lib/actions";
 
     let openFileuploader = false;
+    let openHintModal = false;
     let innerHeight = 0;
     let innerWidth = 0;
     let orientation;
@@ -84,6 +86,11 @@
             }
         }
         openFileuploader = false;
+    }
+
+    function editCardHint(el) {
+        el.hint = "";
+        openHintModal = true;
     }
 
     function editCardText(e, el) {
@@ -293,6 +300,18 @@
 <span class="hidden grid-rows-1 grid-rows-2 col-span-2 col-span-3 col-span-6" />
 
 <FileUploader bind:openFileuploader handleClose={onCloseFileuploader} />
+<Modal open={openHintModal}>
+    <h3 class="font-bold text-lg" slot="header">{$t("quiz.hint")}</h3>
+    <p class="py-4" slot="body">
+        Press ESC key or click the button below to close
+    </p>
+    <button
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        slot="footer"
+    >
+        Close
+    </button>
+</Modal>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
@@ -337,7 +356,7 @@
                 {/if}
                 {#if g.type}
                     <button
-                        class="btn btn-circle btn-secondary btn-sm reset-group"
+                        class="btn btn-circle btn-error btn-sm reset-group"
                         on:click={(e) => resetGroup(g)}
                         ><i class="fal fa-skull-crossbones" /></button
                     >
@@ -416,11 +435,13 @@
                                 </label>
                             </div>
                             {#if !el.showTTSOption && el.tts?.enabled}
-                                <div
-                                    class="absolute right-3.5 bottom-3.5 text-info"
+                                <button
+                                    class="absolute btn btn-circle btn-info btn-xs btn-outline right-3.5 bottom-3.5 text-info"
+                                    on:click={(e) =>
+                                        alert("text to speech mal irgendwann")}
                                 >
                                     <i class="far fa-ear" />
-                                </div>
+                                </button>
                             {/if}
                         {:else if el.type == "image"}
                             <!-- svelte-ignore a11y-missing-attribute -->
@@ -445,9 +466,14 @@
                             </audio>
                         {/if}
                         <button
-                            class="absolute btn btn-circle btn-secondary btn-sm delete-card"
+                            class="absolute btn btn-circle btn-error btn-sm delete-card"
                             on:click={(e) => deleteElement(el)}
                             ><i class="fal fa-skull-crossbones" /></button
+                        >
+                        <button
+                            class="absolute btn btn-circle btn-info btn-xs btn-outline hint-btn"
+                            on:click={(e) => editCardHint(el)}
+                            ><i class="far fa-info" /></button
                         >
                     </div>
                 {/if}
@@ -476,6 +502,12 @@
         display: inline-block;
         word-break: break-word;
     }
+    .hint-btn {
+        position: absolute;
+        left: 0.5rem;
+        top: 0.5rem;
+        display: none;
+    }
     .delete-card,
     .reset-group {
         position: absolute;
@@ -485,6 +517,7 @@
         display: none;
     }
     .user-card:hover .delete-card,
+    .user-card:hover .hint-btn,
     .group:hover .reset-group {
         display: block;
     }

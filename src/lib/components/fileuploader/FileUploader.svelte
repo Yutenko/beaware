@@ -1,6 +1,6 @@
 <script>
     import { enhance } from "$app/forms";
-    import { t } from "$lib/translations";
+    import { t } from '$lib/translations';
     import { page } from "$app/stores";
 
     export let openFileuploader = false;

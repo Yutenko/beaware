@@ -1,5 +1,5 @@
 <script>
-    import { t } from "$lib/translations";
+      import { t } from '$lib/translations';
     
     export let handleTextOption;
     export let handleMediaOption;

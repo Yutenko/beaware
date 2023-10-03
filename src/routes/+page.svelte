@@ -1,10 +1,8 @@
 <script>
+    import { t } from "$lib/translations/index";
     
 </script>
 
-
 Landingpage
 
-
-
-<a href="/quiz">Quiz</a>
+<a href="/quiz">{$t("quiz.addHint")}</a>

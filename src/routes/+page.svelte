@@ -5,4 +5,4 @@
 
 Landingpage
 
-<a href="/quiz">{$t("quiz.addHint")}</a>
+<a href="/quiz">{$t("quiz.quiz")}</a>

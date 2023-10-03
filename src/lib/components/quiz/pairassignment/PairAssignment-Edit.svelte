@@ -301,7 +301,7 @@
 
 <FileUploader bind:openFileuploader handleClose={onCloseFileuploader} />
 <Modal open={openHintModal}>
-    <h3 class="font-bold text-lg" slot="header">{$t("quiz.hint")}</h3>
+    <h3 class="font-bold text-lg" slot="header">{$t("quiz.addHint")}</h3>
     <p class="py-4" slot="body">
         Press ESC key or click the button below to close
     </p>

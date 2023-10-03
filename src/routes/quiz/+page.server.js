@@ -8,10 +8,11 @@ export const actions = {
         const filePath = path.join(
             process.cwd(),
             'static',
+            'media',
             `${crypto.randomUUID()}.${(data.file).type.split('/')[1]}`
         )
         await fs.writeFile(filePath, Buffer.from(await (data.file).arrayBuffer()))
 
-        return { url: path.basename(filePath), type: data.file.type.split("/")[0] }
+        return { url: 'media/'+path.basename(filePath), type: data.file.type.split("/")[0] }
     }
 }

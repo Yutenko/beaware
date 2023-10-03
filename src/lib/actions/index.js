@@ -18,6 +18,9 @@ export function clickoutside(node) {
     }
 }
 
+export const focus = (node) => { 
+    node.focus()
+}
 
 export const resizeText = (node, options) => {
     function handleResize() {
@@ -55,3 +58,29 @@ export const resizeText = (node, options) => {
         }
     }
 }
+
+export const linkify = (node) => {
+    const linkRegex = /((http(s)?(\:\/\/))?(www\.)?([\w\-\.\/])*(\.[a-zA-Z]{2,3}\/?))(?!(.*a>)|(\'|\"))/g
+
+    function replacer(matched) {
+        let withProtocol = matched
+
+        if (!withProtocol.startsWith("http")) {
+            withProtocol = "http://" + matched
+        }
+
+        const newStr = `<a class="link" href="${withProtocol}"> ${matched} </a>`
+        return newStr
+    }
+    function handleBlur(event) { node.innerHTML = node.innerHTML.replace(linkRegex, replacer) }
+
+    node.addEventListener('blur', handleBlur, true);
+
+    return {
+        destroy() {
+            node.removeEventListener('blur', handleBlur, true);
+        }
+    }
+}
+
+

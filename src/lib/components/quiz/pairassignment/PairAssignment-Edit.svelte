@@ -1,9 +1,8 @@
 <script>
     import { draggable } from "@neodrag/svelte";
     import { FileUploader, FileTypeOptions } from "$components/index";
-    import { t } from "$lib/translations";
-    import { tick, onMount } from "svelte";
-    import { resizeText } from "$lib/helper";
+    import { tick } from "svelte";
+    import { resizeText, linkify, focus } from "$lib/actions";
 
     let openFileuploader = false;
     let innerHeight = 0;
@@ -16,7 +15,8 @@
     let isDragOverMe = Array(groups.length).fill(false);
     let zIndex = 0;
     let latestGroup = -1;
-    let currentelement;
+    let currentElement;
+    let currentGroup;
     let startX;
     let startY;
 
@@ -66,30 +66,59 @@
         oldOrientation = orientation;
     }
 
-    function onOpen(e, el) {
+    function onOpenFileUploader(e, el) {
         openFileuploader = true;
     }
-    function onClose(data) {
+    function onCloseFileuploader(data) {
         if (data) {
             const { url, type } = data;
-            currentelement.src = url;
-            currentelement.type = type;
-            elements = elements;
+            if (currentGroup) {
+                currentGroup.src = url;
+                currentGroup.type = type;
+                currentGroup.isEditing = false;
+                groups = groups;
+            } else if (currentElement) {
+                currentElement.src = url;
+                currentElement.type = type;
+                elements = elements;
+            }
         }
-
         openFileuploader = false;
     }
 
-    function editText(e, el) {
+    function editCardText(e, el) {
         el.src = "";
         el.type = "text";
+        el.showTTSOption = true;
         elements = elements;
     }
-    function focus(e) {
-        e.focus();
+    function showTTS(e, el) {
+        el.showTTSOption = true;
+        elements = elements;
     }
-    function saveText(e, el) {
+    function hideTTS(e, el) {
+        el.showTTSOption = false;
+        elements = elements;
+    }
+    function toggleTTS(e, el) {
+        if (!el.tts) {
+            el.tts = { enabled: false };
+        }
+        el.tts.enabled = !el.tts.enabled;
+        elements = elements;
+    }
+    function editGroupText(e, g) {
+        g.isEditing = true;
+        g.src = "";
+        g.type = "text";
+        groups = groups;
+    }
+    function saveCardText(e, el) {
         el.src = e.target.innerText;
+    }
+    function saveGroupText(e, g) {
+        g.src = e.target.innerText;
+        groups = groups;
     }
 
     function addGroup(id) {
@@ -97,24 +126,32 @@
             ...groups,
             {
                 id,
-                type: "text",
-                src: "Gewinn- und Verlustrechnung " + id,
+                type: null,
+                src: null,
                 isEditing: false,
             },
         ];
     }
+    function resetGroup(g) {
+        g.type = null;
+        g.src = null;
+        g.isEditing = true;
+        groups = groups;
+    }
     function addelement(group) {
-        const { x, y } = getPosition(group);
+        const { x, y } = getCardPosition(group);
         zIndex++;
         elements = [...elements, { group, x, y, zIndex, type: null }];
     }
-    function deleteelement(el) {
+    function deleteElement(el) {
         elements.splice(elements.indexOf(el), 1);
         elements = elements;
     }
 
-    function toggleEdit(group) {
+    function toggleGroupEdit(group) {
         group.isEditing = !group.isEditing;
+        currentGroup = group.isEditing ? group : null;
+
         groups = groups;
     }
 
@@ -126,14 +163,14 @@
     function handleCardDragEnd(e, el) {
         draggableelement = null;
         if (latestGroup !== -1) {
-            if (currentelement.group !== latestGroup) {
-                currentelement.group = latestGroup;
+            if (currentElement.group !== latestGroup) {
+                currentElement.group = latestGroup;
             }
         }
         isDragOverMe = Array(groups.length).fill(false);
     }
     function handleCardMouseDown(e, el) {
-        currentelement = el;
+        currentElement = el;
         startX = e.pageX;
         startY = e.pageY;
     }
@@ -173,7 +210,7 @@
         isDragOverMe = temp;
     }
 
-    function getPosition(group) {
+    function getCardPosition(group) {
         const background = document.querySelector("#group-" + group);
 
         const w = 250;
@@ -194,11 +231,55 @@
     function distributeCards() {
         for (let i = 0; i < elements.length; i++) {
             let element = elements[i];
-            const { x, y } = getPosition(element.group);
+            const { x, y } = getCardPosition(element.group);
             element.x = x;
             element.y = y;
         }
         elements = elements;
+    }
+
+    function saveQuiz() {
+        function sanatizeElements() {
+            let temp = [];
+            for (let i = 0; i < elements.length; i++) {
+                let el = elements[i];
+                if (el.src && el.src != "") {
+                    temp.push({
+                        src: el.src,
+                        type: el.type,
+                        group: el.group.id,
+                    });
+                }
+            }
+            return temp;
+        }
+        function sanatizeGroups() {
+            let temp = [];
+            for (let i = 0; i < groups.length; i++) {
+                let g = groups[i];
+                if (g.src && g.src != "") {
+                    temp.push({
+                        src: g.src,
+                        type: g.type,
+                        id: g.id,
+                    });
+                }
+            }
+            return temp;
+        }
+        const data = {
+            elements: sanatizeElements(),
+            groups: sanatizeGroups(),
+        };
+
+        const json = JSON.stringify(data);
+        const blob = new Blob([json], { type: "application/json" });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "quiz.json";
+        a.click();
+        window.URL.revokeObjectURL(url);
     }
 
     addGroup(0);
@@ -211,7 +292,7 @@
 <!-- Tailwind can not do dynamic classes, so we have an invisible element, that creates these classes before dynamically putting them into the HTML -->
 <span class="hidden grid-rows-1 grid-rows-2 col-span-2 col-span-3 col-span-6" />
 
-<FileUploader bind:openFileuploader handleClose={onClose} />
+<FileUploader bind:openFileuploader handleClose={onCloseFileuploader} />
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
@@ -224,65 +305,123 @@
         <div
             class="col-span-{positions[groups.length][orientation].span[
                 i
-            ]} relative {isDragOverMe[i] ? 'bg-red-600' : ''} border"
+            ]} relative {isDragOverMe[i] ? 'bg-red-600' : ''} border group"
             id="group-{i}"
         >
             <div
                 class="absolute top-0 left-0 w-full h-full flex items-center justify-center"
             >
-                {#if g.type === "text"}
-                    <div class="text-black text-center usergroup">{g.src}</div>
+                {#if !g.type && g.isEditing}
+                    <FileTypeOptions
+                        handleTextOption={(e) => {
+                            editGroupText(e, g);
+                        }}
+                        handleMediaOption={(e) => {
+                            onOpenFileUploader(e);
+                        }}
+                    />
+                {:else if g.type === "text"}
+                    <div
+                        class="text-black text-center edit-group"
+                        contenteditable={g.isEditing}
+                        use:linkify
+                        use:focus
+                        on:blur={() => toggleGroupEdit(g)}
+                        on:keyup={(e) => saveGroupText(e, g)}
+                    >
+                        {g.src}
+                    </div>
                 {:else if g.type === "image"}
                     <!-- svelte-ignore a11y-missing-attribute -->
                     <img class="w-full h-full object-contain" src={g.src} />
+                {/if}
+                {#if g.type}
+                    <button
+                        class="btn btn-circle btn-secondary btn-sm reset-group"
+                        on:click={(e) => resetGroup(g)}
+                        ><i class="fal fa-skull-crossbones" /></button
+                    >
                 {/if}
             </div>
 
             <button
                 type="button"
                 class="absolute right-2 bottom-2 btn btn-circle btn-primary"
-                on:click={() => toggleEdit(g)}
+                style="z-index: {zIndex + 1}"
+                on:click={() => toggleGroupEdit(g)}
             >
                 <i class="fal fa-cog" />
             </button>
             <button
-                on:click={() => addelement(g.id)}
+                on:click={() => {
+                    g.isEditing = false;
+                    addelement(g.id);
+                }}
                 type="button"
                 class="absolute right-2 bottom-16 btn btn-circle btn-primary"
+                style="z-index: {zIndex + 1}"
             >
                 <i class="fal fa-plus" />
             </button>
 
             {#each elements as el}
-                {#if el.group == g.id && !g.isEditing}
+                {#if el.group == g.id}
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <div
-                        class="absolute card bg-white shadow border cursor-grab usercard display-inline-block"
+                        class="absolute card bg-white shadow border cursor-grab user-card display-inline-block"
                         use:draggable={draggableOptions}
                         on:neodrag:start={(e) => handleCardDragStart(e, el)}
                         on:mousedown={(e) => handleCardMouseDown(e, el)}
                         on:mouseup={(e) => handleCardMouseUp(e)}
-                        style="top: {el.y}px; left: {el.x}px; z-index: {el.zIndex};"
+                        on:mouseleave={(e) => hideTTS(e, el)}
+                        style="top: {el.y}px; left: {el.x}px; z-index: {el.zIndex}; opacity: {g.isEditing
+                            ? 0.3
+                            : 1};"
                     >
                         {#if !el.type}
                             <FileTypeOptions
                                 handleTextOption={(e) => {
-                                    editText(e, el);
+                                    editCardText(e, el);
                                 }}
                                 handleMediaOption={(e) => {
-                                    onOpen(e, el);
+                                    onOpenFileUploader(e, el);
                                 }}
                             />
                         {:else if el.type == "text"}
                             <div
                                 contenteditable="true"
-                                class="w-full usertext"
+                                class="w-full user-text"
                                 use:focus
                                 use:resizeText
-                                on:keyup={(e) => saveText(e, el)}
+                                use:linkify
+                                on:focus={(e) => showTTS(e, el)}
+                                on:keyup={(e) => saveCardText(e, el)}
                             >
                                 {el.src}
                             </div>
+                            <div
+                                class="form-control"
+                                style="visibility:{el.showTTSOption
+                                    ? 'visible'
+                                    : 'hidden'}"
+                                on:click={(e) => toggleTTS(e, el)}
+                            >
+                                <label class="label cursor-pointer">
+                                    <span class="label-text">vorlesen</span>
+                                    <input
+                                        type="checkbox"
+                                        class="toggle"
+                                        checked={el.tts?.enabled}
+                                    />
+                                </label>
+                            </div>
+                            {#if !el.showTTSOption && el.tts?.enabled}
+                                <div
+                                    class="absolute right-3.5 bottom-3.5 text-info"
+                                >
+                                    <i class="far fa-ear" />
+                                </div>
+                            {/if}
                         {:else if el.type == "image"}
                             <!-- svelte-ignore a11y-missing-attribute -->
                             <img
@@ -306,8 +445,8 @@
                             </audio>
                         {/if}
                         <button
-                            class="absolute btn btn-circle btn-secondary btn-sm deletecard"
-                            on:click={(e) => deleteelement(el)}
+                            class="absolute btn btn-circle btn-secondary btn-sm delete-card"
+                            on:click={(e) => deleteElement(el)}
                             ><i class="fal fa-skull-crossbones" /></button
                         >
                     </div>
@@ -318,7 +457,7 @@
 </div>
 
 <style>
-    .usercard {
+    .user-card {
         max-width: 30vmin;
         min-width: 200px;
         min-height: 50px;
@@ -327,7 +466,7 @@
         touch-action: none;
         user-select: none;
     }
-    .usertext {
+    .user-text {
         line-height: normal;
         font-size: 1.5em;
         text-align: center;
@@ -337,18 +476,20 @@
         display: inline-block;
         word-break: break-word;
     }
-    .usergroup {
-        font-size: 5vmin;
-        word-break: break-word;
-    }
-    .deletecard {
+    .delete-card,
+    .reset-group {
         position: absolute;
         top: 0px;
         right: 0px;
         transition: all 0.2s;
         display: none;
     }
-    .usercard:hover .deletecard {
+    .user-card:hover .delete-card,
+    .group:hover .reset-group {
         display: block;
+    }
+    .edit-group {
+        font-size: 5vmin;
+        word-break: break-word;
     }
 </style>

@@ -1,6 +1,5 @@
 <script>
-    import PairAssignment from "$components/quiz/PairAssignment.svelte";
+    import { PairAssignmentEdit } from "$components/index";
 </script>
 
-
-<PairAssignment />
+<PairAssignmentEdit />

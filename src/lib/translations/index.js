@@ -10,13 +10,11 @@ export const config = {
     {
       locale: 'de',
       key: 'core',
-      routes: ['', '/'],
       loader: async () => (await import('./de/core.json')).default,
     },
     {
       locale: 'de',
       key: 'quiz',
-      routes: ['', '/'],
       loader: async () => (await import('./de/quiz.json')).default,
     },
 
@@ -32,6 +30,6 @@ loading.subscribe(async ($loading) => {
     console.log('Loading translations...');
 
     await loading.toPromise();
-    console.log('Updated translations', translations.get());
+    console.log('Updated translations');
   }
 });

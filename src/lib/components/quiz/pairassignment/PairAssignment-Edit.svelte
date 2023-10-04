@@ -2,7 +2,7 @@
     import { draggable } from "@neodrag/svelte";
     import { FileUploader, FileTypeOptions, Modal } from "$components/index";
     import { tick } from "svelte";
-    import { t } from '$lib/translations';
+    import { t } from "$lib/translations";
     import { resizeText, linkify, focus } from "$lib/actions";
 
     let openFileuploader = false;
@@ -89,10 +89,9 @@
     }
 
     function editCardHint(el) {
-        el.hint = "";
+        el.hint = el.hint && el.hint !== "" ? el.hint : "";
         openHintModal = true;
     }
-
     function editCardText(e, el) {
         el.src = "";
         el.type = "text";
@@ -145,7 +144,7 @@
         g.isEditing = true;
         groups = groups;
     }
-    function addelement(group) {
+    function addElement(group) {
         const { x, y } = getCardPosition(group);
         zIndex++;
         elements = [...elements, { group, x, y, zIndex, type: null }];
@@ -255,6 +254,7 @@
                         src: el.src,
                         type: el.type,
                         group: el.group.id,
+                        hint: el.hint,
                     });
                 }
             }
@@ -300,16 +300,19 @@
 <span class="hidden grid-rows-1 grid-rows-2 col-span-2 col-span-3 col-span-6" />
 
 <FileUploader bind:openFileuploader handleClose={onCloseFileuploader} />
-<Modal open={openHintModal}>
+<Modal bind:open={openHintModal}>
     <h3 class="font-bold text-lg" slot="header">{$t("quiz.addHint")}</h3>
-    <p class="py-4" slot="body">
-        Press ESC key or click the button below to close
-    </p>
-    <button
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        slot="footer"
-    >
-        Close
+    <div slot="body">
+        <p class="py-4">{$t("quiz.addHintDescription")}</p>
+        <input
+            type="text"
+            class="input input-bordered w-full"
+            bind:value={currentElement.hint}
+            on:input={(e) => (elements = elements)}
+        />
+    </div>
+    <button class="btn btn-primary" slot="footer">
+        {$t("core.close")}
     </button>
 </Modal>
 
@@ -374,7 +377,7 @@
             <button
                 on:click={() => {
                     g.isEditing = false;
-                    addelement(g.id);
+                    addElement(g.id);
                 }}
                 type="button"
                 class="absolute right-2 bottom-16 btn btn-circle btn-primary"
@@ -471,10 +474,15 @@
                             ><i class="fal fa-skull-crossbones" /></button
                         >
                         <button
-                            class="absolute btn btn-circle btn-info btn-xs btn-outline hint-btn"
-                            on:click={(e) => editCardHint(el)}
-                            ><i class="far fa-info" /></button
-                        >
+                            class="absolute btn btn-circle btn-xs btn-outline hint-btn {el.hint &&
+                            el.hint.trim().length > 0
+                                ? 'btn-info'
+                                : 'hidden text-base-300'}"
+                            on:click={(e) => {
+                                editCardHint(el);
+                            }}
+                            ><i class="far fa-info" />
+                        </button>
                     </div>
                 {/if}
             {/each}
@@ -506,7 +514,6 @@
         position: absolute;
         left: 0.5rem;
         top: 0.5rem;
-        display: none;
     }
     .delete-card,
     .reset-group {

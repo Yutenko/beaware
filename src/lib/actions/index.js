@@ -18,7 +18,7 @@ export function clickoutside(node) {
     }
 }
 
-export const focus = (node) => { 
+export const focus = (node) => {
     node.focus()
 }
 
@@ -82,5 +82,71 @@ export const linkify = (node) => {
         }
     }
 }
+
+// zoomnode.js
+export const zoom = (node) => {
+    let isZoomed = false;
+
+    let originalWidth;
+    let originalHeight;
+    let parent = node.parentNode;
+
+
+    node.style.transition = "transform 0.5s ease-out"
+
+    function handleZoom() {
+        if (isZoomed) {
+            // Wenn das Bild maximiert wird, speichern Sie seine ursprüngliche Größe
+            originalWidth = node.width;
+            originalHeight = node.height;
+
+
+            // Setzen Sie die Größe des Bildes auf die Bildschirmgröße
+            node.style.width = '100vw';
+            node.style.height = '100vh';
+            node.style.objectFit = 'contain'; // Anpassen des Skalierungsverhaltens
+            node.style.position = 'fixed';
+            node.style.top = '0';
+            node.style.left = '0';
+            node.style.transform = 'translate(0, 0)';
+            node.style.zIndex = '9999';
+            node.style.cursor = "zoomout";
+
+            // Ausblenden Sie den Hintergrund
+            document.body.style.overflow = 'hidden';
+            document.body.appendChild(node);
+        } else {
+            // Wenn das Bild wiederhergestellt wird, setzen Sie die ursprüngliche Größe und Position zurück
+            node.style.width = originalWidth + 'px';
+            node.style.height = originalHeight + 'px';
+            node.style.objectFit = 'initial'; // Setzen Sie es auf 'cover' oder 'contain', je nach Bedarf
+            node.style.position = 'static';
+            node.style.transform = 'none';
+            node.style.zIndex = 'auto';
+            node.style.cursor = "zoomin";
+            parent.appendChild(node);
+
+            // Blenden Sie den Hintergrund wieder ein
+            document.body.style.overflow = 'auto';
+        }
+        isZoomed = !isZoomed;
+    }
+
+    handleZoom();
+    node.addEventListener('click', handleZoom, true);
+
+    return {
+        destroy() {
+            node.removeEventListener('click', handleZoom, true);
+        }
+    }
+
+}
+
+
+
+
+
+
 
 

@@ -3,7 +3,7 @@
     import { FileUploader, FileTypeOptions, Modal } from "$components/index";
     import { tick } from "svelte";
     import { t } from "$lib/translations";
-    import { resizeText, linkify, focus } from "$lib/actions";
+    import { resizeText, linkify, focus, zoom } from "$lib/actions";
 
     let openFileuploader = false;
     let openHintModal = false;
@@ -21,6 +21,7 @@
     let currentGroup;
     let startX;
     let startY;
+    let isDragging = false;
 
     const draggableOptions = {
         bounds: "body",
@@ -144,10 +145,24 @@
         g.isEditing = true;
         groups = groups;
     }
+    function deleteGroup(g) {
+        if (groups.length - 1 >= 2) {
+            groups = groups.filter((group) => group.id !== g.id);
+        }
+    }
     function addElement(group) {
         const { x, y } = getCardPosition(group);
         zIndex++;
-        elements = [...elements, { group, x, y, zIndex, type: null }];
+        elements = [
+            ...elements,
+            {
+                group,
+                x,
+                y,
+                zIndex,
+                type: null,
+            },
+        ];
     }
     function deleteElement(el) {
         elements.splice(elements.indexOf(el), 1);
@@ -180,7 +195,7 @@
         startX = e.pageX;
         startY = e.pageY;
     }
-    function handleCardMouseUp(e) {
+    function handleCardMouseUp(e, el) {
         const delta = 6; // minimal distance between mousedown and mouseup, to confirm dragging
         const diffX = Math.abs(e.pageX - startX);
         const diffY = Math.abs(e.pageY - startY);
@@ -190,12 +205,19 @@
             draggableelement = null;
         } else {
             // counts as a drag
-            handleCardDragEnd(e);
+            handleCardDragEnd(e, el);
         }
+        isDragging = false;
     }
 
     function handleMouseMove(e, el) {
-        if (!draggableelement) return;
+        // prevents children from being triggered by clicking
+        if (!draggableelement) {
+            isDragging = false;
+            return;
+        } else {
+            isDragging = true;
+        }
 
         const { clientX, clientY } = e;
 
@@ -391,12 +413,28 @@
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <div
                         class="absolute card bg-white shadow border cursor-grab user-card display-inline-block"
-                        use:draggable={draggableOptions}
+                        use:draggable={{
+                            bounds: "body",
+                            ignoreMultitouch: false,
+                            DragBoundsCoords: {
+                                top: 0,
+                                left: 0,
+                                right: innerWidth,
+                                bottom: innerHeight,
+                            },
+                            position: { x: el.x, y: el.y },
+                            onDrag: ({ offsetX, offsetY }) => {
+                                // correct the position of the card at the end of the drag
+                                // so that it has the right offset from the new group
+                                el.x = offsetX;
+                                el.y = offsetY;
+                            },
+                        }}
                         on:neodrag:start={(e) => handleCardDragStart(e, el)}
                         on:mousedown={(e) => handleCardMouseDown(e, el)}
-                        on:mouseup={(e) => handleCardMouseUp(e)}
+                        on:mouseup={(e) => handleCardMouseUp(e, el)}
                         on:mouseleave={(e) => hideTTS(e, el)}
-                        style="top: {el.y}px; left: {el.x}px; z-index: {el.zIndex}; opacity: {g.isEditing
+                        style="z-index: {el.zIndex};opacity: {g.isEditing
                             ? 0.3
                             : 1};"
                     >
@@ -450,7 +488,11 @@
                             <!-- svelte-ignore a11y-missing-attribute -->
                             <img
                                 src={el.src}
+                                use:zoom
                                 class="w-full h-full object-cover rounded-2xl"
+                                style={isDragging
+                                    ? "pointer-events: none;"
+                                    : ""}
                             />
                         {:else if el.type == "video"}
                             <!-- svelte-ignore a11y-media-has-caption -->
@@ -473,16 +515,28 @@
                             on:click={(e) => deleteElement(el)}
                             ><i class="fal fa-skull-crossbones" /></button
                         >
-                        <button
-                            class="absolute btn btn-circle btn-xs btn-outline hint-btn {el.hint &&
-                            el.hint.trim().length > 0
-                                ? 'btn-info'
-                                : 'hidden text-base-300'}"
-                            on:click={(e) => {
-                                editCardHint(el);
-                            }}
-                            ><i class="far fa-info" />
-                        </button>
+                        {#if el.hint && el.hint.trim().length > 0}
+                            <div
+                                class="tooltip tooltip-right hint-btn"
+                                data-tip={el.hint}
+                            >
+                                <button
+                                    class="absolute btn btn-circle btn-xs btn-outline btn-info"
+                                    on:click={(e) => {
+                                        editCardHint(el);
+                                    }}
+                                    ><i class="far fa-info" />
+                                </button>
+                            </div>
+                        {:else}
+                            <button
+                                class="absolute btn btn-circle btn-xs btn-outline hint-btn hidden text-base-content"
+                                on:click={(e) => {
+                                    editCardHint(el);
+                                }}
+                                ><i class="far fa-info" />
+                            </button>
+                        {/if}
                     </div>
                 {/if}
             {/each}

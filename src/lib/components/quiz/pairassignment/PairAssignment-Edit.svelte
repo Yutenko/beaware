@@ -175,19 +175,30 @@
 
         groups = groups;
     }
-
     function handleCardDragStart(e, el) {
         el.zIndex = zIndex++;
         draggableelement = e.target;
         draggableelement.style.zIndex = el.zIndex;
     }
     function handleCardDragEnd(e, el) {
-        draggableelement = null;
         if (latestGroup !== -1) {
             if (currentElement.group !== latestGroup) {
                 currentElement.group = latestGroup;
+
+                const parent = document.getElementById("group-" + latestGroup);
+                const child = e.target;
+
+                const childRect = child.getBoundingClientRect();
+                const parentRect = parent.getBoundingClientRect();
+
+                const relativeLeft = childRect.left - parentRect.left;
+                const relativeTop = childRect.top - parentRect.top;
+
+                el.x = relativeLeft;
+                el.y = relativeTop;
             }
         }
+        draggableelement = null;
         isDragOverMe = Array(groups.length).fill(false);
     }
     function handleCardMouseDown(e, el) {
@@ -426,11 +437,11 @@
                             onDrag: ({ offsetX, offsetY }) => {
                                 // correct the position of the card at the end of the drag
                                 // so that it has the right offset from the new group
-                                el.x = offsetX;
-                                el.y = offsetY;
                             },
                         }}
-                        on:neodrag:start={(e) => handleCardDragStart(e, el)}
+                        on:neodrag:start={(e) => {
+                            handleCardDragStart(e, el);
+                        }}
                         on:mousedown={(e) => handleCardMouseDown(e, el)}
                         on:mouseup={(e) => handleCardMouseUp(e, el)}
                         on:mouseleave={(e) => hideTTS(e, el)}

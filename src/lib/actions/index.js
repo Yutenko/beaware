@@ -145,6 +145,31 @@ export const zoom = (node) => {
 
 
 
+// tooltip.js
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
+export function tooltip(node, options) {
+    const tip = tippy(node, options);
+
+    return {
+        update: (newParams) => tip.setProps(newParams),
+        destroy: () => tip.destroy(),
+    };
+};
+
+
+export function playSound(node, options) {
+    let audio = new Audio(options.sound);
+    audio.play();
+
+    return {
+        destroy: () => {
+            audio.pause()
+            audio = null;
+        }
+    }
+}
+
 
 
 

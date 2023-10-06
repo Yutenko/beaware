@@ -14,13 +14,13 @@
 		"daisyui": "^3.7.6",
 		"postcss": "^8.4.29",
 		"svelte": "^4.0.5",
-		"svelte-textfit": "^1.1.4",
 		"tailwindcss": "^3.3.3",
 		"vite": "^4.4.2"
 	},
 	"type": "module",
 	"dependencies": {
 		"@neodrag/svelte": "^2.0.3",
-		"sveltekit-i18n": "^2.4.2"
+		"sveltekit-i18n": "^2.4.2",
+		"tippy.js": "^6.2.5"
 	}
 }

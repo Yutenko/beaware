@@ -3,7 +3,14 @@
     import { FileUploader, FileTypeOptions, Modal } from "$components/index";
     import { tick } from "svelte";
     import { t } from "$lib/translations";
-    import { resizeText, linkify, focus, zoom } from "$lib/actions";
+    import {
+        resizeText,
+        linkify,
+        focus,
+        zoom,
+        tooltip,
+        playSound,
+    } from "$lib/actions";
 
     let openFileuploader = false;
     let openHintModal = false;
@@ -184,20 +191,20 @@
         if (latestGroup !== -1) {
             if (currentElement.group !== latestGroup) {
                 currentElement.group = latestGroup;
-
-                const parent = document.getElementById("group-" + latestGroup);
-                const child = e.target;
-
-                const childRect = child.getBoundingClientRect();
-                const parentRect = parent.getBoundingClientRect();
-
-                const relativeLeft = childRect.left - parentRect.left;
-                const relativeTop = childRect.top - parentRect.top;
-
-                el.x = relativeLeft;
-                el.y = relativeTop;
             }
         }
+        const parent = document.getElementById("group-" + latestGroup);
+        const child = e.target;
+
+        const childRect = child.getBoundingClientRect();
+        const parentRect = parent.getBoundingClientRect();
+
+        const relativeLeft = childRect.left - parentRect.left;
+        const relativeTop = childRect.top - parentRect.top;
+
+        el.x = relativeLeft;
+        el.y = relativeTop;
+
         draggableelement = null;
         isDragOverMe = Array(groups.length).fill(false);
     }
@@ -424,6 +431,7 @@
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <div
                         class="absolute card bg-white shadow border cursor-grab user-card display-inline-block"
+                        use:playSound={{ sound: "/media/pop-sound.wav" }}
                         use:draggable={{
                             bounds: "body",
                             ignoreMultitouch: false,
@@ -434,10 +442,6 @@
                                 bottom: innerHeight,
                             },
                             position: { x: el.x, y: el.y },
-                            onDrag: ({ offsetX, offsetY }) => {
-                                // correct the position of the card at the end of the drag
-                                // so that it has the right offset from the new group
-                            },
                         }}
                         on:neodrag:start={(e) => {
                             handleCardDragStart(e, el);
@@ -445,7 +449,7 @@
                         on:mousedown={(e) => handleCardMouseDown(e, el)}
                         on:mouseup={(e) => handleCardMouseUp(e, el)}
                         on:mouseleave={(e) => hideTTS(e, el)}
-                        style="z-index: {el.zIndex};opacity: {g.isEditing
+                        style="left:{el.x}; top:{el.y};z-index: {el.zIndex};opacity: {g.isEditing
                             ? 0.3
                             : 1};"
                     >
@@ -527,18 +531,14 @@
                             ><i class="fal fa-skull-crossbones" /></button
                         >
                         {#if el.hint && el.hint.trim().length > 0}
-                            <div
-                                class="tooltip tooltip-right hint-btn"
-                                data-tip={el.hint}
-                            >
-                                <button
-                                    class="absolute btn btn-circle btn-xs btn-outline btn-info"
-                                    on:click={(e) => {
-                                        editCardHint(el);
-                                    }}
-                                    ><i class="far fa-info" />
-                                </button>
-                            </div>
+                            <button
+                                class="absolute btn btn-circle btn-xs btn-outline btn-info hint-btn"
+                                use:tooltip={{ content: el.hint }}
+                                on:click={(e) => {
+                                    editCardHint(el);
+                                }}
+                                ><i class="far fa-info" />
+                            </button>
                         {:else}
                             <button
                                 class="absolute btn btn-circle btn-xs btn-outline hint-btn hidden text-base-content"
@@ -561,7 +561,7 @@
         min-width: 200px;
         min-height: 50px;
         max-height: 30vmin;
-        padding: 5%;
+        padding: 1.7em;
         touch-action: none;
         user-select: none;
     }

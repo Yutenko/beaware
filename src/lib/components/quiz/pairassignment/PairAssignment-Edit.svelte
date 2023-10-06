@@ -204,6 +204,7 @@
 
         el.x = relativeLeft;
         el.y = relativeTop;
+        elements = elements;
 
         draggableelement = null;
         isDragOverMe = Array(groups.length).fill(false);
@@ -419,6 +420,7 @@
                     g.isEditing = false;
                     addElement(g.id);
                 }}
+                use:playSound={{ sound: "/media/pop-sound.wav" }}
                 type="button"
                 class="absolute right-2 bottom-16 btn btn-circle btn-primary"
                 style="z-index: {zIndex + 1}"
@@ -431,7 +433,6 @@
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <div
                         class="absolute card bg-white shadow border cursor-grab user-card display-inline-block"
-                        use:playSound={{ sound: "/media/pop-sound.wav" }}
                         use:draggable={{
                             bounds: "body",
                             ignoreMultitouch: false,
@@ -527,6 +528,7 @@
                         {/if}
                         <button
                             class="absolute btn btn-circle btn-error btn-sm delete-card"
+                            use:playSound={{ sound: "/media/delete-sound.wav" }}
                             on:click={(e) => deleteElement(el)}
                             ><i class="fal fa-skull-crossbones" /></button
                         >

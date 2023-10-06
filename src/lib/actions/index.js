@@ -159,13 +159,15 @@ export function tooltip(node, options) {
 
 
 export function playSound(node, options) {
-    let audio = new Audio(options.sound);
-    audio.play();
+    function handleSound() {
+        let audio = new Audio(options.sound);
+        audio.play();
+    }
 
+    node.addEventListener('click', handleSound, true);
     return {
         destroy: () => {
-            audio.pause()
-            audio = null;
+            node.removeEventListener('click', handleSound, true);
         }
     }
 }

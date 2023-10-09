@@ -2,5 +2,8 @@
     "quiz": "quiz",
     "addHint": "Hiweis hinzufügen",
     "addHintDescription": "Du kannst hier zusätzliche Informationen hinzufügen, die nachher als Tooltip hinzugefügt werden.",
-    "pairsassignment": {}
+    "pairsassignment": {
+
+    },
+    "tts": "vorlesen"
 }

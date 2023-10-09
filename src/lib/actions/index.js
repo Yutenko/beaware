@@ -22,7 +22,7 @@ export const focus = (node) => {
     node.focus()
 }
 
-export const resizeText = (node, options) => {
+export const resizetext = (node, options) => {
     function handleResize() {
         let minSize = options?.minSize || 10
         let maxSize = options?.maxSize || 56
@@ -158,7 +158,7 @@ export function tooltip(node, options) {
 };
 
 
-export function playSound(node, options) {
+export function clicksound(node, options) {
     function handleSound() {
         let audio = new Audio(options.sound);
         audio.play();

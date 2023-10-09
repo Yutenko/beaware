@@ -3,13 +3,17 @@
     import { FileUploader, FileTypeOptions, Modal } from "$components/index";
     import { tick } from "svelte";
     import { t } from "$lib/translations";
+    import Quiz from "../shared";
+
+    import { page } from '$app/stores'
+
     import {
-        resizeText,
+        resizetext,
         linkify,
         focus,
         zoom,
         tooltip,
-        playSound,
+        clicksound,
     } from "$lib/actions";
 
     let openFileuploader = false;
@@ -30,16 +34,9 @@
     let startY;
     let isDragging = false;
 
-    const draggableOptions = {
-        bounds: "body",
-        ignoreMultitouch: false,
-        DragBoundsCoords: {
-            top: 0,
-            left: 0,
-            right: innerWidth,
-            bottom: innerHeight,
-        },
-    };
+    const MIN_GROUPS = 2;
+    const MAX_GROUPS = 6;
+    const MAX_ELEMENTS = 20;
 
     const positions = {
         1: {
@@ -136,6 +133,8 @@
     }
 
     function addGroup(id) {
+        if (groups.length + 1 > MAX_GROUPS) return;
+
         groups = [
             ...groups,
             {
@@ -153,11 +152,13 @@
         groups = groups;
     }
     function deleteGroup(g) {
-        if (groups.length - 1 >= 2) {
-            groups = groups.filter((group) => group.id !== g.id);
-        }
+        if (groups.length - 1 < MIN_GROUPS) return;
+
+        groups = groups.filter((group) => group.id !== g.id);
     }
     function addElement(group) {
+        if (elements.length + 1 > MAX_ELEMENTS) return;
+
         const { x, y } = getCardPosition(group);
         zIndex++;
         elements = [
@@ -194,7 +195,7 @@
             }
         }
         const parent = document.getElementById("group-" + latestGroup);
-        const child = e.target;
+        const child = e.target.closest('.card');
 
         const childRect = child.getBoundingClientRect();
         const parentRect = parent.getBoundingClientRect();
@@ -226,6 +227,7 @@
             // counts as a drag
             handleCardDragEnd(e, el);
         }
+
         isDragging = false;
     }
 
@@ -260,8 +262,9 @@
     function getCardPosition(group) {
         const background = document.querySelector("#group-" + group);
 
-        const w = 250;
-        const h = 96;
+        // make this dynamic
+        const w = 200;
+        const h = 100;
 
         const maxX = background.clientWidth - w;
         const maxY = background.clientHeight - h;
@@ -333,6 +336,13 @@
     addGroup(0);
     addGroup(1);
     addGroup(2);
+
+    Quiz.init({
+        addContainer: addGroup,
+        removeContainer: deleteGroup,
+        addElement,
+        removeElement: deleteElement,
+    });
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
@@ -420,7 +430,7 @@
                     g.isEditing = false;
                     addElement(g.id);
                 }}
-                use:playSound={{ sound: "/media/pop-sound.wav" }}
+                use:clicksound={{ sound: "/media/pop-sound.wav" }}
                 type="button"
                 class="absolute right-2 bottom-16 btn btn-circle btn-primary"
                 style="z-index: {zIndex + 1}"
@@ -468,7 +478,7 @@
                                 contenteditable="true"
                                 class="w-full user-text"
                                 use:focus
-                                use:resizeText
+                                use:resizetext
                                 use:linkify
                                 on:focus={(e) => showTTS(e, el)}
                                 on:keyup={(e) => saveCardText(e, el)}
@@ -483,7 +493,9 @@
                                 on:click={(e) => toggleTTS(e, el)}
                             >
                                 <label class="label cursor-pointer">
-                                    <span class="label-text">vorlesen</span>
+                                    <span class="label-text"
+                                        >{$t("quiz.tts")}</span
+                                    >
                                     <input
                                         type="checkbox"
                                         class="toggle"
@@ -528,7 +540,9 @@
                         {/if}
                         <button
                             class="absolute btn btn-circle btn-error btn-sm delete-card"
-                            use:playSound={{ sound: "/media/delete-sound.wav" }}
+                            use:clicksound={{
+                                sound: "/media/delete-sound.wav",
+                            }}
                             on:click={(e) => deleteElement(el)}
                             ><i class="fal fa-skull-crossbones" /></button
                         >

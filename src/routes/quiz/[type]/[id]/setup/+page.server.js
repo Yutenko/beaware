@@ -13,6 +13,6 @@ export const actions = {
         )
         await fs.writeFile(filePath, Buffer.from(await (data.file).arrayBuffer()))
 
-        return { url: 'media/'+path.basename(filePath), type: data.file.type.split("/")[0] }
+        return { url: '/media/'+path.basename(filePath), type: data.file.type.split("/")[0] }
     }
 }

@@ -5,4 +5,4 @@
 
 Landingpage
 
-<a href="/quiz">{$t("quiz.quiz")}</a>
+<a href="/quiz/1/1234/setup">{$t("quiz.quiz")}</a>

@@ -1,6 +1,8 @@
 <script>
     import { PairAssignmentEmbed } from "$components";
-    export let data
+    export let data;
 </script>
 
-<PairAssignmentEmbed mode={data.mode} />
+{#if data.params.type == 1}
+    <PairAssignmentEmbed mode={data.mode} />
+{/if}

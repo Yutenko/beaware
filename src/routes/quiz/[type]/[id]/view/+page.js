@@ -1,4 +1,4 @@
-export async function load({ url }) {
+export async function load({ url, params }) {
     let mode = url.searchParams.get("mode");
-    return { mode };
+    return { mode, params };
 }

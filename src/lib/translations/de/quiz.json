@@ -3,7 +3,9 @@
     "addHint": "Hiweis hinzufügen",
     "addHintDescription": "Du kannst hier zusätzliche Informationen hinzufügen, die nachher als Tooltip hinzugefügt werden.",
     "pairsassignment": {
-
+        "addCategory": "Kategorie hinzufügen"
     },
-    "tts": "vorlesen"
+    "tts": "vorlesen",
+    "play": "spielen",
+    "color": "Farbe"
 }

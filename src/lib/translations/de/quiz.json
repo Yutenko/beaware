@@ -2,8 +2,10 @@
     "quiz": "quiz",
     "addHint": "Hiweis hinzufügen",
     "addHintDescription": "Du kannst hier zusätzliche Informationen hinzufügen, die nachher als Tooltip hinzugefügt werden.",
-    "pairsassignment": {
-        "addCategory": "Kategorie hinzufügen"
+    "pairassignment": {
+        "addCategory": "Kategorie hinzufügen",
+        "category":"Kategorie",
+        "chooseFileType":"Kennzeichne die Gruppe mit einem Hintergrundtext oder einem Hintergrundbild"
     },
     "tts": "vorlesen",
     "play": "spielen",

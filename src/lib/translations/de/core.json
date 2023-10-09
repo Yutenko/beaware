@@ -1,5 +1,7 @@
 {
     "close":"schliessen",
+    "delete":"löschen",
+    "reset":"zurücksetzen",
     "fileuploader": {
         "dnd": "Drag & Drop",
         "browse": "oder suche in deinen Dateien oder unserer Bibliothek",

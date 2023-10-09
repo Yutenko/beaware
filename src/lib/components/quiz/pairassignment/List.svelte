@@ -1,88 +1,95 @@
 <script>
-    import { t } from "$lib/translations"
-    export let items;
+    import { t } from "$lib/translations";
+    import ColorPicker from "svelte-awesome-color-picker";
+    export let groups;
+    import Quiz from "../shared";
+    import { onMount } from "svelte";
+
+    function handleTextChange(e, group) {
+        group.src = e.target.value;
+        Quiz.sender.api.updateChild(group);
+    }
+
+    let rgb;
+
+    // dirty hack to fix colorpicker popupposition without rewriting the library (updatesafe)
+    onMount(() => {
+        setTimeout(() => {
+            document.querySelectorAll(".wrapper").forEach((el) => {
+                el.style.right = "0px";
+            });
+        }, 100);
+    });
 </script>
 
 <ul role="list" class="divide-y divide-gray-100 w-full">
-    {#each items as item, i}
+    {#each groups as group, i}
         <li class="flex items-center justify-between gap-x-6 py-5">
             <div class=" min-w-[5rem]">
                 <div class="flex items-start gap-x-3">
                     <p class="text-sm font-semibold leading-6 text-gray-900">
-                        {item.identifier} {i+1}
+                        {$t("quiz.pairassignment.category")}
+                        {group.id + 1}
                     </p>
                 </div>
             </div>
-            <input type="text" placeholder="Type here" class="input input-bordered w-full" />
+            {#if group.type === "text"}
+                <input
+                    type="text"
+                    placeholder="Type here"
+                    class="input input-bordered w-full"
+                    value={group.src}
+                    on:input={(e) => handleTextChange(e, group)}
+                />
+            {:else if group.type === "image"}
+                <div>image</div>
+            {:else}
+                <div />
+            {/if}
             <div class="flex flex-none items-center gap-x-4">
-                <a
-                    href="#"
-                    class="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block"
-                    >{$t("quiz.color")}</a
-                >
+                <ColorPicker bind:rgb label="" isTextInput={false} />
                 <div class="relative flex-none">
-                    <button
-                        type="button"
-                        class="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900"
-                        id="options-menu-0-button"
-                        aria-expanded="false"
-                        aria-haspopup="true"
-                    >
-                        <span class="sr-only">Open options</span>
-                        <svg
-                            class="h-5 w-5"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            aria-hidden="true"
+                    <div class="dropdown dropdown-end">
+                        <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+                        <!-- svelte-ignore a11y-label-has-associated-control -->
+                        <label tabindex="0" class="btn btn-circle btn-ghost">
+                            <i class="far fa-ellipsis-v" />
+                        </label>
+                        <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+                        <div
+                            tabindex="0"
+                            class="card compact dropdown-content z-[1] shadow bg-base-100 rounded-box w-64"
                         >
-                            <path
-                                d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM11.5 15.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0z"
-                            />
-                        </svg>
-                    </button>
-
-                    <!--
-        Dropdown menu, show/hide based on menu state.
-
-        Entering: "transition ease-out duration-100"
-          From: "transform opacity-0 scale-95"
-          To: "transform opacity-100 scale-100"
-        Leaving: "transition ease-in duration-75"
-          From: "transform opacity-100 scale-100"
-          To: "transform opacity-0 scale-95"
-      -->
-                    <div
-                        class="hidden absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
-                        role="menu"
-                        aria-orientation="vertical"
-                        aria-labelledby="options-menu-0-button"
-                        tabindex="-1"
-                    >
-                        <!-- Active: "bg-gray-50", Not Active: "" -->
-                        <a
-                            href="#"
-                            class="block px-3 py-1 text-sm leading-6 text-gray-900"
-                            role="menuitem"
-                            tabindex="-1"
-                            id="options-menu-0-item-0"
-                            >Edit<span class="sr-only">, GraphQL API</span></a
-                        >
-                        <a
-                            href="#"
-                            class="block px-3 py-1 text-sm leading-6 text-gray-900"
-                            role="menuitem"
-                            tabindex="-1"
-                            id="options-menu-0-item-1"
-                            >Move<span class="sr-only">, GraphQL API</span></a
-                        >
-                        <a
-                            href="#"
-                            class="block px-3 py-1 text-sm leading-6 text-gray-900"
-                            role="menuitem"
-                            tabindex="-1"
-                            id="options-menu-0-item-2"
-                            >Delete<span class="sr-only">, GraphQL API</span></a
-                        >
+                            <ul
+                                class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52"
+                            >
+                                <!-- svelte-ignore a11y-missing-attribute -->
+                                <li>
+                                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                                    <a
+                                        on:click={() => {
+                                            Quiz.sender.api.resetContainer(
+                                                group
+                                            );
+                                        }}>{$t("core.reset")}</a
+                                    >
+                                </li>
+                                <!-- svelte-ignore a11y-missing-attribute -->
+                                <li>
+                                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                                    <a
+                                        class="text-error"
+                                        on:click={() => {
+                                            Quiz.sender.api.removeContainer(
+                                                group
+                                            );
+                                        }}>{$t("core.delete")}</a
+                                    >
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>

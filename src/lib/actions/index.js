@@ -45,9 +45,19 @@ export const resizetext = (node, options) => {
         // revert to last state where no overflow happened
         node.style.fontSize = `${i - step}${unit}`
     }
+
+
+    const observer = new MutationObserver((mutationsList) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'characterData') {
+                handleResize()
+            }
+        }
+    });
+
+    // Starten Sie die Beobachtung des Textinhalts
+    observer.observe(node, { childList: true, characterData: true, subtree: true });
     handleResize()
-
-
     node.addEventListener('input', handleResize, true);
     window.addEventListener('resize', handleResize, true);
 
@@ -55,6 +65,7 @@ export const resizetext = (node, options) => {
         destroy() {
             node.removeEventListener('input', handleResize, true);
             window.removeEventListener('resize', handleResize, true);
+            observer.disconnect();
         }
     }
 }

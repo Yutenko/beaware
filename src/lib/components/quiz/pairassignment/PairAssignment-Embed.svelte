@@ -8,4 +8,4 @@
     }`;
 </script>
 
-<iframe {src} title="framed"/>
+<iframe {src} title="framed" data-is-receiver="true" />

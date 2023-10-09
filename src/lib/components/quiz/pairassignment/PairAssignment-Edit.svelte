@@ -4,8 +4,7 @@
     import { tick } from "svelte";
     import { t } from "$lib/translations";
     import Quiz from "../shared";
-
-    import { page } from '$app/stores'
+    import { onMount } from "svelte";
 
     import {
         resizetext,
@@ -123,6 +122,7 @@
         g.src = "";
         g.type = "text";
         groups = groups;
+        Quiz.receiver.updateParent();
     }
     function saveCardText(e, el) {
         el.src = e.target.innerText;
@@ -130,26 +130,28 @@
     function saveGroupText(e, g) {
         g.src = e.target.innerText;
         groups = groups;
+        Quiz.receiver.updateParent();
     }
 
-    function addGroup(id) {
+    function addGroup() {
         if (groups.length + 1 > MAX_GROUPS) return;
 
         groups = [
             ...groups,
             {
-                id,
+                id: groups.length,
                 type: null,
                 src: null,
-                isEditing: false,
+                isEditing: true,
+                background: null,
             },
         ];
     }
     function resetGroup(g) {
-        g.type = null;
-        g.src = null;
-        g.isEditing = true;
-        groups = groups;
+        let index = groups.findIndex((group) => group.id == g.id);
+        groups[index].type = null;
+        groups[index].src = null;
+        groups[index].isEditing = true;
     }
     function deleteGroup(g) {
         if (groups.length - 1 < MIN_GROUPS) return;
@@ -195,7 +197,7 @@
             }
         }
         const parent = document.getElementById("group-" + latestGroup);
-        const child = e.target.closest('.card');
+        const child = e.target.closest(".card");
 
         const childRect = child.getBoundingClientRect();
         const parentRect = parent.getBoundingClientRect();
@@ -288,7 +290,7 @@
         elements = elements;
     }
 
-    function saveQuiz() {
+    function getQuizData() {
         function sanatizeElements() {
             let temp = [];
             for (let i = 0; i < elements.length; i++) {
@@ -308,13 +310,11 @@
             let temp = [];
             for (let i = 0; i < groups.length; i++) {
                 let g = groups[i];
-                if (g.src && g.src != "") {
-                    temp.push({
-                        src: g.src,
-                        type: g.type,
-                        id: g.id,
-                    });
-                }
+                temp.push({
+                    src: g.src,
+                    type: g.type,
+                    id: g.id,
+                });
             }
             return temp;
         }
@@ -323,26 +323,32 @@
             groups: sanatizeGroups(),
         };
 
-        const json = JSON.stringify(data);
-        const blob = new Blob([json], { type: "application/json" });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "quiz.json";
-        a.click();
-        window.URL.revokeObjectURL(url);
+        return JSON.stringify(data);
     }
 
-    addGroup(0);
-    addGroup(1);
-    addGroup(2);
+    function updateChild(data) {
+        let index = groups.findIndex((group) => group.id == data.id);
+        var o = new Object();
+        o.src = data.src;
+        o.type = data.type;
+        groups[index] = o;
+    }
 
-    Quiz.init({
+    Quiz.receiver.init({
         addContainer: addGroup,
         removeContainer: deleteGroup,
+        resetContainer: resetGroup,
         addElement,
         removeElement: deleteElement,
+        updateParent: getQuizData,
+        updateChild,
     });
+
+    // we start with 2 groups always and inform the parent about it
+    // consequent adds are updated by the parent automatically
+    addGroup();
+    addGroup();
+    onMount(Quiz.receiver.updateParent);
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
@@ -392,15 +398,25 @@
                         handleMediaOption={(e) => {
                             onOpenFileUploader(e);
                         }}
+                        description={$t("quiz.pairassignment.chooseFileType")}
                     />
-                {:else if g.type === "text"}
+                {:else if g.type === "text" && g.isEditing}
                     <div
-                        class="text-black text-center edit-group"
-                        contenteditable={g.isEditing}
+                        class="text-black text-center edit-group mt-20 mb-20"
+                        contenteditable={true}
                         use:linkify
                         use:focus
+                        use:resizetext
                         on:blur={() => toggleGroupEdit(g)}
                         on:keyup={(e) => saveGroupText(e, g)}
+                    >
+                        {g.src}
+                    </div>
+                {:else if g.type === "text" && !g.isEditing}
+                    <div
+                        class="text-black text-center edit-group mt-20 mb-20"
+                        use:linkify
+                        use:resizetext
                     >
                         {g.src}
                     </div>
@@ -408,35 +424,22 @@
                     <!-- svelte-ignore a11y-missing-attribute -->
                     <img class="w-full h-full object-contain" src={g.src} />
                 {/if}
-                {#if g.type}
-                    <button
-                        class="btn btn-circle btn-error btn-sm reset-group"
-                        on:click={(e) => resetGroup(g)}
-                        ><i class="fal fa-skull-crossbones" /></button
-                    >
-                {/if}
             </div>
 
-            <button
-                type="button"
-                class="absolute right-2 bottom-2 btn btn-circle btn-primary"
-                style="z-index: {zIndex + 1}"
-                on:click={() => toggleGroupEdit(g)}
-            >
-                <i class="fal fa-cog" />
-            </button>
-            <button
-                on:click={() => {
-                    g.isEditing = false;
-                    addElement(g.id);
-                }}
-                use:clicksound={{ sound: "/media/pop-sound.wav" }}
-                type="button"
-                class="absolute right-2 bottom-16 btn btn-circle btn-primary"
-                style="z-index: {zIndex + 1}"
-            >
-                <i class="fal fa-plus" />
-            </button>
+            {#if g.type && g.src}
+                <button
+                    on:click={() => {
+                        g.isEditing = false;
+                        addElement(g.id);
+                    }}
+                    use:clicksound={{ sound: "/media/pop-sound.wav" }}
+                    type="button"
+                    class="absolute right-2 bottom-2 btn btn-circle btn-primary"
+                    style="z-index: {zIndex + 1}"
+                >
+                    <i class="fal fa-plus" />
+                </button>
+            {/if}
 
             {#each elements as el}
                 {#if el.group == g.id}
@@ -596,8 +599,7 @@
         left: 0.5rem;
         top: 0.5rem;
     }
-    .delete-card,
-    .reset-group {
+    .delete-card {
         position: absolute;
         top: 0px;
         right: 0px;
@@ -605,8 +607,7 @@
         display: none;
     }
     .user-card:hover .delete-card,
-    .user-card:hover .hint-btn,
-    .group:hover .reset-group {
+    .user-card:hover .hint-btn {
         display: block;
     }
     .edit-group {

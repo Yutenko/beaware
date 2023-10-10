@@ -143,7 +143,7 @@
                 type: null,
                 src: null,
                 isEditing: true,
-                background: null,
+                background: "#ffe2c3",
             },
         ];
     }
@@ -426,20 +426,18 @@
                 {/if}
             </div>
 
-            {#if g.type && g.src}
-                <button
-                    on:click={() => {
-                        g.isEditing = false;
-                        addElement(g.id);
-                    }}
-                    use:clicksound={{ sound: "/media/pop-sound.wav" }}
-                    type="button"
-                    class="absolute right-2 bottom-2 btn btn-circle btn-primary"
-                    style="z-index: {zIndex + 1}"
-                >
-                    <i class="fal fa-plus" />
-                </button>
-            {/if}
+            <button
+                on:click={() => {
+                    g.isEditing = false;
+                    addElement(g.id);
+                }}
+                use:clicksound={{ sound: "/media/pop-sound.wav" }}
+                type="button"
+                class="absolute right-2 bottom-2 btn btn-circle btn-primary"
+                style="z-index: {zIndex + 1}"
+            >
+                <i class="fal fa-plus" />
+            </button>
 
             {#each elements as el}
                 {#if el.group == g.id}

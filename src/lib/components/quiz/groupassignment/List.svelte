@@ -1,25 +1,12 @@
 <script>
     import { t } from "$lib/translations";
-    import ColorPicker from "svelte-awesome-color-picker";
     export let groups;
     import Quiz from "../shared";
-    import { onMount } from "svelte";
 
     function handleTextChange(e, group) {
         group.src = e.target.value;
         Quiz.sender.api.updateChild(group);
     }
-
-    let rgb;
-
-    // dirty hack to fix colorpicker popupposition without rewriting the library (updatesafe)
-    onMount(() => {
-        setTimeout(() => {
-            document.querySelectorAll(".wrapper").forEach((el) => {
-                el.style.right = "0px";
-            });
-        }, 100);
-    });
 </script>
 
 <ul role="list" class="divide-y divide-gray-100 w-full">
@@ -46,8 +33,11 @@
             {:else}
                 <div />
             {/if}
+
             <div class="flex flex-none items-center gap-x-4">
-                <ColorPicker bind:rgb label="" isTextInput={false} />
+                <label class="btn btn-circle btn-sm btn-ghost" style="background-color: ${group.background};">
+                    <input type="color" class="invisible" value="${group.background}"/></label
+                >
                 <div class="relative flex-none">
                     <div class="dropdown dropdown-end">
                         <!-- svelte-ignore a11y-no-noninteractive-tabindex -->

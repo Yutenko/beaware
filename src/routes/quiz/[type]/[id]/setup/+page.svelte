@@ -1,7 +1,7 @@
 <script>
-    import { PairAssignmentSetup } from "$components/index";
+    import { GroupAssignmentSetup } from "$components/index";
 
     export let data;
 </script>
 
-<PairAssignmentSetup />
+<GroupAssignmentSetup />

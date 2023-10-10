@@ -1,11 +1,11 @@
 <script>
-    import { PairAssignmentEdit, PairAssignmentPlay } from "$components";
+    import { GroupAssignmentEdit, GroupAssignmentPlay } from "$components";
 
     export let data;
 </script>
 
 {#if data.mode === "edit"}
-    <PairAssignmentEdit />
+    <GroupAssignmentEdit />
 {:else}
-    <PairAssignmentPlay />
+    <GroupAssignmentPlay />
 {/if}

@@ -1,8 +1,7 @@
 <script>
-    import { PairAssignmentEmbed, PairAssignmentList } from "$components";
+    import { GroupAssignmentEmbed, GroupAssignmentList } from "$components";
     import { t } from "$lib/translations";
     import Quiz from "../shared";
-    import { onMount } from "svelte";
 
     let groups = [];
     Quiz.sender.init({
@@ -14,7 +13,7 @@
 </script>
 
 <div class="container mx-auto flex flex-col items-center setup-container">
-    <PairAssignmentEmbed mode={"edit"} />
+    <GroupAssignmentEmbed mode={"edit"} />
     <div class="flex w-full justify-between mt-5 mb-5">
         <button
             class="btn btn-primary self-start"
@@ -27,7 +26,7 @@
             ><i class="fas fa-gamepad" />{$t("quiz.play")}</button
         >
     </div>
-    <PairAssignmentList {groups} />
+    <GroupAssignmentList {groups} />
 </div>
 
 <style>

@@ -3,6 +3,8 @@
     import { t } from "$lib/translations";
     import Quiz from "../shared";
 
+    export let data;
+
     let groups = [];
     Quiz.sender.init({
         onUpdate: (data) => {

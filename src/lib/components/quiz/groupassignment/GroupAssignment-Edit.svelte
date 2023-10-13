@@ -109,6 +109,11 @@
     }
     function stopCardTextEditing(e, el) {
         el.isEditing = false;
+        // if element is empty, we set back to an empty element with options
+        if (el.src?.trim().length === 0) {
+            el.src = null;
+            el.type = null;
+        }
         elements = elements;
     }
     function handleCardMouseLeave(e, el) {
@@ -187,6 +192,7 @@
                 y,
                 zIndex,
                 type: null,
+                src: null,
                 isEditing: false,
             },
         ];
@@ -361,6 +367,8 @@
         updateChild,
     });
 
+    let parent;
+
     // we start with 2 groups always and inform the parent about it
     // consequent adds are updated by the parent automatically
     addGroup();
@@ -378,12 +386,27 @@
     <h3 class="font-bold text-lg" slot="header">{$t("quiz.hint")}</h3>
     <div slot="body">
         <p class="py-4">{$t("quiz.addHintDescription")}</p>
-        <input
-            type="text"
-            class="input input-bordered w-full"
-            bind:value={currentElement.hint}
-            on:input={(e) => (elements = elements)}
-        />
+        <div class="relative">
+            <input
+                type="text"
+                class="input input-bordered w-full pr-10"
+                bind:value={currentElement.hint}
+                on:input={(e) => (elements = elements)}
+            />
+            {#if currentElement.hint?.trim().length > 0}
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                <div
+                    class="absolute right-2 btn btn-xs btn-circle btn-ghost mt-3"
+                    on:click={(e) => {
+                        currentElement.hint = null;
+                        elements = elements;
+                    }}
+                >
+                    <i class="fal fa-times" />
+                </div>
+            {/if}
+        </div>
     </div>
     <button class="btn btn-primary" slot="footer">
         {$t("core.close")}
@@ -393,12 +416,28 @@
     <h3 class="font-bold text-lg" slot="header">{$t("quiz.feedback")}</h3>
     <div slot="body">
         <p class="py-4">{$t("quiz.addFeedbackDescription")}</p>
-        <input
-            type="text"
-            class="input input-bordered w-full"
-            bind:value={currentElement.feedback}
-            on:input={(e) => (elements = elements)}
-        />
+        <div class="relative">
+            <input
+                type="text"
+                class="input input-bordered w-full pr-10"
+                bind:value={currentElement.feedback}
+                on:input={(e) => (elements = elements)}
+            />
+
+            {#if currentElement.feedback?.trim().length > 0}
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                <div
+                    class="absolute right-2 btn btn-xs btn-circle btn-ghost mt-3"
+                    on:click={(e) => {
+                        currentElement.feedback = null;
+                        elements = elements;
+                    }}
+                >
+                    <i class="fal fa-times" />
+                </div>
+            {/if}
+        </div>
     </div>
     <button class="btn btn-primary" slot="footer">
         {$t("core.close")}
@@ -539,17 +578,21 @@
                                 >
                             </li>
                             <!-- svelte-ignore a11y-missing-attribute -->
-                            <li>
-                                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                                <!-- svelte-ignore a11y-no-static-element-interactions -->
-                                <a
-                                    class="text-error"
-                                    on:click={(e) => {
-                                        deleteGroup(g);
-                                    }}
-                                    >{$t("quiz.groupassignment.deleteGroup")}</a
-                                >
-                            </li>
+                            {#if groups.length > 2}
+                                <li>
+                                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                                    <a
+                                        class="text-error"
+                                        on:click={(e) => {
+                                            deleteGroup(g);
+                                        }}
+                                        >{$t(
+                                            "quiz.groupassignment.deleteGroup"
+                                        )}</a
+                                    >
+                                </li>
+                            {/if}
                         </ul>
                     </div>
                 </div>
@@ -572,6 +615,7 @@
                 {#if el.group == g.id}
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <div
+                        id="user-card-{i}"
                         class="absolute card bg-white shadow border cursor-grab user-card display-inline-block {el.feedback
                             ? 'shadow-warning'
                             : ''}"
@@ -611,7 +655,9 @@
                                     contenteditable="true"
                                     class="w-full user-text"
                                     use:focus
-                                    use:resizetext
+                                    use:resizetext={{
+                                        parentId: "user-card-" + i,
+                                    }}
                                     use:linkify
                                     on:mousedown={(e) => editCardText(e, el)}
                                     on:keyup={(e) => saveCardText(e, el)}
@@ -685,7 +731,9 @@
 
                         <div
                             class="absolute right-0 top-0 user-card-actions"
-                            style="z-index:{zIndex + 1};"
+                            style="z-index:{zIndex + 1}}; {el.isEditing
+                                ? 'display: none;'
+                                : ''}"
                         >
                             <div class="dropdown dropdown-end">
                                 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->

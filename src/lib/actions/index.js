@@ -26,17 +26,15 @@ export const focus = (node) => {
 export const resizetext = (node, options) => {
     function handleResize() {
         let minSize = options?.minSize || 10
-        let maxSize = options?.maxSize || 56
+        let maxSize = options?.maxSize || 70
         let step = options?.step || 1
         let unit = options?.unit || 'px'
+        let parent = options?.parentId ? document.getElementById(options.parentId) : node.parentElement
 
         let i = minSize
         let overflow = false
 
-        const parent = node.parentNode
         const isOverflown = ({ clientWidth, clientHeight, scrollWidth, scrollHeight }) => (scrollWidth > clientWidth) || (scrollHeight > clientHeight)
-
-
 
         while (!overflow && i < maxSize) {
             node.style.fontSize = `${i}${unit}`

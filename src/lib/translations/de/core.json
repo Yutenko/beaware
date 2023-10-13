@@ -8,6 +8,9 @@
         "dnd": "Drag & Drop",
         "browse": "oder suche in deinen Dateien oder unserer Bibliothek",
         "text":"Text",
+        "image":"Bild",
+        "video":"Video",
+        "audio":"Audio",
         "media": "Medien",
         "upload": "Hochladen"
     }

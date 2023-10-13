@@ -20,7 +20,7 @@
     let openFeedbackModal = false;
     let innerHeight = 0;
     let innerWidth = 0;
-    let cardWidth = 0;
+    let card = { width: 0, padding: 0 };
     let orientation;
     let oldOrientation;
     let groups = [];
@@ -35,6 +35,7 @@
     let startY;
     let isDragging = false;
     let groupCounter = 0;
+    let elementCounter = 0;
 
     const MIN_GROUPS = 2;
     const MAX_GROUPS = 6;
@@ -194,6 +195,7 @@
         elements = [
             ...elements,
             {
+                id: elementCounter++,
                 group,
                 x,
                 y,
@@ -203,6 +205,8 @@
                 isEditing: false,
             },
         ];
+
+        resizeUserCard();
     }
     function deleteElement(el) {
         elements.splice(elements.indexOf(el), 1);
@@ -276,7 +280,9 @@
 
         let temp = [];
         for (let index = 0; index < groups.length; index++) {
-            const backgroundDiv = document.querySelector(`#group-${groups[index].id}`);
+            const backgroundDiv = document.querySelector(
+                `#group-${groups[index].id}`
+            );
             const backgroundRect = backgroundDiv.getBoundingClientRect();
             const isOverMe =
                 clientX >= backgroundRect.left &&
@@ -295,7 +301,7 @@
         const background = document.querySelector("#group-" + group);
 
         // make this dynamic
-        const w = 200;
+        const w = card.width;
         const h = 100;
 
         const maxX = background.clientWidth - w;
@@ -364,27 +370,17 @@
         groups[index] = o;
     }
 
-    Quiz.receiver.init({
-        addContainer: addGroup,
-        removeContainer: deleteGroup,
-        resetContainer: resetGroup,
-        addElement,
-        removeElement: deleteElement,
-        updateParent: getQuizData,
-        updateChild,
-    });
-
     function resizeUserCard() {
         if (groups.length === 0) return;
 
-        // padding auch anpassen
-        // height auch anpassen?
-        // TODO: reassign groups on delete group
-
         const columns = groups.length;
-        const container = document.querySelector("#group-0");
-        const containerWidth = container.clientWidth;
-        cardWidth = containerWidth / columns;
+        const container = document.querySelector("#group-" + groups[0].id);
+        const value = Math.min(container.clientWidth, container.clientHeight);
+
+        card = {
+            width: Math.ceil(value / columns),
+            padding: card.width * 0.03,
+        };
     }
 
     onMount(() => {
@@ -393,11 +389,22 @@
         addGroup();
         addGroup();
 
+        Quiz.receiver.init({
+            addContainer: addGroup,
+            removeContainer: deleteGroup,
+            resetContainer: resetGroup,
+            addElement,
+            removeElement: deleteElement,
+            updateParent: getQuizData,
+            updateChild,
+        });
+
         Quiz.receiver.updateParent();
 
-        window.addEventListener("resize", resizeUserCard);
+        // has to be top window, because we can be in an iframe
+        window.top.addEventListener("resize", resizeUserCard);
         return () => {
-            window.removeEventListener("resize", resizeUserCard);
+            window.top.removeEventListener("resize", resizeUserCard);
         };
     });
 </script>
@@ -493,10 +500,13 @@
                         on:click:text={(e) => {
                             editGroupText(e, g);
                         }}
-                        on:click:media={(e) => {
+                        on:click:image={(e) => {
                             onOpenFileUploader(e);
                         }}
-                        description={$t("quiz.groupassignment.chooseFileType")}
+                        color="btn-secondary"
+                        types={{ text: true, image: true }}
+                        textText={$t("quiz.groupassignment.backgroundText")}
+                        imageText={$t("quiz.groupassignment.backgroundImage")}
                     />
                 {:else if g.type === "text" && g.isEditing}
                     <div
@@ -637,15 +647,17 @@
                 <i class="fal fa-plus" />
             </button>
 
-            {#each elements as el, j}
+            {#each elements as el}
                 {#if el.group == g.id}
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <div
-                        id="user-card-{j}"
+                        id="user-card-{el.id}"
                         class="absolute card bg-white shadow border cursor-grab user-card display-inline-block {el.feedback
                             ? 'shadow-warning shadow-md'
                             : ''}"
-                        style="left:{el.x}; top:{el.y};z-index: {el.zIndex};width:{cardWidth}px;opacity: {g.isEditing
+                        style="left:{el.x}; top:{el.y};z-index: {el.zIndex};width:{card.width}px;padding:{card.padding}px;padding-top:{card.padding *
+                            2}px;opacity: {g.isEditing ||
+                        (isDragging && currentElement.id !== el.id)
                             ? 0.3
                             : 1};"
                         use:draggable={{
@@ -682,7 +694,7 @@
                                     class="w-full user-text"
                                     use:focus
                                     use:resizetext={{
-                                        parentId: "user-card-" + j,
+                                        parentId: "user-card-" + el.id,
                                     }}
                                     use:linkify
                                     on:mousedown={(e) => editCardText(e, el)}
@@ -843,10 +855,9 @@
 <style>
     .user-card {
         min-width: 200px;
-        max-width: 50%;
+        max-width: 40%;
         min-height: 50px;
         max-height: 30vmin;
-        padding: 1.7em;
         touch-action: none;
         user-select: none;
     }

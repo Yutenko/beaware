@@ -24,7 +24,6 @@
         dialog.showModal();
     }
 
-    // wort medien nur, wenn mehr wie 2 typen, sonst text und bikld oder text und video
 </script>
 
 <dialog class="modal" bind:this={dialog}>

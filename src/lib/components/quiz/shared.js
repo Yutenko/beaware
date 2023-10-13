@@ -57,7 +57,7 @@ const Quiz = {
     sender: {
         init: (options) => {
             if (browser) {
-                Quiz.sender._iframe = document.querySelector('iframe[data-is-receiver="true"]')
+
                 const { onUpdate } = options;
 
                 window.addEventListener('message', function (event) {
@@ -72,10 +72,8 @@ const Quiz = {
             }
         },
         _send: (options) => {
-            var iframe = Quiz.sender._iframe;
-            if (iframe) {
-                iframe.contentWindow.postMessage(JSON.stringify(options), "*")
-            }
+            const iframe = document.querySelector('iframe[data-is-receiver="true"]')
+            iframe.contentWindow.postMessage(JSON.stringify(options), "*")
         },
         api: {
             addContainer: () => {
@@ -93,8 +91,7 @@ const Quiz = {
             updateChild: (data) => {
                 Quiz.sender._send({ cmd: messages.UPDATE_CHILD, data });
             }
-        },
-        _iframe: null
+        }
     }
 }
 

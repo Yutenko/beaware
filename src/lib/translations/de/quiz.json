@@ -13,7 +13,9 @@
         "changeBackgroundColor": "Hintergrundfarbe ändern",
         "resetBackground": "Hintergrund zurücksetzen",
         "deleteGroup": "Gruppe löschen",
-        "deleteCard": "Karte löschen"
+        "deleteCard": "Karte löschen",
+        "backgroundText":"Hintergrundtext",
+        "backgroundImage":"Hintergrundbild"
     },
     "tts": "vorlesen",
     "play": "spielen",

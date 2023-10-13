@@ -22,6 +22,7 @@ export const focus = (node) => {
     node.focus()
 }
 
+
 export const resizetext = (node, options) => {
     function handleResize() {
         let minSize = options?.minSize || 10
@@ -34,6 +35,8 @@ export const resizetext = (node, options) => {
 
         const parent = node.parentNode
         const isOverflown = ({ clientWidth, clientHeight, scrollWidth, scrollHeight }) => (scrollWidth > clientWidth) || (scrollHeight > clientHeight)
+
+
 
         while (!overflow && i < maxSize) {
             node.style.fontSize = `${i}${unit}`

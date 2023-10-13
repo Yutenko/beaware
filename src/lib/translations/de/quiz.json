@@ -1,11 +1,19 @@
 {
     "quiz": "quiz",
-    "addHint": "Hiweis hinzufügen",
+    "hint": "Hiweis",
     "addHintDescription": "Du kannst hier zusätzliche Informationen hinzufügen, die nachher als Tooltip hinzugefügt werden.",
-    "pairassignment": {
+    "feedback": "Feedback",
+    "addFeedbackDescription": "Du kannst hier ein Feedback hinzufügen, das am Ende des Quiz' angezeigt wird.",
+    "groupassignment": {
         "addCategory": "Kategorie hinzufügen",
-        "category":"Kategorie",
-        "chooseFileType":"Kennzeichne die Gruppe mit einem Hintergrundtext oder einem Hintergrundbild"
+        "category": "Kategorie",
+        "chooseFileType": "Kennzeichne die Gruppe mit einem Hintergrundtext oder einem Hintergrundbild",
+        "changeBackgroundImage": "Hintergrundbild ändern",
+        "changeBackgroundText": "Hintergrundtext ändern",
+        "changeBackgroundColor": "Hintergrundfarbe ändern",
+        "resetBackground": "Hintergrund zurücksetzen",
+        "deleteGroup": "Gruppe löschen",
+        "deleteCard": "Karte löschen"
     },
     "tts": "vorlesen",
     "play": "spielen",

@@ -17,6 +17,7 @@
 
     let openFileuploader = false;
     let openHintModal = false;
+    let openFeedbackModal = false;
     let innerHeight = 0;
     let innerWidth = 0;
     let orientation;
@@ -96,19 +97,26 @@
         el.hint = el.hint && el.hint !== "" ? el.hint : "";
         openHintModal = true;
     }
+    function editCardFeedback(el) {
+        el.feedback = el.feedback && el.feedback !== "" ? el.feedback : "";
+        openFeedbackModal = true;
+    }
     function editCardText(e, el) {
-        el.src = "";
+        el.src = el.src ? el.src : "";
         el.type = "text";
-        el.showTTSOption = true;
+        el.isEditing = true;
         elements = elements;
     }
-    function showTTS(e, el) {
-        el.showTTSOption = true;
+    function stopCardTextEditing(e, el) {
+        el.isEditing = false;
         elements = elements;
     }
-    function hideTTS(e, el) {
-        el.showTTSOption = false;
-        elements = elements;
+    function handleCardMouseLeave(e, el) {
+        var editableDiv = e.target.querySelector("[contenteditable]");
+        if (editableDiv) {
+            editableDiv.blur();
+        }
+        stopCardTextEditing(e, el);
     }
     function toggleTTS(e, el) {
         if (!el.tts) {
@@ -119,10 +127,14 @@
     }
     function editGroupText(e, g) {
         g.isEditing = true;
-        g.src = "";
+        g.src = g.src ? g.src : "";
         g.type = "text";
         groups = groups;
         Quiz.receiver.updateParent();
+    }
+    function setBackgroundColor(e, g) {
+        g.backgroundColor = e.target.value;
+        groups = groups;
     }
     function saveCardText(e, el) {
         el.src = e.target.innerText;
@@ -143,20 +155,24 @@
                 type: null,
                 src: null,
                 isEditing: true,
-                background: "#ffe2c3",
+                backgroundColor: null,
             },
         ];
+
+        distributeCards();
     }
     function resetGroup(g) {
         let index = groups.findIndex((group) => group.id == g.id);
         groups[index].type = null;
         groups[index].src = null;
+        groups[index].backgroundColor = null;
         groups[index].isEditing = true;
     }
     function deleteGroup(g) {
         if (groups.length - 1 < MIN_GROUPS) return;
 
         groups = groups.filter((group) => group.id !== g.id);
+        distributeCards();
     }
     function addElement(group) {
         if (elements.length + 1 > MAX_ELEMENTS) return;
@@ -171,6 +187,7 @@
                 y,
                 zIndex,
                 type: null,
+                isEditing: false,
             },
         ];
     }
@@ -358,13 +375,28 @@
 
 <FileUploader bind:openFileuploader handleClose={onCloseFileuploader} />
 <Modal bind:open={openHintModal}>
-    <h3 class="font-bold text-lg" slot="header">{$t("quiz.addHint")}</h3>
+    <h3 class="font-bold text-lg" slot="header">{$t("quiz.hint")}</h3>
     <div slot="body">
         <p class="py-4">{$t("quiz.addHintDescription")}</p>
         <input
             type="text"
             class="input input-bordered w-full"
             bind:value={currentElement.hint}
+            on:input={(e) => (elements = elements)}
+        />
+    </div>
+    <button class="btn btn-primary" slot="footer">
+        {$t("core.close")}
+    </button>
+</Modal>
+<Modal bind:open={openFeedbackModal}>
+    <h3 class="font-bold text-lg" slot="header">{$t("quiz.feedback")}</h3>
+    <div slot="body">
+        <p class="py-4">{$t("quiz.addFeedbackDescription")}</p>
+        <input
+            type="text"
+            class="input input-bordered w-full"
+            bind:value={currentElement.feedback}
             on:input={(e) => (elements = elements)}
         />
     </div>
@@ -385,6 +417,7 @@
             class="col-span-{positions[groups.length][orientation].span[
                 i
             ]} relative {isDragOverMe[i] ? 'bg-red-600' : ''} border group"
+            style="background-color:{g.backgroundColor}"
             id="group-{i}"
         >
             <div
@@ -398,7 +431,7 @@
                         handleMediaOption={(e) => {
                             onOpenFileUploader(e);
                         }}
-                        description={$t("quiz.pairassignment.chooseFileType")}
+                        description={$t("quiz.groupassignment.chooseFileType")}
                     />
                 {:else if g.type === "text" && g.isEditing}
                     <div
@@ -426,6 +459,102 @@
                 {/if}
             </div>
 
+            <div
+                class=" flex-none absolute right-0 top-0"
+                style="z-index:{zIndex + 1}"
+            >
+                <div class="dropdown dropdown-end">
+                    <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+                    <!-- svelte-ignore a11y-label-has-associated-control -->
+                    <label tabindex="0" class="btn btn-circle btn-ghost">
+                        <i class="far fa-ellipsis-v" />
+                    </label>
+                    <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+                    <div
+                        tabindex="0"
+                        class="card compact dropdown-content z-[1] shadow bg-base-100 rounded-box w-64"
+                    >
+                        <ul
+                            class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52"
+                        >
+                            <!-- svelte-ignore a11y-missing-attribute -->
+                            <li>
+                                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                                <a
+                                    on:click={(e) => {
+                                        editGroupText(e, g);
+                                    }}
+                                    >{$t(
+                                        "quiz.groupassignment.changeBackgroundText"
+                                    )}</a
+                                >
+                            </li>
+                            <li>
+                                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                                <!-- svelte-ignore a11y-missing-attribute -->
+                                <a
+                                    on:click={(e) => {
+                                        onOpenFileUploader(e);
+                                    }}
+                                    >{$t(
+                                        "quiz.groupassignment.changeBackgroundImage"
+                                    )}</a
+                                >
+                            </li>
+                            <li>
+                                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                                <!-- svelte-ignore a11y-missing-attribute -->
+                                <a on:click={(e) => {}}
+                                    >{$t(
+                                        "quiz.groupassignment.changeBackgroundColor"
+                                    )}<label
+                                        class="btn btn-circle btn-sm btn-ghost"
+                                        style="background-color: {g.backgroundColor};"
+                                    >
+                                        <input
+                                            type="color"
+                                            class="invisible"
+                                            value={g.backgroundColor}
+                                            on:input={(e) => {
+                                                setBackgroundColor(e, g);
+                                            }}
+                                        /></label
+                                    ></a
+                                >
+                            </li>
+                            <!-- svelte-ignore a11y-missing-attribute -->
+                            <li>
+                                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                                <a
+                                    on:click={(e) => {
+                                        resetGroup(g);
+                                    }}
+                                    >{$t(
+                                        "quiz.groupassignment.resetBackground"
+                                    )}</a
+                                >
+                            </li>
+                            <!-- svelte-ignore a11y-missing-attribute -->
+                            <li>
+                                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                                <a
+                                    class="text-error"
+                                    on:click={(e) => {
+                                        deleteGroup(g);
+                                    }}
+                                    >{$t("quiz.groupassignment.deleteGroup")}</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
             <button
                 on:click={() => {
                     g.isEditing = false;
@@ -443,7 +572,12 @@
                 {#if el.group == g.id}
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <div
-                        class="absolute card bg-white shadow border cursor-grab user-card display-inline-block"
+                        class="absolute card bg-white shadow border cursor-grab user-card display-inline-block {el.feedback
+                            ? 'shadow-warning'
+                            : ''}"
+                        style="left:{el.x}; top:{el.y};z-index: {el.zIndex};opacity: {g.isEditing
+                            ? 0.3
+                            : 1};"
                         use:draggable={{
                             bounds: "body",
                             ignoreMultitouch: false,
@@ -460,111 +594,171 @@
                         }}
                         on:mousedown={(e) => handleCardMouseDown(e, el)}
                         on:mouseup={(e) => handleCardMouseUp(e, el)}
-                        on:mouseleave={(e) => hideTTS(e, el)}
-                        style="left:{el.x}; top:{el.y};z-index: {el.zIndex};opacity: {g.isEditing
-                            ? 0.3
-                            : 1};"
+                        on:mouseleave={(e) => handleCardMouseLeave(e, el)}
                     >
-                        {#if !el.type}
-                            <FileTypeOptions
-                                handleTextOption={(e) => {
-                                    editCardText(e, el);
-                                }}
-                                handleMediaOption={(e) => {
-                                    onOpenFileUploader(e, el);
-                                }}
-                            />
-                        {:else if el.type == "text"}
-                            <div
-                                contenteditable="true"
-                                class="w-full user-text"
-                                use:focus
-                                use:resizetext
-                                use:linkify
-                                on:focus={(e) => showTTS(e, el)}
-                                on:keyup={(e) => saveCardText(e, el)}
-                            >
-                                {el.src}
-                            </div>
-                            <div
-                                class="form-control"
-                                style="visibility:{el.showTTSOption
-                                    ? 'visible'
-                                    : 'hidden'}"
-                                on:click={(e) => toggleTTS(e, el)}
-                            >
-                                <label class="label cursor-pointer">
-                                    <span class="label-text"
-                                        >{$t("quiz.tts")}</span
-                                    >
-                                    <input
-                                        type="checkbox"
-                                        class="toggle"
-                                        checked={el.tts?.enabled}
-                                    />
-                                </label>
-                            </div>
-                            {#if !el.showTTSOption && el.tts?.enabled}
-                                <button
-                                    class="absolute btn btn-circle btn-info btn-xs btn-outline right-3.5 bottom-3.5 text-info"
-                                    on:click={(e) =>
-                                        alert("text to speech mal irgendwann")}
+                        <div class="w-full h-full relative inline-block">
+                            {#if !el.type}
+                                <FileTypeOptions
+                                    handleTextOption={(e) => {
+                                        editCardText(e, el);
+                                    }}
+                                    handleMediaOption={(e) => {
+                                        onOpenFileUploader(e, el);
+                                    }}
+                                />
+                            {:else if el.type == "text"}
+                                <div
+                                    contenteditable="true"
+                                    class="w-full user-text"
+                                    use:focus
+                                    use:resizetext
+                                    use:linkify
+                                    on:mousedown={(e) => editCardText(e, el)}
+                                    on:keyup={(e) => saveCardText(e, el)}
                                 >
-                                    <i class="far fa-ear" />
-                                </button>
+                                    {el.src}
+                                </div>
+                                <div
+                                    class="form-control"
+                                    style="visibility:{el.isEditing
+                                        ? 'visible'
+                                        : 'hidden'}"
+                                    on:click={(e) => toggleTTS(e, el)}
+                                >
+                                    <label class="label cursor-pointer">
+                                        <span class="label-text"
+                                            >{$t("quiz.tts")}</span
+                                        >
+                                        <input
+                                            type="checkbox"
+                                            class="toggle"
+                                            checked={el.tts?.enabled}
+                                        />
+                                    </label>
+                                </div>
+                            {:else if el.type == "image"}
+                                <!-- svelte-ignore a11y-missing-attribute -->
+                                <img
+                                    src={el.src}
+                                    use:zoom
+                                    class="w-full h-full object-cover rounded-2xl"
+                                    style={isDragging
+                                        ? "pointer-events: none;"
+                                        : ""}
+                                />
+                            {:else if el.type == "video"}
+                                <!-- svelte-ignore a11y-media-has-caption -->
+                                <video
+                                    controls
+                                    class="w-full h-full object-cover rounded-2xl"
+                                >
+                                    <source src={el.src} />
+                                </video>
+                            {:else if el.type == "audio"}
+                                <audio
+                                    controls
+                                    class="w-full h-full object-cover rounded-2xl"
+                                >
+                                    <source src={el.src} type={el.type} />
+                                </audio>
                             {/if}
-                        {:else if el.type == "image"}
-                            <!-- svelte-ignore a11y-missing-attribute -->
-                            <img
-                                src={el.src}
-                                use:zoom
-                                class="w-full h-full object-cover rounded-2xl"
-                                style={isDragging
-                                    ? "pointer-events: none;"
-                                    : ""}
-                            />
-                        {:else if el.type == "video"}
-                            <!-- svelte-ignore a11y-media-has-caption -->
-                            <video
-                                controls
-                                class="w-full h-full object-cover rounded-2xl"
-                            >
-                                <source src={el.src} />
-                            </video>
-                        {:else if el.type == "audio"}
-                            <audio
-                                controls
-                                class="w-full h-full object-cover rounded-2xl"
-                            >
-                                <source src={el.src} type={el.type} />
-                            </audio>
-                        {/if}
-                        <button
-                            class="absolute btn btn-circle btn-error btn-sm delete-card"
-                            use:clicksound={{
-                                sound: "/media/delete-sound.wav",
-                            }}
-                            on:click={(e) => deleteElement(el)}
-                            ><i class="fal fa-skull-crossbones" /></button
-                        >
+                        </div>
                         {#if el.hint && el.hint.trim().length > 0}
                             <button
-                                class="absolute btn btn-circle btn-xs btn-outline btn-info hint-btn"
+                                class="btn btn-circle btn-xs btn-outline btn-info absolute top-1 left-1"
                                 use:tooltip={{ content: el.hint }}
                                 on:click={(e) => {
-                                    editCardHint(el);
-                                }}
-                                ><i class="far fa-info" />
-                            </button>
-                        {:else}
-                            <button
-                                class="absolute btn btn-circle btn-xs btn-outline hint-btn hidden text-base-content"
-                                on:click={(e) => {
-                                    editCardHint(el);
+                                    editCardHint(e, el);
                                 }}
                                 ><i class="far fa-info" />
                             </button>
                         {/if}
+                        {#if !el.isEditing && el.tts?.enabled}
+                            <button
+                                class="btn btn-circle btn-info btn-xs btn-outline text-info absolute bottom-1 right-1"
+                                on:click={(e) =>
+                                    alert("text to speech mal irgendwann")}
+                            >
+                                <i class="far fa-ear" />
+                            </button>
+                        {/if}
+
+                        <div
+                            class="absolute right-0 top-0 user-card-actions"
+                            style="z-index:{zIndex + 1};"
+                        >
+                            <div class="dropdown dropdown-end">
+                                <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+                                <!-- svelte-ignore a11y-label-has-associated-control -->
+                                <label
+                                    tabindex="0"
+                                    class="btn btn-xs btn-circle btn-ghost"
+                                >
+                                    <i class="far fa-ellipsis-v" />
+                                </label>
+                                <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+                                <div
+                                    tabindex="0"
+                                    class="card compact dropdown-content z-[1] shadow bg-base-100 rounded-box w-64"
+                                >
+                                    <ul
+                                        class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52"
+                                    >
+                                        <!-- svelte-ignore a11y-missing-attribute -->
+                                        <li>
+                                            <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                            <!-- svelte-ignore a11y-no-static-element-interactions -->
+                                            <a
+                                                class="text-info"
+                                                on:click={(e) => {
+                                                    editCardHint(e, el);
+                                                }}
+                                                >{$t("quiz.hint")}
+                                                {$t(
+                                                    !el.hint
+                                                        ? "core.add"
+                                                        : "core.change"
+                                                )}</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                            <!-- svelte-ignore a11y-no-static-element-interactions -->
+                                            <!-- svelte-ignore a11y-missing-attribute -->
+                                            <a
+                                                class="text-warning"
+                                                on:click={(e) => {
+                                                    editCardFeedback(e, el);
+                                                }}
+                                                >{$t("quiz.feedback")}
+                                                {$t(
+                                                    !el.feedback
+                                                        ? "core.add"
+                                                        : "core.change"
+                                                )}</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                            <!-- svelte-ignore a11y-no-static-element-interactions -->
+                                            <!-- svelte-ignore a11y-missing-attribute -->
+                                            <a
+                                                class="text-error"
+                                                use:clicksound={{
+                                                    sound: "/media/delete-sound.wav",
+                                                }}
+                                                on:click={(e) => {
+                                                    deleteElement(el);
+                                                }}
+                                                >{$t(
+                                                    "quiz.groupassignment.deleteCard"
+                                                )}</a
+                                            >
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 {/if}
             {/each}
@@ -592,20 +786,10 @@
         display: inline-block;
         word-break: break-word;
     }
-    .hint-btn {
-        position: absolute;
-        left: 0.5rem;
-        top: 0.5rem;
-    }
-    .delete-card {
-        position: absolute;
-        top: 0px;
-        right: 0px;
-        transition: all 0.2s;
+    .user-card-actions {
         display: none;
     }
-    .user-card:hover .delete-card,
-    .user-card:hover .hint-btn {
+    .user-card:hover .user-card-actions {
         display: block;
     }
     .edit-group {

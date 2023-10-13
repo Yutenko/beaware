@@ -1,5 +1,5 @@
 <script>
-    import { GroupAssignmentEmbed, GroupAssignmentList } from "$components";
+    import { GroupAssignmentEmbed } from "$components";
     import { t } from "$lib/translations";
     import Quiz from "../shared";
 
@@ -9,7 +9,6 @@
             groups = data.groups;
         },
     });
-    
 </script>
 
 <div class="container mx-auto flex flex-col items-center setup-container">
@@ -19,14 +18,13 @@
             class="btn btn-primary self-start"
             on:click={Quiz.sender.api.addContainer}
             ><i class="fas fa-plus" />{$t(
-                "quiz.pairassignment.addCategory"
+                "quiz.groupassignment.addCategory"
             )}</button
         >
         <button class="btn btn-primary self-end"
             ><i class="fas fa-gamepad" />{$t("quiz.play")}</button
         >
     </div>
-    <GroupAssignmentList {groups} />
 </div>
 
 <style>

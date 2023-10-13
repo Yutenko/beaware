@@ -1,8 +1,16 @@
 <script>
     import { t } from "$lib/translations";
+    import { createEventDispatcher } from "svelte";
 
-    export let handleTextOption;
-    export let handleMediaOption;
+    const dispatch = createEventDispatcher();
+
+    function handleTextOption(e) {
+        dispatch("click:text");
+    }
+    function handleMediaOption(e) {
+        dispatch("click:media");
+    }
+
     export let description = false;
 </script>
 
@@ -14,8 +22,8 @@
     {/if}
     <div class="join justify-center">
         <button class="btn btn-accent join-item" on:click={handleTextOption}
-            >{$t("core.fileuploader.text")} </button
-        >
+            >{$t("core.fileuploader.text")}
+        </button>
         <button class="btn btn-accent join-item" on:click={handleMediaOption}
             >{$t("core.fileuploader.media")}</button
         >

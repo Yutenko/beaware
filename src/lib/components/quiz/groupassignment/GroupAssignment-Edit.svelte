@@ -20,6 +20,7 @@
     let openFeedbackModal = false;
     let innerHeight = 0;
     let innerWidth = 0;
+    let cardWidth = 0;
     let orientation;
     let oldOrientation;
     let groups = [];
@@ -33,12 +34,17 @@
     let startX;
     let startY;
     let isDragging = false;
+    let groupCounter = 0;
 
     const MIN_GROUPS = 2;
     const MAX_GROUPS = 6;
     const MAX_ELEMENTS = 20;
 
     const positions = {
+        0: {
+            landscape: { rows: 1, span: [6] },
+            portrait: { rows: 1, span: [6] },
+        },
         1: {
             landscape: { rows: 1, span: [6] },
             portrait: { rows: 1, span: [6] },
@@ -156,7 +162,7 @@
         groups = [
             ...groups,
             {
-                id: groups.length,
+                id: groupCounter++,
                 type: null,
                 src: null,
                 isEditing: true,
@@ -177,6 +183,7 @@
         if (groups.length - 1 < MIN_GROUPS) return;
 
         groups = groups.filter((group) => group.id !== g.id);
+
         distributeCards();
     }
     function addElement(group) {
@@ -269,7 +276,7 @@
 
         let temp = [];
         for (let index = 0; index < groups.length; index++) {
-            const backgroundDiv = document.querySelector(`#group-${index}`);
+            const backgroundDiv = document.querySelector(`#group-${groups[index].id}`);
             const backgroundRect = backgroundDiv.getBoundingClientRect();
             const isOverMe =
                 clientX >= backgroundRect.left &&
@@ -278,7 +285,7 @@
                 clientY <= backgroundRect.bottom;
             temp.push(isOverMe);
             if (isOverMe) {
-                latestGroup = index;
+                latestGroup = groups[index].id;
             }
         }
         isDragOverMe = temp;
@@ -367,13 +374,32 @@
         updateChild,
     });
 
-    let parent;
+    function resizeUserCard() {
+        if (groups.length === 0) return;
 
-    // we start with 2 groups always and inform the parent about it
-    // consequent adds are updated by the parent automatically
-    addGroup();
-    addGroup();
-    onMount(Quiz.receiver.updateParent);
+        // padding auch anpassen
+        // height auch anpassen?
+        // TODO: reassign groups on delete group
+
+        const columns = groups.length;
+        const container = document.querySelector("#group-0");
+        const containerWidth = container.clientWidth;
+        cardWidth = containerWidth / columns;
+    }
+
+    onMount(() => {
+        // we start with 2 groups always and inform the parent about it
+        // consequent adds are updated by the parent automatically
+        addGroup();
+        addGroup();
+
+        Quiz.receiver.updateParent();
+
+        window.addEventListener("resize", resizeUserCard);
+        return () => {
+            window.removeEventListener("resize", resizeUserCard);
+        };
+    });
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
@@ -457,17 +483,17 @@
                 i
             ]} relative {isDragOverMe[i] ? 'bg-red-600' : ''} border group"
             style="background-color:{g.backgroundColor}"
-            id="group-{i}"
+            id="group-{g.id}"
         >
             <div
                 class="absolute top-0 left-0 w-full h-full flex items-center justify-center"
             >
                 {#if !g.type && g.isEditing}
                     <FileTypeOptions
-                        handleTextOption={(e) => {
+                        on:click:text={(e) => {
                             editGroupText(e, g);
                         }}
-                        handleMediaOption={(e) => {
+                        on:click:media={(e) => {
                             onOpenFileUploader(e);
                         }}
                         description={$t("quiz.groupassignment.chooseFileType")}
@@ -611,15 +637,15 @@
                 <i class="fal fa-plus" />
             </button>
 
-            {#each elements as el}
+            {#each elements as el, j}
                 {#if el.group == g.id}
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <div
-                        id="user-card-{i}"
+                        id="user-card-{j}"
                         class="absolute card bg-white shadow border cursor-grab user-card display-inline-block {el.feedback
-                            ? 'shadow-warning'
+                            ? 'shadow-warning shadow-md'
                             : ''}"
-                        style="left:{el.x}; top:{el.y};z-index: {el.zIndex};opacity: {g.isEditing
+                        style="left:{el.x}; top:{el.y};z-index: {el.zIndex};width:{cardWidth}px;opacity: {g.isEditing
                             ? 0.3
                             : 1};"
                         use:draggable={{
@@ -643,10 +669,10 @@
                         <div class="w-full h-full relative inline-block">
                             {#if !el.type}
                                 <FileTypeOptions
-                                    handleTextOption={(e) => {
+                                    on:click:text={(e) => {
                                         editCardText(e, el);
                                     }}
-                                    handleMediaOption={(e) => {
+                                    on:click:media={(e) => {
                                         onOpenFileUploader(e, el);
                                     }}
                                 />
@@ -656,7 +682,7 @@
                                     class="w-full user-text"
                                     use:focus
                                     use:resizetext={{
-                                        parentId: "user-card-" + i,
+                                        parentId: "user-card-" + j,
                                     }}
                                     use:linkify
                                     on:mousedown={(e) => editCardText(e, el)}
@@ -711,7 +737,7 @@
                         </div>
                         {#if el.hint && el.hint.trim().length > 0}
                             <button
-                                class="btn btn-circle btn-xs btn-outline btn-info absolute top-1 left-1"
+                                class="btn btn-circle btn-xs btn-outline btn-info absolute top-2 left-2"
                                 use:tooltip={{ content: el.hint }}
                                 on:click={(e) => {
                                     editCardHint(e, el);
@@ -721,7 +747,7 @@
                         {/if}
                         {#if !el.isEditing && el.tts?.enabled}
                             <button
-                                class="btn btn-circle btn-info btn-xs btn-outline text-info absolute bottom-1 right-1"
+                                class="btn btn-circle btn-info btn-xs btn-outline text-info absolute bottom-2 right-2"
                                 on:click={(e) =>
                                     alert("text to speech mal irgendwann")}
                             >
@@ -816,8 +842,8 @@
 
 <style>
     .user-card {
-        max-width: 30vmin;
         min-width: 200px;
+        max-width: 50%;
         min-height: 50px;
         max-height: 30vmin;
         padding: 1.7em;

@@ -22,7 +22,7 @@
     }
 
     export let description = false;
-    export let color = "btn-accent";
+    export let color = "btn-primary";
     export let textText = $t("core.fileuploader.text");
     export let mediaText = $t("core.fileuploader.media");
     export let imageText = $t("core.fileuploader.image");

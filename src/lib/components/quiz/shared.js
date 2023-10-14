@@ -7,8 +7,7 @@ const messages = {
     RESET_CONTAINER: 'reset-container',
     ADD_ELEMENT: 'add-element',
     REMOVE_ELEMENT: 'remove-element',
-    UPDATE_PARENT: 'update-parent',
-    UPDATE_CHILD: 'update-child'
+    UPDATE_PARENT: 'update-parent'
 }
 
 const Quiz = {
@@ -16,7 +15,7 @@ const Quiz = {
     receiver: {
         init: (options) => {
             if (browser && options && Object.keys(options).length > 0) {
-                const { addContainer, removeContainer, resetContainer, addElement, removeElement, updateParent, updateChild } = options;
+                const { addContainer, removeContainer, resetContainer, addElement, removeElement, updateParent } = options;
                 Quiz.receiver._updateFn = updateParent;
 
                 window.addEventListener('message', function (event) {
@@ -33,8 +32,6 @@ const Quiz = {
                             addElement(message.data);
                         } else if (message.cmd === messages.REMOVE_ELEMENT) {
                             removeElement(message.data);
-                        } else if (message.cmd === messages.UPDATE_CHILD) {
-                            updateChild(message.data);
                         } else if (message.cmd === messages.UPDATE_PARENT) {
                             return Quiz.receiver.updateParent();
                         }
@@ -45,7 +42,8 @@ const Quiz = {
             }
         },
         updateParent: () => {
-            Quiz.receiver._send({ cmd: messages.UPDATE_PARENT, data: Quiz.receiver._updateFn() });
+            if (Quiz.receiver._updateFn)
+                Quiz.receiver._send({ cmd: messages.UPDATE_PARENT, data: Quiz.receiver._updateFn() });
         },
         _send: (options) => {
             window.parent.postMessage(JSON.stringify(options), "*")

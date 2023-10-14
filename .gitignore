@@ -2,7 +2,8 @@
 node_modules
 /build
 /.svelte-kit
-/static/media
+/static/uploads
+/static/quiz
 /package
 .env
 .env.*

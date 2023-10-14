@@ -2,11 +2,8 @@
     "quiz": "quiz",
     "hint": "Hiweis",
     "addHintDescription": "Du kannst hier zusätzliche Informationen hinzufügen, die nachher als Tooltip hinzugefügt werden.",
-    "feedback": "Feedback",
-    "addFeedbackDescription": "Du kannst hier ein Feedback hinzufügen, das am Ende des Quiz' angezeigt wird.",
     "groupassignment": {
-        "addCategory": "Kategorie hinzufügen",
-        "category": "Kategorie",
+        "addGroup": "Gruppe hinzufügen",
         "chooseFileType": "Kennzeichne die Gruppe mit einem Hintergrundtext oder einem Hintergrundbild",
         "changeBackgroundImage": "Hintergrundbild ändern",
         "changeBackgroundText": "Hintergrundtext ändern",
@@ -14,10 +11,22 @@
         "resetBackground": "Hintergrund zurücksetzen",
         "deleteGroup": "Gruppe löschen",
         "deleteCard": "Karte löschen",
-        "backgroundText":"Hintergrundtext",
-        "backgroundImage":"Hintergrundbild"
+        "backgroundText": "Hintergrundtext",
+        "backgroundImage": "Hintergrundbild"
     },
+    "title": "Titel",
+    "task": "Aufgabenstellung",
+    "taskDescription": "Wird am Anfang des Quiz' angezeigt, wenn vorhanden",
     "tts": "vorlesen",
     "play": "spielen",
-    "color": "Farbe"
+    "color": "Farbe",
+    "feedback": {
+        "title": "Feedback",
+        "add": "Feedback hinzufügen",
+        "description": "Du kannst hier ein Feedback hinzufügen, das am Ende des Quiz' angezeigt wird.",
+        "basedOnSolution": "Feedback nach Lösungsgrad",
+        "basedOnSolutionDescription": "Wird am Ende des Quiz' angezeigt, wenn vorhanden. Du kannst auf den Lösungsgrad reagieren, indem Du mehrere Feedbacks z.B. bei 50% und bei 100%, angibst.",
+        "solved": "gelöst"
+    },
+    "save":"Quiz speichern"
 }

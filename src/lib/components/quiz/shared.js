@@ -7,7 +7,8 @@ const messages = {
     RESET_CONTAINER: 'reset-container',
     ADD_ELEMENT: 'add-element',
     REMOVE_ELEMENT: 'remove-element',
-    UPDATE_PARENT: 'update-parent'
+    UPDATE_PARENT: 'update-parent',
+    INITIAL_DATA: 'initial-data'
 }
 
 const Quiz = {
@@ -15,7 +16,7 @@ const Quiz = {
     receiver: {
         init: (options) => {
             if (browser && options && Object.keys(options).length > 0) {
-                const { addContainer, removeContainer, resetContainer, addElement, removeElement, updateParent } = options;
+                const { addContainer, removeContainer, resetContainer, addElement, removeElement, updateParent, initalData } = options;
                 Quiz.receiver._updateFn = updateParent;
 
                 window.addEventListener('message', function (event) {
@@ -39,6 +40,11 @@ const Quiz = {
                         Quiz.receiver.updateParent();
                     }
                 });
+
+                // send initial data
+                if (initalData) {
+                    Quiz.receiver._send({ cmd: messages.INITIAL_DATA, data: JSON.stringify(initalData) });
+                }
             }
         },
         updateParent: () => {
@@ -56,7 +62,7 @@ const Quiz = {
         init: (options) => {
             if (browser) {
 
-                const { onUpdate } = options;
+                const { onUpdate,onInitalData } = options;
 
                 window.addEventListener('message', function (event) {
                     if (event.data) {
@@ -64,6 +70,8 @@ const Quiz = {
 
                         if (message.cmd === messages.UPDATE_PARENT) {
                             onUpdate(JSON.parse(message.data));
+                        } else if (message.cmd === messages.INITIAL_DATA) {
+                            onInitalData(JSON.parse(message.data));
                         }
                     }
                 });

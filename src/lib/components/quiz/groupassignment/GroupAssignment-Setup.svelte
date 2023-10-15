@@ -3,8 +3,8 @@
     import { t } from "$lib/translations";
     import Quiz from "../shared";
     import { enhance } from "$app/forms";
+    import { page } from "$app/stores";
 
-    //export let data;
     let title = "";
     let task = "";
     let feedbacks = {};
@@ -31,9 +31,12 @@
         if (trimmed.length === 0) delete feedbacks[feedbacksPercentage];
     }
 
-    function updateState() {}
-
     Quiz.sender.init({
+        onInitalData: (data) => {
+            if (data.title) title = data.title;
+            if (data.task) task = data.task;
+            if (data.feedbacks) feedbacks = data.feedbacks;
+        },
         onUpdate: (data) => {
             iframeData = data;
         },
@@ -70,7 +73,7 @@
 <div
     class="container mx-auto flex flex-col items-center setup-container max-w-6xl"
 >
-    <GroupAssignmentEmbed mode={"edit"} />
+    <GroupAssignmentEmbed />
 
     <div class="flex w-full justify-between mt-5 mb-5">
         <button

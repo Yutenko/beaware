@@ -1,8 +1,10 @@
 <script>
     import { GroupAssignmentEmbed } from "$components";
     export let data;
+
+    let { type } = data.params;
 </script>
 
-{#if data.params.type == 1}
-    <GroupAssignmentEmbed mode={data.mode} />
+{#if type == 1}
+    <GroupAssignmentEmbed />
 {/if}

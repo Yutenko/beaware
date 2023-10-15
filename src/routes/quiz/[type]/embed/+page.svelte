@@ -5,7 +5,7 @@
 </script>
 
 {#if data.mode === "edit"}
-    <GroupAssignmentEdit />
+    <GroupAssignmentEdit gamestate={data.gamestate} />
 {:else}
-    <GroupAssignmentPlay />
+    <GroupAssignmentPlay gamestate={data.gamestate} />
 {/if}

@@ -15,6 +15,8 @@
         clicksound,
     } from "$lib/actions";
 
+    export let gamestate;
+
     let openFileuploader = false;
     let openHintModal = false;
     let openFeedbackModal = false;
@@ -81,7 +83,7 @@
         oldOrientation = orientation;
 
         if (innerHeight < 400 || innerHeight < 300) {
-            console.log("show fullscreen, you cannot play on this size");
+            //console.log("show fullscreen, you cannot play on this size");
         }
     }
 
@@ -171,7 +173,7 @@
         updateGroups(g);
     }
 
-    function addGroup() {
+    function addGroup(serverGroup) {
         if (groups.length + 1 > MAX_GROUPS) return;
         const colors = [
             "#66cdaa",
@@ -186,10 +188,12 @@
             ...groups,
             {
                 id: groupCounter++,
-                type: null,
-                src: null,
+                type: serverGroup?.type,
+                src: serverGroup?.src,
                 isEditing: true,
-                backgroundColor: colors[groupCounter % colors.length] + "40",
+                backgroundColor: serverGroup?.backgroundColor
+                    ? serverGroup?.backgroundColor
+                    : colors[groupCounter % colors.length] + "40",
             },
         ];
 
@@ -211,7 +215,7 @@
         updateGroups(g);
         distributeCards();
     }
-    function addElement(group) {
+    function addElement(group, serverElement) {
         if (elements.length + 1 > MAX_ELEMENTS) return;
 
         const { x, y } = getCardPosition(group);
@@ -224,8 +228,8 @@
                 x,
                 y,
                 zIndex,
-                type: null,
-                src: null,
+                type: serverElement?.type,
+                src: serverElement?.src,
                 isEditing: false,
             },
         ];
@@ -360,7 +364,7 @@
                     temp.push({
                         src: el.src,
                         type: el.type,
-                        group: el.group.id,
+                        group: el.id,
                         hint: el.hint,
                         feedback: el.feedback,
                     });
@@ -380,6 +384,7 @@
             }
             return temp;
         }
+
         const data = {
             elements: sanatizeElements(),
             groups: sanatizeGroups(),
@@ -402,11 +407,32 @@
         };
     }
 
-    onMount(() => {
-        // we start with 2 groups always and inform the parent about it
-        // consequent adds are updated by the parent automatically
-        for (let i = 0; i < MIN_GROUPS; i++) addGroup();
+    function loadGamestate(gamestate) {
+        if (gamestate && Object.keys(gamestate).length > 0) {
+            if (gamestate.groups) {
+                for (let i = 0; i < gamestate.groups.length; i++) {
+                    addGroup(groups[i]);
+                }
+            }
+            if (gamestate.elements) {
+                for (let i = 0; i < gamestate.elements.length; i++) {
+                    addElement(
+                        groups[gamestate.elements[i].group.id],
+                        gamestate.elements[i]
+                    );
+                }
+            }
+        } else {
+            // if there is no gamestate to load, initialize with MIN_GROUPS groups
+            for (let i = 0; i < MIN_GROUPS; i++) addGroup();
+        }
+    }
 
+    onMount(() => {
+        // if we received a gamestate, load it
+        loadGamestate(gamestate);
+
+        // init sender / receiver communication via postmessage
         Quiz.receiver.init({
             addContainer: addGroup,
             removeContainer: deleteGroup,
@@ -414,8 +440,14 @@
             addElement,
             removeElement: deleteElement,
             updateParent: getQuizData,
+            initalData: {
+                task: gamestate?.task,
+                title: gamestate?.title,
+                feedbacks: gamestate?.feedbacks,
+            },
         });
 
+        // update the parent once
         Quiz.receiver.updateParent();
 
         // has to be top window, because we can be in an iframe
@@ -786,8 +818,8 @@
                                 class="btn btn-circle btn-info btn-xs btn-outline text-info absolute bottom-2 right-2"
                                 on:click={(e) => {
                                     var msg = new SpeechSynthesisUtterance();
-                                    msg.text = currentElement.src
-                                    msg.lang = "de"
+                                    msg.text = currentElement.src;
+                                    msg.lang = "de";
                                     window.speechSynthesis.speak(msg);
                                 }}
                             >

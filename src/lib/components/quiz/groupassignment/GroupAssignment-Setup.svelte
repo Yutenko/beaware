@@ -48,6 +48,7 @@
             if (data.title) title = data.title;
             if (data.task) task = data.task;
             if (data.feedbacks) feedbacks = data.feedbacks;
+            selectFeedback(100);
         },
         onUpdate: (data) => {
             iframeData = data;

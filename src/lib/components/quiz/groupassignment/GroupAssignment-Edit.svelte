@@ -5,6 +5,12 @@
     import { t } from "$lib/translations";
     import Quiz from "../shared";
     import { onMount } from "svelte";
+    import {
+        MIN_GROUPS,
+        MAX_GROUPS,
+        MAX_ELEMENTS,
+        POSITIONS,
+    } from "./constants.json";
 
     import {
         resizetext,
@@ -39,41 +45,6 @@
     let isDragging = false;
     let groupCounter = 0;
     let elementCounter = 0;
-
-    const MIN_GROUPS = 2;
-    const MAX_GROUPS = 6;
-    const MAX_ELEMENTS = 20;
-
-    const positions = {
-        0: {
-            landscape: { rows: 1, span: [6] },
-            portrait: { rows: 1, span: [6] },
-        },
-        1: {
-            landscape: { rows: 1, span: [6] },
-            portrait: { rows: 1, span: [6] },
-        },
-        2: {
-            landscape: { rows: 1, span: [3, 3] },
-            portrait: { rows: 2, span: [6, 6] },
-        },
-        3: {
-            landscape: { rows: 1, span: [2, 2, 2] },
-            portrait: { rows: 3, span: [6, 6, 6] },
-        },
-        4: {
-            landscape: { rows: 2, span: [3, 3, 3, 3] },
-            portrait: { rows: 2, span: [3, 3, 3, 3] },
-        },
-        5: {
-            landscape: { rows: 2, span: [2, 2, 2, 3, 3] },
-            portrait: { rows: 3, span: [3, 3, 3, 3, 6] },
-        },
-        6: {
-            landscape: { rows: 2, span: [2, 2, 2, 2, 2, 2] },
-            portrait: { rows: 3, span: [3, 3, 3, 3, 3, 3] },
-        },
-    };
 
     $: {
         orientation = innerHeight > innerWidth ? "portrait" : "landscape";
@@ -234,6 +205,8 @@
                 type: serverElement?.type,
                 src: serverElement?.src,
                 isEditing: false,
+                hint: serverElement?.hint,
+                feedback: serverElement?.feedback,
                 tts: serverElement?.tts,
             },
         ];
@@ -538,16 +511,16 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
     on:mousemove={handleMouseMove}
-    class="grid grid-cols-6 grid-rows-{positions[groups.length][orientation]
+    class="grid grid-cols-6 grid-rows-{POSITIONS[groups.length][orientation]
         .rows} overflow-hidden h-screen"
 >
     {#each groups as g, i}
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div
-            class="col-span-{positions[groups.length][orientation].span[
+            class="col-span-{POSITIONS[groups.length][orientation].span[
                 i
-            ]} relative {isDragOverMe[i] ? 'bg-red-600' : ''} group"
-            style="background-color:{g.backgroundColor}"
+            ]} relative group"
+            style="background-color:{g.backgroundColor};"
             id="group-{g.id}"
             on:mouseenter={(e) => {
                 currentGroup = g;
@@ -556,6 +529,11 @@
         >
             <div
                 class="absolute top-0 left-0 w-full h-full flex items-center justify-center"
+                style="opacity:{isDragOverMe[i] || !g.type
+                    ? 1
+                    : 0.5};background:{isDragOverMe[i] || !g.type
+                    ? 'rgba(0,0,0,.2)'
+                    : 'unset'}"
             >
                 {#if !g.type && g.isEditing}
                     <FileTypeOptions
@@ -940,7 +918,6 @@
         display: inline-block;
         word-break: break-word;
     }
-
     .user-card:hover .user-card-actions,
     .group:hover .group-actions,
     .group:hover .add-element {

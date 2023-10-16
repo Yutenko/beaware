@@ -1,11 +1,16 @@
 <script>
     import { enhance } from "$app/forms";
-    import { t } from '$lib/translations';
+    import { t } from "$lib/translations";
     import { page } from "$app/stores";
 
     export let openFileuploader = false;
     export let handleClose = () => {};
     let acceptedFiles = [];
+
+    let dialog;
+    $: if (dialog && openFileuploader) {
+        dialog.showModal();
+    }
 
     function onChange(e) {
         const files = e.target.files;
@@ -19,11 +24,17 @@
         }
     }
 
-    let dialog;
-    $: if (dialog && openFileuploader) {
-        dialog.showModal();
-    }
+    function callback(data) {
+        dialog.close();
 
+        if (data.target) {
+            data = {
+                url: data.target.src,
+                type: "image",
+            };
+        }
+        handleClose(data);
+    }
 </script>
 
 <dialog class="modal" bind:this={dialog}>
@@ -33,11 +44,8 @@
             use:enhance={({ formElement }) => {
                 return async ({ result, update }) => {
                     if (result.type == "success") {
-                        console.log(result.data);
-                        
                         formElement.reset();
-                        dialog.close();
-                        handleClose(result.data);
+                        callback(result.data);
                     }
                     update();
                 };
@@ -68,8 +76,10 @@
                 >
             {/if}
         </form>
+        <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
         {#each acceptedFiles as file}
-            <img src={file} class=" w-40" alt={file.name} />
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <img src={file} class=" w-40" alt={file.name} on:click={callback} />
         {/each}
     </div>
 </dialog>

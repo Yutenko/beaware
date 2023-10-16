@@ -129,37 +129,42 @@ export const zoom = (node) => {
 
     function handleZoom() {
         if (isZoomed) {
-            // Wenn das Bild maximiert wird, speichern Sie seine ursprüngliche Größe
             originalWidth = node.width;
             originalHeight = node.height;
 
-
-            // Setzen Sie die Größe des Bildes auf die Bildschirmgröße
             node.style.width = '100vw';
             node.style.height = '100vh';
-            node.style.objectFit = 'contain'; // Anpassen des Skalierungsverhaltens
+            node.style.objectFit = 'contain'; 
             node.style.position = 'fixed';
             node.style.top = '0';
             node.style.left = '0';
             node.style.transform = 'translate(0, 0)';
             node.style.zIndex = '9999';
             node.style.cursor = "zoomout";
+            node.style.background = 'rgba(0,0,0,.6)';
+            node.style.borderTopLeftRadius = '0px';
+            node.style.borderTopRightRadius = '0px';
+            node.style.borderBottomLeftRadius = '0px';
+            node.style.borderBottomRightRadius = '0px';
 
-            // Ausblenden Sie den Hintergrund
             document.body.style.overflow = 'hidden';
             document.body.appendChild(node);
         } else {
-            // Wenn das Bild wiederhergestellt wird, setzen Sie die ursprüngliche Größe und Position zurück
             node.style.width = originalWidth + 'px';
             node.style.height = originalHeight + 'px';
-            node.style.objectFit = 'initial'; // Setzen Sie es auf 'cover' oder 'contain', je nach Bedarf
+            node.style.objectFit = 'initial'; 
             node.style.position = 'static';
             node.style.transform = 'none';
             node.style.zIndex = 'auto';
             node.style.cursor = "zoomin";
+            node.style.removeProperty('background')
+            node.style.removeProperty('border-top-left-radius')
+            node.style.removeProperty('border-top-right-radius')
+            node.style.removeProperty('border-bottom-left-radius')
+            node.style.removeProperty('border-bottom-right-radius')
+
             parent.appendChild(node);
 
-            // Blenden Sie den Hintergrund wieder ein
             document.body.style.overflow = 'auto';
         }
         isZoomed = !isZoomed;

@@ -3,18 +3,19 @@
     import { t } from "$lib/translations";
     import Quiz from "../shared";
     import { enhance } from "$app/forms";
-    import { page } from "$app/stores";
 
     let title = "";
     let task = "";
     let feedbacks = {};
-    let feedbacksPercentage = 50;
     let currentFeedback;
     let iframeData = {};
 
     $: state = JSON.stringify(
         Object.assign(iframeData, { title, task, feedbacks })
     );
+
+    $: feedbacksPercentage =
+        Object.keys(feedbacks).length === 0 ? 100 : feedbacksPercentage;
 
     function selectFeedback(perc) {
         currentFeedback = feedbacks[perc];
@@ -23,6 +24,17 @@
 
     function handleFeedbacksPercentage(perc) {
         currentFeedback = feedbacks[feedbacksPercentage];
+        Object.keys(feedbacks).forEach((key) => {
+            if (feedbacks[key] === -1 && key !== perc) {
+                delete feedbacks[key];
+            }
+        })
+    }
+
+    function markFeedbackPercentage() {
+        if (!feedbacks[feedbacksPercentage]) {
+            feedbacks[feedbacksPercentage] = -1;
+        }
     }
 
     function handleSolutionBasedFeedback(e) {
@@ -102,18 +114,21 @@
 </div>
 
 <div class="container mx-auto max-w-6xl">
-    <h4 class="text-xl">{$t("quiz.feedback.basedOnSolution")}</h4>
+    <h4 class="text-xl">{$t("quiz.feedback.title")}</h4>
     <p class="label-text">{$t("quiz.feedback.basedOnSolutionDescription")}</p>
 
-    <input
-        type="range"
-        min="0"
-        max="100"
-        bind:value={feedbacksPercentage}
-        class="range range-primary mt-4 mb-4"
-        on:input={handleFeedbacksPercentage}
-    />
+    <div class="mb-6" />
+
     {#if Object.keys(feedbacks).length > 0}
+        <input
+            type="range"
+            min="0"
+            max="100"
+            bind:value={feedbacksPercentage}
+            class="range range-primary mt-4 mb-4"
+            on:input={handleFeedbacksPercentage}
+            on:change={markFeedbackPercentage}
+        />
         <div
             class="w-full flex justify-between text-xs px-2 relative h-16"
             style="margin-left:-25px"
@@ -125,7 +140,9 @@
                 <!-- svelte-ignore a11y-no-static-element-interactions -->
                 <div
                     class="btn btn-circle btn-outline absolute"
-                    style="left:{key}%;"
+                    style="left:{key}%;opacity:{feedbacks[key] === -1
+                        ? 0.2
+                        : 1};"
                     on:click={(e) => {
                         selectFeedback(key);
                     }}
@@ -137,7 +154,11 @@
     {/if}
     <textarea
         class="textarea textarea-bordered w-full textarea-lg"
-        placeholder={`${feedbacksPercentage}% ${$t("quiz.feedback.solved")}`}
+        placeholder={`${$t(
+            feedbacksPercentage === 100
+                ? "quiz.feedback.solved100"
+                : "quiz.feedback.startFrom"
+        )} ${feedbacksPercentage !== 100 ? feedbacksPercentage + "%" : ""}`}
         on:input={handleSolutionBasedFeedback}
         bind:value={currentFeedback}
     />

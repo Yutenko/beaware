@@ -25,8 +25,9 @@
         "add": "Feedback hinzufügen",
         "description": "Du kannst hier ein Feedback hinzufügen, das am Ende des Quiz' angezeigt wird.",
         "basedOnSolution": "Feedback nach Lösungsgrad",
-        "basedOnSolutionDescription": "Wird am Ende des Quiz' angezeigt, wenn vorhanden. Du kannst auf den Lösungsgrad reagieren, indem Du mehrere Feedbacks z.B. bei 50% und bei 100%, angibst.",
-        "solved": "gelöst"
+        "basedOnSolutionDescription": "Wird am Ende des Quiz' angezeigt, wenn vorhanden.",
+        "solved100": "Feedback, wenn alles richtig gelöst wurde",
+        "startFrom": "Feedback ab"
     },
     "save":"Quiz speichern"
 }

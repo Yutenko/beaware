@@ -1,5 +1,4 @@
 
-
 export async function load({ url, params, fetch }) {
     let mode = url.searchParams.get("mode") !== 'null' ? url.searchParams.get("mode") : "";
     let id = url.searchParams.get("id") !== 'null' ? url.searchParams.get("id") : null;

@@ -190,14 +190,16 @@
                 id: groupCounter++,
                 type: serverGroup?.type,
                 src: serverGroup?.src,
-                isEditing: true,
+                isEditing: !(
+                    serverGroup &&
+                    typeof serverGroup.type !== "undefined" &&
+                    typeof serverGroup.src !== "undefined"
+                ),
                 backgroundColor: serverGroup?.backgroundColor
                     ? serverGroup?.backgroundColor
                     : colors[groupCounter % colors.length] + "40",
             },
         ];
-
-        distributeCards();
     }
     function resetGroup(g) {
         let index = groups.findIndex((group) => group.id == g.id);
@@ -218,6 +220,7 @@
     function addElement(group, serverElement) {
         if (elements.length + 1 > MAX_ELEMENTS) return;
 
+        group = typeof group !== "undefined" ? group : serverElement?.group;
         const { x, y } = getCardPosition(group);
         zIndex++;
         elements = [
@@ -231,9 +234,10 @@
                 type: serverElement?.type,
                 src: serverElement?.src,
                 isEditing: false,
+                tts: serverElement?.tts,
             },
         ];
-        updateElements();
+        // updateElements();
         resizeUserCard();
     }
     function deleteElement(el) {
@@ -362,9 +366,10 @@
                 let el = elements[i];
                 if (el.src && el.type) {
                     temp.push({
+                        group: el.group,
                         src: el.src,
                         type: el.type,
-                        group: el.id,
+                        tts: el.tts,
                         hint: el.hint,
                         feedback: el.feedback,
                     });
@@ -411,17 +416,21 @@
         if (gamestate && Object.keys(gamestate).length > 0) {
             if (gamestate.groups) {
                 for (let i = 0; i < gamestate.groups.length; i++) {
-                    addGroup(groups[i]);
+                    addGroup(gamestate.groups[i]);
                 }
             }
-            if (gamestate.elements) {
-                for (let i = 0; i < gamestate.elements.length; i++) {
-                    addElement(
-                        groups[gamestate.elements[i].group.id],
-                        gamestate.elements[i]
-                    );
+
+            // before adding elements to the dom, the groups need to be added as dom elements
+            tick().then(() => {
+                if (gamestate.elements) {
+                    for (let i = 0; i < gamestate.elements.length; i++) {
+                        addElement(
+                            groups[gamestate.elements[i].group.id],
+                            gamestate.elements[i]
+                        );
+                    }
                 }
-            }
+            });
         } else {
             // if there is no gamestate to load, initialize with MIN_GROUPS groups
             for (let i = 0; i < MIN_GROUPS; i++) addGroup();
@@ -566,7 +575,7 @@
                         class="text-black text-center edit-group mt-20 mb-20"
                         contenteditable={true}
                         use:linkify
-                        use:focus
+                        use:focus={g.isEditing}
                         use:resizetext
                         on:blur={() => toggleGroupEdit(g)}
                         on:keyup={(e) => saveGroupText(e, g)}
@@ -748,7 +757,7 @@
                                 <div
                                     contenteditable="true"
                                     class="w-full user-text"
-                                    use:focus
+                                    use:focus={el.isEditing}
                                     use:resizetext={{
                                         parentId: "user-card-" + el.id,
                                     }}

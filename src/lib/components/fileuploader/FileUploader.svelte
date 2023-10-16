@@ -33,6 +33,8 @@
             use:enhance={({ formElement }) => {
                 return async ({ result, update }) => {
                     if (result.type == "success") {
+                        console.log(result.data);
+                        
                         formElement.reset();
                         dialog.close();
                         handleClose(result.data);

@@ -18,8 +18,29 @@ export function clickoutside(node) {
     }
 }
 
-export const focus = (node) => {
-    node.focus()
+export function focus(node, value = true) {
+    let stop = () => { };
+
+    const destroy = () => {
+        stop && stop();
+    };
+
+    const update = (value) => {
+        destroy();
+
+        if (value) {
+            node.focus();
+        } else {
+            node.blur();
+        }
+    };
+
+    update(value);
+
+    return {
+        update,
+        destroy,
+    };
 }
 
 

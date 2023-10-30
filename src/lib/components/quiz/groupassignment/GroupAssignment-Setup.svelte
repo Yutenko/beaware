@@ -18,17 +18,23 @@
         Object.keys(feedbacks).length === 0 ? 100 : feedbacksPercentage;
 
     function selectFeedback(perc) {
+        clearFeedbackMarkers(perc)
         currentFeedback = feedbacks[perc];
         feedbacksPercentage = perc;
     }
 
-    function handleFeedbacksPercentage(perc) {
-        currentFeedback = feedbacks[feedbacksPercentage];
+    function clearFeedbackMarkers(perc) {
         Object.keys(feedbacks).forEach((key) => {
             if (feedbacks[key] === -1 && key !== perc) {
                 delete feedbacks[key];
             }
         })
+        feedbacks = feedbacks
+    }
+
+    function handleFeedbacksPercentage(perc) {
+        currentFeedback = feedbacks[feedbacksPercentage];
+        clearFeedbackMarkers(perc)
     }
 
     function markFeedbackPercentage() {

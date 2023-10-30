@@ -46,6 +46,7 @@
     let groupCounter = 0;
     let elementCounter = 0;
 
+
     $: {
         orientation = innerHeight > innerWidth ? "portrait" : "landscape";
         if (oldOrientation !== orientation) {

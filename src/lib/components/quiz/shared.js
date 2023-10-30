@@ -62,7 +62,7 @@ const Quiz = {
         init: (options) => {
             if (browser) {
 
-                const { onUpdate,onInitalData } = options;
+                const { onUpdate, onInitalData } = options;
 
                 window.addEventListener('message', function (event) {
                     if (event.data) {
@@ -93,9 +93,6 @@ const Quiz = {
             },
             updateParent: () => {
                 Quiz.sender._send({ cmd: messages.UPDATE_PARENT });
-            },
-            updateChild: (data) => {
-                Quiz.sender._send({ cmd: messages.UPDATE_CHILD, data });
             }
         }
     }

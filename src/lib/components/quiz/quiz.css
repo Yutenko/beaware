@@ -13,3 +13,23 @@ body {
 textarea {
     min-height: 10rem !important;
 }
+
+.user-card {
+    min-width: 180px;
+    max-width: 40%;
+    min-height: 50px;
+    max-height: 30vmin;
+    touch-action: none;
+    user-select: none;
+    z-index: 10;
+}
+.user-text {
+    line-height: normal;
+    font-size: 1.5em;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    display: inline-block;
+    word-break: break-word;
+}

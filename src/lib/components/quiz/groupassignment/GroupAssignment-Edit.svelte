@@ -37,7 +37,7 @@
     let isDragOverMe = Array(groups.length).fill(false);
     let zIndex = 0;
     let latestGroup = -1;
-    let currentElement;
+    let currentElement = {};
     let currentGroup;
     let currentActive; // currentElement or currentGroup
     let startX;
@@ -286,18 +286,21 @@
 
         let temp = [];
         for (let index = 0; index < groups.length; index++) {
-            const backgroundDiv = document.querySelector(
-                `#group-${groups[index].id}`
-            );
-            const backgroundRect = backgroundDiv.getBoundingClientRect();
-            const isOverMe =
-                clientX >= backgroundRect.left &&
-                clientX <= backgroundRect.right &&
-                clientY >= backgroundRect.top &&
-                clientY <= backgroundRect.bottom;
-            temp.push(isOverMe);
-            if (isOverMe) {
-                latestGroup = groups[index].id;
+            if (groups[index].id !== latestGroup) {
+                const backgroundDiv = document.querySelector(
+                    `#group-${groups[index].id}`
+                );
+                const backgroundRect = backgroundDiv.getBoundingClientRect();
+                const isOverMe =
+                    clientX >= backgroundRect.left &&
+                    clientX <= backgroundRect.right &&
+                    clientY >= backgroundRect.top &&
+                    clientY <= backgroundRect.bottom;
+                temp.push(isOverMe);
+                if (isOverMe) {
+                    latestGroup = groups[index].id;
+                    console.log(latestGroup);
+                }
             }
         }
         isDragOverMe = temp;
@@ -458,7 +461,7 @@
                 bind:value={currentElement.hint}
                 on:input={updateElements}
             />
-            {#if currentElement.hint?.trim().length > 0}
+            {#if currentElement?.hint?.trim().length > 0}
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <!-- svelte-ignore a11y-no-static-element-interactions -->
                 <div
@@ -901,24 +904,6 @@
 </div>
 
 <style>
-    .user-card {
-        min-width: 180px;
-        max-width: 40%;
-        min-height: 50px;
-        max-height: 30vmin;
-        touch-action: none;
-        user-select: none;
-    }
-    .user-text {
-        line-height: normal;
-        font-size: 1.5em;
-        text-align: center;
-        width: 100%;
-        height: 100%;
-        padding: 10px;
-        display: inline-block;
-        word-break: break-word;
-    }
     .user-card:hover .user-card-actions,
     .group:hover .group-actions,
     .group:hover .add-element {

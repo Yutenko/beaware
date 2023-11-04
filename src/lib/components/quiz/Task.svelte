@@ -17,8 +17,10 @@
 </script>
 
 <button
-    class="btn btn-outline btn-xs absolute top-4 left-4 z-50 rounded-full"
-    style="opacity: {open ? 0 : 1}; transition: opacity 0.5s;"
+    class="btn btn-outline btn-xs absolute top-4 left-4 rounded-full"
+    style="opacity: {open
+        ? 0
+        : 1}; transition: opacity 0.65s;z-index: 9999999999999999"
     on:click={toggleOpen}>{$t("quiz.task")}</button
 >
 <!-- svelte-ignore missing-declaration -->

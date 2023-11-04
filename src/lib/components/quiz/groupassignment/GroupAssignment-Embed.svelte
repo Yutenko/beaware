@@ -1,5 +1,4 @@
 <script>
-    import "../quiz.css";
     import { page } from "$app/stores";
 
     const type = $page.params.type;

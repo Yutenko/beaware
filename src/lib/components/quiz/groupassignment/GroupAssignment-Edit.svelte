@@ -286,21 +286,19 @@
 
         let temp = [];
         for (let index = 0; index < groups.length; index++) {
-            if (groups[index].id !== latestGroup) {
-                const backgroundDiv = document.querySelector(
-                    `#group-${groups[index].id}`
-                );
-                const backgroundRect = backgroundDiv.getBoundingClientRect();
-                const isOverMe =
-                    clientX >= backgroundRect.left &&
-                    clientX <= backgroundRect.right &&
-                    clientY >= backgroundRect.top &&
-                    clientY <= backgroundRect.bottom;
-                temp.push(isOverMe);
-                if (isOverMe) {
-                    latestGroup = groups[index].id;
-                    console.log(latestGroup);
-                }
+            const backgroundDiv = document.querySelector(
+                `#group-${groups[index].id}`
+            );
+            const backgroundRect = backgroundDiv.getBoundingClientRect();
+            const isOverMe =
+                clientX >= backgroundRect.left &&
+                clientX <= backgroundRect.right &&
+                clientY >= backgroundRect.top &&
+                clientY <= backgroundRect.bottom;
+            temp.push(isOverMe);
+            if (isOverMe) {
+                latestGroup = groups[index].id;
+                console.log(latestGroup);
             }
         }
         isDragOverMe = temp;

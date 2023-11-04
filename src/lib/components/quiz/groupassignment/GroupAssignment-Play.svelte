@@ -26,6 +26,8 @@
 
     let openTask = true;
 
+    let startX;
+    let startY;
     let innerHeight = 0;
     let innerWidth = 0;
     let orientation;
@@ -37,6 +39,8 @@
     let latestGroup = -1;
     let isDragOverMe = Array(groups.length).fill(false);
     let currentElementIndex = 0;
+    let currentElement;
+    let card = { width: 0, padding: 0 };
 
     $: {
         orientation = innerHeight > innerWidth ? "portrait" : "landscape";
@@ -49,14 +53,36 @@
         }
     }
 
+    function handleCardMouseDown(e, el) {
+        startX = e.pageX;
+        startY = e.pageY;
+    }
     function handleCardDragStart(e, el) {
+        currentElement = el;
         el.zIndex = zIndex++;
         draggableelement = e.target;
         draggableelement.style.zIndex = el.zIndex;
     }
     function handleCardDragEnd(e, el) {
         draggableelement = null;
-        currentElementIndex = currentElementIndex + 1;  
+        currentElement.group = latestGroup;
+        currentElementIndex = currentElementIndex + 1;
+        isDragOverMe = Array(groups.length).fill(false);
+    }
+    function handleCardMouseUp(e, el) {
+        const delta = 6; // minimal distance between mousedown and mouseup, to confirm dragging
+        const diffX = Math.abs(e.pageX - startX);
+        const diffY = Math.abs(e.pageY - startY);
+
+        if (diffX < delta && diffY < delta) {
+            // counts as a click
+            draggableelement = null;
+        } else {
+            // counts as a drag
+            handleCardDragEnd(e, el);
+        }
+
+        isDragging = false;
     }
     function handleMouseMove(e, el) {
         // prevents children from being triggered by clicking
@@ -71,28 +97,43 @@
 
         let temp = [];
         for (let index = 0; index < groups.length; index++) {
-            if (groups[index].id !== latestGroup) {
-                const backgroundDiv = document.querySelector(
-                    `#group-${groups[index].id}`
-                );
-                const backgroundRect = backgroundDiv.getBoundingClientRect();
-                const isOverMe =
-                    clientX >= backgroundRect.left &&
-                    clientX <= backgroundRect.right &&
-                    clientY >= backgroundRect.top &&
-                    clientY <= backgroundRect.bottom;
-                temp.push(isOverMe);
-                if (isOverMe) {
-                    latestGroup = groups[index].id;
-                    console.log(latestGroup);
-                }
+            const backgroundDiv = document.querySelector(
+                `#group-${groups[index].id}`
+            );
+            const backgroundRect = backgroundDiv.getBoundingClientRect();
+            const isOverMe =
+                clientX >= backgroundRect.left &&
+                clientX <= backgroundRect.right &&
+                clientY >= backgroundRect.top &&
+                clientY <= backgroundRect.bottom;
+            temp.push(isOverMe);
+            if (isOverMe) {
+                latestGroup = groups[index].id;
             }
         }
         isDragOverMe = temp;
     }
+    function resizeUserCard() {
+        const columns = groups.length;
+        const container = document.querySelector("#group-" + groups[0].id);
+        const value = Math.min(container.clientWidth, container.clientHeight);
+        const padding = card.width * 0.04;
+
+        card = {
+            width: Math.ceil(value / columns + 1),
+            padding: padding < 15 ? 15 : padding,
+        };
+    }
 
     onMount(() => {
         Quiz.shuffle(elements);
+
+        resizeUserCard();
+
+        window.addEventListener("resize", resizeUserCard);
+        return () => {
+            window.removeEventListener("resize", resizeUserCard);
+        };
     });
 </script>
 
@@ -100,9 +141,9 @@
 
 <!-- Tailwind can not do dynamic classes, so we have an invisible element, that creates these classes before dynamically putting them into the HTML -->
 <span class="hidden grid-rows-1 grid-rows-2 col-span-2 col-span-3 col-span-6" />
-<Task bind:open={openTask} {title} {task} />
 
 {#if validGamestate}
+    <Task bind:open={openTask} {title} {task} />
     <!-- svelte-ignore missing-declaration -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
@@ -121,6 +162,8 @@
             >
                 <div
                     class="absolute top-0 left-0 w-full h-full flex items-center justify-center z-0"
+                    style="opacity:{isDragOverMe[i] ? 1 : 0.5};
+                        background:{isDragOverMe[i] ? 'rgba(0,0,0,.2)' : 'unset'}"
                 >
                     {#if g.type === "text"}
                         <div
@@ -137,15 +180,18 @@
                 </div>
 
                 {#each elements as el, j}
-                    {#if el.group == g.id}
+                    {#if g.id === 0}
                         <!-- svelte-ignore a11y-click-events-have-key-events -->
                         <div
                             id="user-card-{j}"
                             class="absolute card bg-white shadow border cursor-grab user-card"
-                            style="z-index:{el.zIndex}; display: {currentElementIndex >=
-                            j
+                            style="width:{card.width}px;padding:{card.padding}px;z-index:{el.zIndex}; 
+                            display: {currentElementIndex >= j
                                 ? 'inline-block'
-                                : 'none'};"
+                                : 'none'}; 
+                            opacity: {isDragging && currentElement != el
+                                ? 0.3
+                                : 1};"
                             use:draggable={{
                                 bounds: "body",
                                 ignoreMultitouch: false,
@@ -159,7 +205,12 @@
                             on:neodrag:start={(e) => {
                                 handleCardDragStart(e, el);
                             }}
-                            on:neodrag:end={(e) => handleCardDragEnd(e, el)}
+                            on:mouseup={(e) => {
+                                handleCardMouseUp(e, el);
+                            }}
+                            on:mousedown={(e) => {
+                                handleCardMouseDown(e, el);
+                            }}
                         >
                             <div class="w-full h-full relative inline-block">
                                 {#if el.type == "text"}

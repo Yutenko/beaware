@@ -1,6 +1,6 @@
 {
-    "quiz": "quiz",
-    "hint": "Hiweis",
+    "quiz": "Quiz",
+    "hint": "Hinweis",
     "addHintDescription": "Du kannst hier zusätzliche Informationen hinzufügen, die nachher als Tooltip hinzugefügt werden.",
     "groupassignment": {
         "addGroup": "Gruppe hinzufügen",
@@ -17,8 +17,8 @@
     "title": "Titel",
     "task": "Aufgabenstellung",
     "taskDescription": "Wird am Anfang des Quiz' angezeigt, wenn vorhanden",
-    "tts": "vorlesen",
-    "play": "spielen",
+    "tts": "Vorlesen",
+    "play": "Spielen",
     "color": "Farbe",
     "feedback": {
         "title": "Feedback",
@@ -27,7 +27,33 @@
         "basedOnSolution": "Feedback nach Lösungsgrad",
         "basedOnSolutionDescription": "Wird am Ende des Quiz' angezeigt, wenn vorhanden.",
         "solved100": "Feedback, wenn alles richtig gelöst wurde",
-        "startFrom": "Feedback ab"
+        "startFrom": "Feedback ab",
+        "more": "Individuelle Feedbacks ansehen",
+        "moreDescription": "Es gibt zu einigen Elementen noch weitere Feedbacks, die Du Dir ansehen kannst."
     },
-    "save":"Quiz speichern"
+    "save": "Quiz speichern",
+    "checkSolution": "Lösung überprüfen",
+    "settings": {
+        "title": "Einstellungen",
+        "check": {
+            "title": "Überprüfen",
+            "manual": "manuell",
+            "auto": "automatisch",
+            "instant": "Sofort",
+            "instantDescription": "wird überprüft, sobald ein Element zugeordnet wurde",
+            "end": "Am Ende",
+            "endDescription": "wird überprüft, sobald das Quiz zu Ende ist"
+        },
+        "frequency": {
+            "title": "Häufigkeit",
+            "once": "einmalig",
+            "infinite": "unbegrenzt"
+        },
+        "hints": {
+            "title": "Hinweise",
+            "always": "werden immer angezeigt",
+            "available": "werden bei Aufruf angezeigt",
+            "smart": "werden unterstützend angezeigt"
+        }
+    }
 }

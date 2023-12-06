@@ -1,4 +1,5 @@
 <script>
+    import Hint from "../Hint.svelte";
     import { draggable } from "@neodrag/svelte";
     import { FileUploader, FileTypeOptions, Modal } from "$components/index";
     import { tick } from "svelte";
@@ -287,7 +288,7 @@
         let temp = [];
         for (let index = 0; index < groups.length; index++) {
             const backgroundDiv = document.querySelector(
-                `#group-${groups[index].id}`
+                `#group-${groups[index].id}`,
             );
             const backgroundRect = backgroundDiv.getBoundingClientRect();
             const isOverMe =
@@ -298,7 +299,6 @@
             temp.push(isOverMe);
             if (isOverMe) {
                 latestGroup = groups[index].id;
-                console.log(latestGroup);
             }
         }
         isDragOverMe = temp;
@@ -401,10 +401,12 @@
                     for (let i = 0; i < gamestate.elements.length; i++) {
                         addElement(
                             groups[gamestate.elements[i].group.id],
-                            gamestate.elements[i]
+                            gamestate.elements[i],
                         );
                     }
                 }
+                // update the parent once
+                Quiz.receiver.updateParent();
             });
         } else {
             // if there is no gamestate to load, initialize with MIN_GROUPS groups
@@ -428,6 +430,9 @@
                 task: gamestate?.task,
                 title: gamestate?.title,
                 feedbacks: gamestate?.feedbacks,
+                options: gamestate?.options,
+                groups: gamestate?.groups,
+                elements: gamestate?.elements,
             },
         });
 
@@ -607,7 +612,7 @@
                                         editGroupText(e, g);
                                     }}
                                     >{$t(
-                                        "quiz.groupassignment.changeBackgroundText"
+                                        "quiz.groupassignment.changeBackgroundText",
                                     )}</a
                                 >
                             </li>
@@ -620,7 +625,7 @@
                                         onOpenFileUploader(e);
                                     }}
                                     >{$t(
-                                        "quiz.groupassignment.changeBackgroundImage"
+                                        "quiz.groupassignment.changeBackgroundImage",
                                     )}</a
                                 >
                             </li>
@@ -630,7 +635,7 @@
                                 <!-- svelte-ignore a11y-missing-attribute -->
                                 <a on:click={(e) => {}}
                                     >{$t(
-                                        "quiz.groupassignment.changeBackgroundColor"
+                                        "quiz.groupassignment.changeBackgroundColor",
                                     )}<label
                                         class="btn btn-circle btn-sm btn-ghost"
                                         style="background-color: {g.backgroundColor};"
@@ -655,7 +660,7 @@
                                         resetGroup(g);
                                     }}
                                     >{$t(
-                                        "quiz.groupassignment.resetBackground"
+                                        "quiz.groupassignment.resetBackground",
                                     )}</a
                                 >
                             </li>
@@ -670,7 +675,7 @@
                                             deleteGroup(g);
                                         }}
                                         >{$t(
-                                            "quiz.groupassignment.deleteGroup"
+                                            "quiz.groupassignment.deleteGroup",
                                         )}</a
                                     >
                                 </li>
@@ -793,14 +798,12 @@
                             {/if}
                         </div>
                         {#if el.hint && el.hint.trim().length > 0}
-                            <button
-                                class="btn btn-circle btn-xs btn-outline btn-info absolute top-2 left-2"
-                                use:tooltip={{ content: el.hint }}
+                            <Hint
+                                content={el.hint}
                                 on:click={(e) => {
                                     editCardHint(e, el);
                                 }}
-                                ><i class="far fa-info" />
-                            </button>
+                            />
                         {/if}
                         {#if !el.isEditing && el.tts?.enabled}
                             <button
@@ -852,7 +855,7 @@
                                                 {$t(
                                                     !el.hint
                                                         ? "core.add"
-                                                        : "core.change"
+                                                        : "core.change",
                                                 )}</a
                                             >
                                         </li>
@@ -869,7 +872,7 @@
                                                 {$t(
                                                     !el.feedback
                                                         ? "core.add"
-                                                        : "core.change"
+                                                        : "core.change",
                                                 )}</a
                                             >
                                         </li>
@@ -886,7 +889,7 @@
                                                     deleteElement(el);
                                                 }}
                                                 >{$t(
-                                                    "quiz.groupassignment.deleteCard"
+                                                    "quiz.groupassignment.deleteCard",
                                                 )}</a
                                             >
                                         </li>

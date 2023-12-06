@@ -1,5 +1,9 @@
 <script>
     import Task from "../Task.svelte";
+    import CheckButton from "../CheckButton.svelte";
+    import Hint from "../Hint.svelte";
+    import Feedback from "../Feedback.svelte";
+
     import { draggable } from "@neodrag/svelte";
     import { onMount } from "svelte";
     import Quiz from "../shared";
@@ -23,8 +27,20 @@
     let groups = gamestate.groups;
     let elements = gamestate.elements;
     let feedbacks = gamestate.feedbacks;
+    let result = 0;
+    let options = gamestate.options;
+    $: checkInstant = options.check.auto && options.check.instant;
+    $: checkAtTheEnd = options.check.auto && options.check.end;
+    $: allAssigned = elements.every((element) =>
+        element.hasOwnProperty("assignedGroup"),
+    );
 
+    $: if (allAssigned) {
+        if (checkAtTheEnd) checkSolution();
+        showFeedback();
+    }
     let openTask = true;
+    let openFeedback = false;
 
     let startX;
     let startY;
@@ -42,6 +58,8 @@
     let currentElement;
     let card = { width: 0, padding: 0 };
 
+    $: centerX = (innerWidth - (card.width - card.padding / 2)) / 2 + 25;
+
     $: {
         orientation = innerHeight > innerWidth ? "portrait" : "landscape";
         if (oldOrientation !== orientation) {
@@ -51,6 +69,15 @@
         if (innerHeight < 400 || innerHeight < 300) {
             //console.log("show fullscreen, you cannot play on this size");
         }
+    }
+
+    function getElementBackgroundColor(el) {
+        if (typeof el.assignedGroup !== "undefined") {
+            let bg = groups[el.assignedGroup].backgroundColor;
+            bg = bg.length === 9 ? bg.substring(0, bg.length - 2) : bg;
+            if (bg) return bg;
+        }
+        return "none";
     }
 
     function handleCardMouseDown(e, el) {
@@ -65,9 +92,14 @@
     }
     function handleCardDragEnd(e, el) {
         draggableelement = null;
-        currentElement.group = latestGroup;
+        currentElement.assignedGroup = latestGroup;
         currentElementIndex = currentElementIndex + 1;
         isDragOverMe = Array(groups.length).fill(false);
+        elements = elements;
+
+        if (checkInstant) {
+            checkSolution();
+        }
     }
     function handleCardMouseUp(e, el) {
         const delta = 6; // minimal distance between mousedown and mouseup, to confirm dragging
@@ -98,7 +130,7 @@
         let temp = [];
         for (let index = 0; index < groups.length; index++) {
             const backgroundDiv = document.querySelector(
-                `#group-${groups[index].id}`
+                `#group-${groups[index].id}`,
             );
             const backgroundRect = backgroundDiv.getBoundingClientRect();
             const isOverMe =
@@ -125,6 +157,23 @@
         };
     }
 
+    function checkSolution() {
+        let countCorrect = 0;
+
+        for (let i = 0; i < elements.length; i++) {
+            if (typeof elements[i].assignedGroup !== "undefined") {
+                elements[i].solved =
+                    elements[i].assignedGroup === elements[i].group;
+                if (elements[i].solved) countCorrect++;
+            }
+        }
+        result = (countCorrect / elements.length) * 100;
+    }
+
+    function showFeedback() {
+        openFeedback = true;
+    }
+
     onMount(() => {
         Quiz.shuffle(elements);
 
@@ -144,6 +193,13 @@
 
 {#if validGamestate}
     <Task bind:open={openTask} {title} {task} />
+    <CheckButton
+        mode={options.check}
+        frequency={options.frequency}
+        on:click={checkSolution}
+    />
+    <Feedback bind:open={openFeedback} {feedbacks} {result} {elements} />
+
     <!-- svelte-ignore missing-declaration -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
@@ -163,7 +219,9 @@
                 <div
                     class="absolute top-0 left-0 w-full h-full flex items-center justify-center z-0"
                     style="opacity:{isDragOverMe[i] ? 1 : 0.5};
-                        background:{isDragOverMe[i] ? 'rgba(0,0,0,.2)' : 'unset'}"
+                        background:{isDragOverMe[i]
+                        ? 'rgba(0,0,0,.2)'
+                        : 'unset'}"
                 >
                     {#if g.type === "text"}
                         <div
@@ -184,14 +242,20 @@
                         <!-- svelte-ignore a11y-click-events-have-key-events -->
                         <div
                             id="user-card-{j}"
-                            class="absolute card bg-white shadow border cursor-grab user-card"
-                            style="width:{card.width}px;padding:{card.padding}px;z-index:{el.zIndex}; 
+                            class="absolute card bg-white shadow border cursor-grab user-card {el.solved
+                                ? 'user-card-solved'
+                                : ''}
+                                {el.solved === false
+                                ? 'user-card-unsolved'
+                                : ''}"
+                            style="top:35vmin;left:{centerX}px;width:{card.width}px;padding:{card.padding}px;z-index:{el.zIndex};
                             display: {currentElementIndex >= j
                                 ? 'inline-block'
                                 : 'none'}; 
                             opacity: {isDragging && currentElement != el
                                 ? 0.3
-                                : 1};"
+                                : 1};
+                            "
                             use:draggable={{
                                 bounds: "body",
                                 ignoreMultitouch: false,
@@ -212,6 +276,14 @@
                                 handleCardMouseDown(e, el);
                             }}
                         >
+                            {#if typeof el.assignedGroup !== "undefined"}
+                                <div
+                                    class="pin"
+                                    style="background-color:{getElementBackgroundColor(
+                                        el,
+                                    )};"
+                                ></div>
+                            {/if}
                             <div class="w-full h-full relative inline-block">
                                 {#if el.type == "text"}
                                     <div
@@ -251,11 +323,7 @@
                                 {/if}
                             </div>
                             {#if el.hint && el.hint.trim().length > 0}
-                                <button
-                                    class="btn btn-circle btn-xs btn-outline btn-info absolute top-2 left-2"
-                                    use:tooltip={{ content: el.hint }}
-                                    ><i class="far fa-info" />
-                                </button>
+                                <Hint content={el.hint} />
                             {/if}
                             {#if el.tts?.enabled}
                                 <button
@@ -274,3 +342,41 @@
 {:else}
     <p>no gamestate found</p>
 {/if}
+
+<style>
+    .unassigned {
+        background-color: #ffffff;
+        opacity: 0.7;
+        background-size: 21px 21px;
+        background-image: repeating-linear-gradient(
+            45deg,
+            #c5c5c5 0,
+            #c5c5c5 2.1px,
+            #ffffff 0,
+            #ffffff 50%
+        );
+    }
+    .user-card {
+        transition: border-color 0.2s ease-in-out;
+        border: 5px solid transparent;
+    }
+    .user-card-solved {
+        border: 5px solid rgb(34 197 94);
+    }
+    .user-card-unsolved {
+        border: 5px solid rgb(239 68 68);
+    }
+    .pin {
+        position: absolute;
+        top: -10px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        border: 3px solid #ffffff;
+        width: 30px;
+        height: 30px;
+        display: block;
+        border-radius: 50%;
+        z-index: 1;
+    }
+</style>

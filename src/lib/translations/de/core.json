@@ -1,9 +1,9 @@
 {
-    "close":"schliessen",
-    "delete":"löschen",
-    "reset":"zurücksetzen",
-    "add":"hinzufügen",
-    "change":"ändern",
+    "close":"Schliessen",
+    "delete":"Löschen",
+    "reset":"Zurücksetzen",
+    "add":"Hinzufügen",
+    "change":"Ändern",
     "fileuploader": {
         "dnd": "Drag & Drop",
         "browse": "oder suche in deinen Dateien oder unserer Bibliothek",

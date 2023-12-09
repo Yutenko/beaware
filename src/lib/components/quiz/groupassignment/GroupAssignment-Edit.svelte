@@ -1,5 +1,5 @@
 <script>
-    import Hint from "../Hint.svelte";
+    import { Hint } from "$components/quiz/ui-elements";
     import { draggable } from "@neodrag/svelte";
     import { FileUploader, FileTypeOptions, Modal } from "$components/index";
     import { tick } from "svelte";
@@ -13,14 +13,7 @@
         POSITIONS,
     } from "./constants.json";
 
-    import {
-        resizetext,
-        linkify,
-        focus,
-        zoom,
-        tooltip,
-        clicksound,
-    } from "$lib/actions";
+    import { resizetext, linkify, focus, zoom, clicksound } from "$lib/actions";
 
     export let gamestate;
 

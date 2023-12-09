@@ -1,8 +1,10 @@
 <script>
-    import Task from "../Task.svelte";
-    import CheckButton from "../CheckButton.svelte";
-    import Hint from "../Hint.svelte";
-    import Feedback from "../Feedback.svelte";
+    import {
+        Task,
+        CheckButton,
+        Hint,
+        Feedback,
+    } from "$components/quiz/ui-elements";
 
     import { draggable } from "@neodrag/svelte";
     import { onMount } from "svelte";
@@ -29,16 +31,10 @@
     let feedbacks = gamestate.feedbacks;
     let result = 0;
     let options = gamestate.options;
-    $: checkInstant = options.check.auto && options.check.instant;
-    $: checkAtTheEnd = options.check.auto && options.check.end;
     $: allAssigned = elements.every((element) =>
         element.hasOwnProperty("assignedGroup"),
     );
 
-    $: if (allAssigned) {
-        if (checkAtTheEnd) checkSolution();
-        showFeedback();
-    }
     let openTask = true;
     let openFeedback = false;
 
@@ -96,10 +92,6 @@
         currentElementIndex = currentElementIndex + 1;
         isDragOverMe = Array(groups.length).fill(false);
         elements = elements;
-
-        if (checkInstant) {
-            checkSolution();
-        }
     }
     function handleCardMouseUp(e, el) {
         const delta = 6; // minimal distance between mousedown and mouseup, to confirm dragging
@@ -194,8 +186,7 @@
 {#if validGamestate}
     <Task bind:open={openTask} {title} {task} />
     <CheckButton
-        mode={options.check}
-        frequency={options.frequency}
+        mode={options.mode}
         on:click={checkSolution}
     />
     <Feedback bind:open={openFeedback} {feedbacks} {result} {elements} />

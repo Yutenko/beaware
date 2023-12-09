@@ -35,19 +35,16 @@
     "checkSolution": "Lösung überprüfen",
     "settings": {
         "title": "Einstellungen",
-        "check": {
-            "title": "Überprüfen",
-            "manual": "manuell",
-            "auto": "automatisch",
-            "instant": "Sofort",
-            "instantDescription": "wird überprüft, sobald ein Element zugeordnet wurde",
-            "end": "Am Ende",
-            "endDescription": "wird überprüft, sobald das Quiz zu Ende ist"
-        },
-        "frequency": {
-            "title": "Häufigkeit",
-            "once": "einmalig",
-            "infinite": "unbegrenzt"
+        "mode": {
+            "title":"Überprüfen",
+            "free": "Frei-modus",
+            "freeDescription": "Elemente können beliebig oft zugeordnet und überprüft werden.",
+            "exam": "Prüf-modus",
+            "examDescription": "Elemente können beliebig oft zugeordnet und einmal überprüft werden.",
+            "instant": "Auto-Sofort-modus",
+            "instantDescription": "Elemente können beliebig oft zugeordnet und werden sofort automatisch überprüft.",
+            "end": "Auto-Ende-modus",
+            "endDescription": "Elemente können beliebig oft zugeordnet und werden am Ende automatisch überprüft"
         },
         "hints": {
             "title": "Hinweise",

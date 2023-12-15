@@ -1,23 +1,27 @@
 <script>
     import { t } from "$lib/translations";
     import { confetti } from "@neoconfetti/svelte";
+    import { tweened } from "svelte/motion";
+    import { cubicOut } from "svelte/easing";
+
+    export let solved;
+    export let feedbacks;
+    export let result;
 
     let dialog;
     let feedback;
 
-    $: if (dialog && open) {
+    const progress = tweened(0, {
+        duration: 800,
+        easing: cubicOut,
+    });
+    $: progressPercent = parseInt($progress * 100);
+
+    $: if (dialog && solved) {
         feedback = getFeedback();
+        progress.set(result / 100);
         dialog.showModal();
     }
-
-    export let open;
-    export let feedbacks;
-    export let result;
-    export let elements;
-
-    $: hasIndividualFeedbacks = elements.filter(
-        (el) => typeof el.feedback !== "undefined",
-    );
 
     function getFeedback() {
         result = parseInt(result);
@@ -40,21 +44,15 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-{#if open && result > 50}
-    <div
-        use:confetti={{
-            stageHeight: window.innerHeight,
-            stageWidth: window.innerWidth,
-            particleCount: 140,
-        }}
-    />
+{#if solved && result > 49}
+    <div class="center" use:confetti={{ particleCount: result, force: 0.9, }} />
 {/if}
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <dialog
     class="modal"
     bind:this={dialog}
-    on:close={() => (open = false)}
+    on:close={() => (solved = false)}
     on:click|self={() => dialog.close()}
 >
     <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -66,22 +64,35 @@
             <h3 class="relative">
                 {feedback}
             </h3>
-            {#if hasIndividualFeedbacks}
-                <h4 class="py-4">{$t("quiz.feedback.moreDescription")}</h4>
-            {/if}
+            <div
+                class="radial-progress progress"
+                style="--value:{progressPercent};--thickness: 2px;--size: 3.5rem"
+                role="progressbar"
+            >
+                {progressPercent}%
+            </div>
         </article>
 
         <div class="modal-action">
             <form method="dialog">
-                {#if hasIndividualFeedbacks}
-                    <button class="btn btn-primary">
-                        {$t("quiz.feedback.more")}
-                    </button>
-                {/if}
-                <button class="btn btn-primary">
+                <button class="btn btn-primary" on:click>
                     {$t("core.close")}
                 </button>
             </form>
         </div>
     </div>
 </dialog>
+
+<style>
+    .progress {
+        position: absolute !important;
+    }
+    .center {
+        position: absolute;
+        top:20%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 10px;
+
+    }
+</style>

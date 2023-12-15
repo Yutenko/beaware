@@ -1,6 +1,6 @@
 <script>
     let mode = "edit";
-    let id = "9dbbc98f-01d5-4270-ba53-e984ad1c6ea2";
+    let id = "1adb99ee-e862-4584-975b-ef08aa60ac04";
 </script>
 
 <ul>
@@ -11,4 +11,5 @@
         <a href="/quiz/1/embed?mode={mode}&id={id}">Fullscreen Edit Mode</a>
     </li>
     <li><a href="/quiz/1/embed?id={id}">Fullscreen Play Mode</a></li>
+    <li><a href="/convertlearningapps">Convert LearningApps</a></li>
 </ul>

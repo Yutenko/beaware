@@ -1,5 +1,6 @@
 <script>
     import { t } from "$lib/translations";
+    import { linkify } from "$lib/actions";
 
     let dialog;
 
@@ -7,7 +8,7 @@
         dialog.showModal();
     }
 
-    export let open;
+    let open = true;
     export let title = "";
     export let task = "";
 
@@ -36,11 +37,11 @@
     <div class="modal-box" on:click|stopPropagation>
         <h3 class="font-bold text-lg">{title}</h3>
         <div>
-            <p class="py-4">{task}</p>
+            <p class="py-4" use:linkify>{@html task}</p>
             <div class="relative" />
         </div>
 
-        <div class="modal-action">
+        <div class="modal-action" style="justify-content:center;">
             <form method="dialog">
                 <button class="btn btn-primary">
                     {$t("core.close")}
@@ -140,10 +141,18 @@
     }
 
     .shrink {
-        -webkit-animation: move-shrink 0.5s forwards, shrink 0.5s forwards;
-        -moz-animation: move-shrink 0.5s forwards, shrink 0.5s forwards;
-        -o-animation: move-shrink 0.5s forwards, shrink 0.5s forwards;
-        animation: move-shrink 0.5s forwards, shrink 0.5s forwards;
+        -webkit-animation:
+            move-shrink 0.5s forwards,
+            shrink 0.5s forwards;
+        -moz-animation:
+            move-shrink 0.5s forwards,
+            shrink 0.5s forwards;
+        -o-animation:
+            move-shrink 0.5s forwards,
+            shrink 0.5s forwards;
+        animation:
+            move-shrink 0.5s forwards,
+            shrink 0.5s forwards;
     }
 
     @-webkit-keyframes grow {
@@ -235,9 +244,17 @@
     }
 
     .grow {
-        -webkit-animation: move-grow 0.5s forwards, grow 0.5s forwards;
-        -moz-animation: move-grow 0.5s forwards, grow 0.5s forwards;
-        -o-animation: move-grow 0.5s forwards, grow 0.5s forwards;
-        animation: move-grow 0.5s forwards, grow 0.5s forwards;
+        -webkit-animation:
+            move-grow 0.5s forwards,
+            grow 0.5s forwards;
+        -moz-animation:
+            move-grow 0.5s forwards,
+            grow 0.5s forwards;
+        -o-animation:
+            move-grow 0.5s forwards,
+            grow 0.5s forwards;
+        animation:
+            move-grow 0.5s forwards,
+            grow 0.5s forwards;
     }
 </style>

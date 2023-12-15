@@ -1,9 +1,8 @@
 <script>
     import {
-        Task,
-        CheckButton,
         Hint,
-        Feedback,
+        Meta,
+        IndividualFeedback,
     } from "$components/quiz/ui-elements";
 
     import { draggable } from "@neodrag/svelte";
@@ -16,27 +15,23 @@
         POSITIONS,
     } from "./constants.json";
 
-    import { resizetext, linkify, zoom, tooltip } from "$lib/actions";
+    import { resizetext, linkify, zoom } from "$lib/actions";
 
     export let gamestate;
     $: validGamestate =
         gamestate?.groups?.length >= MIN_GROUPS &&
         gamestate?.groups?.length <= MAX_GROUPS &&
-        gamestate?.elements?.length < MAX_ELEMENTS;
+        gamestate?.elements?.length < MAX_ELEMENTS &&
+        gamestate?.options;
 
     let task = gamestate.task;
     let title = gamestate.title;
     let groups = gamestate.groups;
     let elements = gamestate.elements;
     let feedbacks = gamestate.feedbacks;
-    let result = 0;
     let options = gamestate.options;
-    $: allAssigned = elements.every((element) =>
-        element.hasOwnProperty("assignedGroup"),
-    );
 
-    let openTask = true;
-    let openFeedback = false;
+    let showIndividualFeedbacks = false;
 
     let startX;
     let startY;
@@ -54,6 +49,10 @@
     let currentElement;
     let card = { width: 0, padding: 0 };
 
+    $: if (elements[currentElementIndex]) {
+        elements[currentElementIndex].zIndex = zIndex++;
+    }
+
     $: centerX = (innerWidth - (card.width - card.padding / 2)) / 2 + 25;
 
     $: {
@@ -67,9 +66,13 @@
         }
     }
 
+    $: solved =
+        elements.filter((el) => typeof el.solved !== "undefined").length ===
+        elements.length;
+
     function getElementBackgroundColor(el) {
-        if (typeof el.assignedGroup !== "undefined") {
-            let bg = groups[el.assignedGroup].backgroundColor;
+        if (typeof el.assigned !== "undefined") {
+            let bg = groups[el.assigned].backgroundColor;
             bg = bg.length === 9 ? bg.substring(0, bg.length - 2) : bg;
             if (bg) return bg;
         }
@@ -88,7 +91,13 @@
     }
     function handleCardDragEnd(e, el) {
         draggableelement = null;
-        currentElement.assignedGroup = latestGroup;
+        // count how often an element was assigned to a different group
+        if (currentElement.assigned !== latestGroup) {
+            currentElement.timesAssigned = !currentElement.timesAssigned
+                ? 1
+                : currentElement.timesAssigned + 1;
+        }
+        currentElement.assigned = latestGroup;
         currentElementIndex = currentElementIndex + 1;
         isDragOverMe = Array(groups.length).fill(false);
         elements = elements;
@@ -150,26 +159,22 @@
     }
 
     function checkSolution() {
-        let countCorrect = 0;
-
         for (let i = 0; i < elements.length; i++) {
-            if (typeof elements[i].assignedGroup !== "undefined") {
-                elements[i].solved =
-                    elements[i].assignedGroup === elements[i].group;
-                if (elements[i].solved) countCorrect++;
+            if (typeof elements[i].assigned !== "undefined") {
+                elements[i].solved = elements[i].assigned === elements[i].group;
             }
         }
-        result = (countCorrect / elements.length) * 100;
     }
 
-    function showFeedback() {
-        openFeedback = true;
+    function onFeedbackClosed() {
+        showIndividualFeedbacks = true;
     }
 
     onMount(() => {
-        Quiz.shuffle(elements);
-
-        resizeUserCard();
+        if (validGamestate) {
+            Quiz.shuffle(elements);
+            resizeUserCard();
+        }
 
         window.addEventListener("resize", resizeUserCard);
         return () => {
@@ -184,12 +189,15 @@
 <span class="hidden grid-rows-1 grid-rows-2 col-span-2 col-span-3 col-span-6" />
 
 {#if validGamestate}
-    <Task bind:open={openTask} {title} {task} />
-    <CheckButton
+    <Meta
+        {title}
+        {task}
+        {elements}
         mode={options.mode}
-        on:click={checkSolution}
+        {checkSolution}
+        {onFeedbackClosed}
+        {feedbacks}
     />
-    <Feedback bind:open={openFeedback} {feedbacks} {result} {elements} />
 
     <!-- svelte-ignore missing-declaration -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -267,7 +275,7 @@
                                 handleCardMouseDown(e, el);
                             }}
                         >
-                            {#if typeof el.assignedGroup !== "undefined"}
+                            {#if typeof el.assigned !== "undefined"}
                                 <div
                                     class="pin"
                                     style="background-color:{getElementBackgroundColor(
@@ -314,7 +322,17 @@
                                 {/if}
                             </div>
                             {#if el.hint && el.hint.trim().length > 0}
-                                <Hint content={el.hint} />
+                                <Hint
+                                    content={el.hint}
+                                    mode={options.hints}
+                                    timesAssigned={el.timesAssigned}
+                                />
+                            {/if}
+                            {#if el.feedback && el.feedback.trim().length > 0}
+                                <IndividualFeedback
+                                    content={el.feedback}
+                                    activate={showIndividualFeedbacks}
+                                />
                             {/if}
                             {#if el.tts?.enabled}
                                 <button

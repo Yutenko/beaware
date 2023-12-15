@@ -1,7 +1,7 @@
 {
     "MIN_GROUPS":2,
-    "MAX_GROUPS":6,
-    "MAX_ELEMENTS":20,
+    "MAX_GROUPS":8,
+    "MAX_ELEMENTS":25,
     "POSITIONS": {
         "0": {
             "landscape": { "rows": 1, "span": [6] },
@@ -31,5 +31,13 @@
             "landscape": { "rows": 2, "span": [2, 2, 2, 2, 2, 2] },
             "portrait": { "rows": 3, "span": [3, 3, 3, 3, 3, 3] }
         }
-    }
+    },
+    "GROUP_COLORS":  [
+        "#66cdaa",
+        "#ff8c00",
+        "#00ff00",
+        "#0000ff",
+        "#1e90ff",
+        "#ff1493"
+    ]
 }

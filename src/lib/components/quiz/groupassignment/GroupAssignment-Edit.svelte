@@ -11,6 +11,7 @@
         MAX_GROUPS,
         MAX_ELEMENTS,
         POSITIONS,
+        GROUP_COLORS,
     } from "./constants.json";
 
     import { resizetext, linkify, focus, zoom, clicksound } from "$lib/actions";
@@ -140,14 +141,7 @@
 
     function addGroup(serverGroup) {
         if (groups.length + 1 > MAX_GROUPS) return;
-        const colors = [
-            "#66cdaa",
-            "#ff8c00",
-            "#00ff00",
-            "#0000ff",
-            "#1e90ff",
-            "#ff1493",
-        ];
+        const colors = GROUP_COLORS;
 
         groups = [
             ...groups,

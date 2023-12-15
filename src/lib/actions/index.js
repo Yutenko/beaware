@@ -69,7 +69,7 @@ export const resizetext = (node, options) => {
     }
 
 
-    const observer = new MutationObserver((mutationsList) => {
+    const mutationObserver = new MutationObserver((mutationsList) => {
         for (const mutation of mutationsList) {
             if (mutation.type === 'characterData') {
                 handleResize()
@@ -77,8 +77,19 @@ export const resizetext = (node, options) => {
         }
     });
 
+
+    const intersectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                handleResize()
+                intersectionObserver.disconnect();
+            }
+        });
+    });
+
     // Starten Sie die Beobachtung des Textinhalts
-    observer.observe(node, { childList: true, characterData: true, subtree: true });
+    mutationObserver.observe(node, { childList: true, characterData: true, subtree: true });
+    intersectionObserver.observe(node);
     handleResize()
     node.addEventListener('input', handleResize, true);
     window.addEventListener('resize', handleResize, true);
@@ -134,7 +145,7 @@ export const zoom = (node) => {
 
             node.style.width = '100vw';
             node.style.height = '100vh';
-            node.style.objectFit = 'contain'; 
+            node.style.objectFit = 'contain';
             node.style.position = 'fixed';
             node.style.top = '0';
             node.style.left = '0';
@@ -152,7 +163,7 @@ export const zoom = (node) => {
         } else {
             node.style.width = originalWidth + 'px';
             node.style.height = originalHeight + 'px';
-            node.style.objectFit = 'initial'; 
+            node.style.objectFit = 'initial';
             node.style.position = 'static';
             node.style.transform = 'none';
             node.style.zIndex = 'auto';
@@ -187,6 +198,13 @@ export const zoom = (node) => {
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 export function tooltip(node, options) {
+    options = {
+        ...options,
+        onMount: function (instance) {
+            instance.reference._tippy = instance;
+        }
+    }
+
     const tip = tippy(node, options);
 
     return {
@@ -209,6 +227,8 @@ export function clicksound(node, options) {
         }
     }
 }
+
+
 
 
 

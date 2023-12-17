@@ -5,7 +5,7 @@
 
     export let mode = "available";
     export let content = "";
-    export let timesAssigned;
+    export let timesAssigned = 0;
 
     let options = {};
     let hintElement;

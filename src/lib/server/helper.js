@@ -1,12 +1,13 @@
-import { createQuizFile, updateQuizFile } from '$lib/server/helper';
+import { createQuizFile, updateQuizFile, uploadFile } from '$lib/server/db';
 import { GROUP_COLORS, OPTIONS } from '$components/quiz/groupassignment/constants'
+import { default as QUIZ_TYPE } from '$components/quiz/quiztypes'
 
 
-export async function convertLearningAppsDataToQuizData(data) {
-
+export async function convertLearningAppsDataToQuizData(id, learningappsurl, data) {
     let quiz = {
         title: data.title,
         task: data.task,
+        convertedFrom: learningappsurl,
     }
     // groupassignment
     if (data.tool == 86) {
@@ -80,9 +81,11 @@ export async function convertLearningAppsDataToQuizData(data) {
 
         quiz.options = OPTIONS
 
-        const groupassignment = 1
-        const newId = await createQuizFile()
-        const updatedQuiz = await updateQuizFile(newId, groupassignment, JSON.stringify(quiz))
+
+        if (!id) {
+            id = await createQuizFile()
+        }
+        const updatedQuiz = await updateQuizFile(id, QUIZ_TYPE.groupassignment, JSON.stringify(quiz))
         return updatedQuiz
     }
 

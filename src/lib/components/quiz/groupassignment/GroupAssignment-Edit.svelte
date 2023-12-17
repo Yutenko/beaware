@@ -157,7 +157,7 @@
                 ),
                 backgroundColor: serverGroup?.backgroundColor
                     ? serverGroup?.backgroundColor
-                    : colors[groupCounter % colors.length] + "40",
+                    : colors[groupCounter % colors.length],
             },
         ];
     }
@@ -518,7 +518,7 @@
             class="col-span-{POSITIONS[groups.length][orientation].span[
                 i
             ]} relative group"
-            style="background-color:{g.backgroundColor};"
+            style="background-color:{g.backgroundColor}40;"
             id="group-{g.id}"
             on:mouseenter={(e) => {
                 currentGroup = g;

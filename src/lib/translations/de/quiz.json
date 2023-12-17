@@ -14,6 +14,7 @@
         "backgroundText": "Hintergrundtext",
         "backgroundImage": "Hintergrundbild"
     },
+    "import": "import",
     "title": "Titel",
     "task": "Aufgabenstellung",
     "taskDescription": "Wird am Anfang des Quiz' angezeigt, wenn vorhanden",
@@ -36,7 +37,7 @@
     "settings": {
         "title": "Einstellungen",
         "mode": {
-            "title":"Überprüfen",
+            "title": "Überprüfen",
             "free": "Frei-modus",
             "freeDescription": "Elemente können beliebig oft zugeordnet und überprüft werden.",
             "exam": "Prüf-modus",

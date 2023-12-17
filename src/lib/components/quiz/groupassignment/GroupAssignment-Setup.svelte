@@ -4,6 +4,10 @@
     import Quiz from "../shared";
     import { enhance } from "$app/forms";
     import { OPTIONS } from "./constants";
+    import { page } from "$app/stores";
+    import { invalidate } from "$app/navigation";
+
+    let learningappsurl = "";
 
     let title = "";
     let task = "";
@@ -12,7 +16,6 @@
     let iframeData = {};
     let openOptionsModal = false;
     let options = OPTIONS;
-    let id = null;
 
     function setCheckMode(mode) {
         options.mode.exam = mode === "exam";
@@ -72,7 +75,6 @@
             if (data.task) task = data.task;
             if (data.feedbacks) feedbacks = data.feedbacks;
             if (data.options) options = { ...options, ...data.options };
-            if (data.id) id = data.id;
 
             selectFeedback(100);
         },
@@ -85,6 +87,31 @@
 <div class="pt-24" />
 
 <div class="container mx-auto max-w-6xl">
+    <div class="form-control w-full">
+        <form
+            method="post"
+            action="?/importla&id={$page.url.searchParams.get('id')}"
+            use:enhance={({}) => {
+                return async ({ result, update }) => {
+                    invalidate(window.location.href);
+                    window.location.reload();
+                };
+            }}
+        >
+            <!-- svelte-ignore a11y-label-has-associated-control -->
+            <input
+                type="text"
+                class="input input-bordered w-full"
+                placeholder={$t("quiz.import")}
+                aria-label="Import"
+                name="learningappsurl"
+                bind:value={learningappsurl}
+            />
+        </form>
+    </div>
+
+    <div class="mb-6" />
+
     <h4 class="text-xl">{$t("quiz.title")}</h4>
     <div class="form-control w-full">
         <!-- svelte-ignore a11y-label-has-associated-control -->
@@ -192,17 +219,10 @@
 
     <form
         method="post"
-        use:enhance={() => {
-            return async ({ result, update }) => {
-                if (result.data?.url) {
-                    console.log(result.data.url);
-                }
-                update();
-            };
-        }}
+        action="?/update&id={$page.url.searchParams.get('id')}"
+        use:enhance
     >
         <input class="hidden" name="state" value={state} />
-        <input class="hidden" name="id" value={id} />
         <div class="flex w-full flex-row-reverse mt-5 mb-5">
             <button type="submit" class="btn btn-primary"
                 ><i class="fas fa-save" />{$t("quiz.save")}</button

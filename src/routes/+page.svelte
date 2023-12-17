@@ -1,6 +1,6 @@
 <script>
     let mode = "edit";
-    let id = "1adb99ee-e862-4584-975b-ef08aa60ac04";
+    let id = "";
 </script>
 
 <ul>

@@ -98,7 +98,7 @@ export const resizetext = (node, options) => {
         destroy() {
             node.removeEventListener('input', handleResize, true);
             window.removeEventListener('resize', handleResize, true);
-            observer.disconnect();
+            mutationObserver.disconnect();
         }
     }
 }

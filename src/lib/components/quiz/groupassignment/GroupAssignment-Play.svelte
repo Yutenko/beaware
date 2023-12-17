@@ -24,12 +24,12 @@
         gamestate?.elements?.length < MAX_ELEMENTS &&
         gamestate?.options;
 
-    let task = gamestate.task;
-    let title = gamestate.title;
-    let groups = gamestate.groups;
-    let elements = gamestate.elements;
-    let feedbacks = gamestate.feedbacks;
-    let options = gamestate.options;
+    let task = gamestate?.task;
+    let title = gamestate?.title;
+    let groups = gamestate?.groups;
+    let elements = gamestate?.elements;
+    let feedbacks = gamestate?.feedbacks;
+    let options = gamestate?.options;
 
     let showIndividualFeedbacks = false;
 
@@ -44,12 +44,12 @@
     let isDragging = false;
     let zIndex = 100;
     let latestGroup = -1;
-    let isDragOverMe = Array(groups.length).fill(false);
+    let isDragOverMe = validGamestate ? Array(groups.length).fill(false) : [];
     let currentElementIndex = 0;
     let currentElement;
     let card = { width: 0, padding: 0 };
 
-    $: if (elements[currentElementIndex]) {
+    $: if (validGamestate && elements[currentElementIndex]) {
         elements[currentElementIndex].zIndex = zIndex++;
     }
 
@@ -65,10 +65,6 @@
             //console.log("show fullscreen, you cannot play on this size");
         }
     }
-
-    $: solved =
-        elements.filter((el) => typeof el.solved !== "undefined").length ===
-        elements.length;
 
     function getElementBackgroundColor(el) {
         if (typeof el.assigned !== "undefined") {
@@ -186,7 +182,9 @@
 <svelte:window bind:innerWidth bind:innerHeight />
 
 <!-- Tailwind can not do dynamic classes, so we have an invisible element, that creates these classes before dynamically putting them into the HTML -->
-<span class="hidden grid-rows-1 grid-rows-2 col-span-2 col-span-3 col-span-6" />
+<span
+    class="hidden grid-rows-1 grid-rows-2 grid-rows-3 col-span-3 col-span-4 col-span-6 col-span-12"
+/>
 
 {#if validGamestate}
     <Meta
@@ -203,8 +201,9 @@
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
         on:mousemove={handleMouseMove}
-        class="grid grid-cols-6 grid-rows-{POSITIONS[groups.length][orientation]
-            .rows} overflow-hidden h-screen"
+        class="grid grid-cols-12 grid-rows-{POSITIONS[groups.length][
+            orientation
+        ].rows} overflow-hidden h-screen"
     >
         {#each groups as g, i}
             <!-- svelte-ignore a11y-no-static-element-interactions -->

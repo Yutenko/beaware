@@ -1,40 +1,6 @@
-import path from 'path'
-import { mkdirp } from 'mkdirp'
-import fs from 'fs'
-import { GROUP_COLORS } from '$components/quiz/groupassignment/constants'
+import { createQuizFile, updateQuizFile } from '$lib/server/helper';
+import { GROUP_COLORS, OPTIONS } from '$components/quiz/groupassignment/constants'
 
-export async function uploadFile(data) {
-    const filepath = path.join(
-        process.cwd(),
-        'static',
-        'uploads',
-        `${crypto.randomUUID()}.${data.type.split('/')[1]}`
-    )
-    const made = mkdirp.sync(path.dirname(filepath))
-    fs.writeFileSync(filepath, Buffer.from(await data.arrayBuffer()))
-
-    return { url: '/uploads/' + path.basename(filepath), type: data.type.split("/")[0] }
-}
-
-export async function uploadQuizFile(type, data) {
-    data = JSON.parse(data)
-    if (!data.created) data.created = new Date().getTime()
-    data.modified = new Date().getTime()
-    data = JSON.stringify(data)
-
-    const filepath = path.join(
-        process.cwd(),
-        'static',
-        'quiz',
-        `${type}`,
-        `${crypto.randomUUID()}.json`
-    )
-
-    const made = mkdirp.sync(path.dirname(filepath))
-    fs.writeFileSync(filepath, data)
-
-    return { url: '/quiz/' + path.basename(filepath) }
-}
 
 export async function convertLearningAppsDataToQuizData(data) {
 
@@ -112,23 +78,12 @@ export async function convertLearningAppsDataToQuizData(data) {
             }
         }))
 
-        quiz.options = {
-            mode: {
-                exam: false,
-                free: true,
-                instant: false,
-                end: false
-            },
-            hints: {
-                available: true,
-                always: false,
-                smart: false
-            }
-        }
+        quiz.options = OPTIONS
 
         const groupassignment = 1
-        const uploadedQuiz = await uploadQuizFile(groupassignment, JSON.stringify(quiz))
-        return uploadedQuiz
+        const newId = await createQuizFile()
+        const updatedQuiz = await updateQuizFile(newId, groupassignment, JSON.stringify(quiz))
+        return updatedQuiz
     }
 
     return null

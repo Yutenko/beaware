@@ -17,6 +17,7 @@
     import { resizetext, linkify, focus, zoom, clicksound } from "$lib/actions";
 
     export let gamestate;
+    export let id;
 
     let openFileuploader = false;
     let openHintModal = false;
@@ -420,6 +421,7 @@
                 options: gamestate?.options,
                 groups: gamestate?.groups,
                 elements: gamestate?.elements,
+                id
             },
         });
 
@@ -437,7 +439,9 @@
 <svelte:window bind:innerWidth bind:innerHeight />
 
 <!-- Tailwind can not do dynamic classes, so we have an invisible element, that creates these classes before dynamically putting them into the HTML -->
-<span class="hidden grid-rows-1 grid-rows-2 col-span-2 col-span-3 col-span-6" />
+<span
+    class="hidden grid-rows-1 grid-rows-2 grid-rows-3 col-span-3 col-span-4 col-span-6 col-span-12"
+/>
 
 <FileUploader bind:openFileuploader handleClose={onCloseFileuploader} />
 <Modal bind:open={openHintModal}>
@@ -505,7 +509,7 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
     on:mousemove={handleMouseMove}
-    class="grid grid-cols-6 grid-rows-{POSITIONS[groups.length][orientation]
+    class="grid grid-cols-12 grid-rows-{POSITIONS[groups.length][orientation]
         .rows} overflow-hidden h-screen"
 >
     {#each groups as g, i}

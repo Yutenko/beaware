@@ -1,4 +1,4 @@
-import { uploadFile } from '$lib/server/helper'
+import { uploadFile } from '$lib/server/db'
 
 export const actions = {
     default: async ({ request }) => {

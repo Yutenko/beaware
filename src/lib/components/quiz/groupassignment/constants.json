@@ -4,33 +4,42 @@
     "MAX_ELEMENTS":25,
     "POSITIONS": {
         "0": {
-            "landscape": { "rows": 1, "span": [6] },
-            "portrait": { "rows": 1, "span": [6] }
+            "landscape": { "rows": 1, "span": [12] },
+            "portrait": { "rows": 1, "span": [12] }
         },
         "1": {
-            "landscape": { "rows": 1, "span": [6] },
-            "portrait": { "rows": 1, "span": [6] }
+            "landscape": { "rows": 1, "span": [12] },
+            "portrait": { "rows": 1, "span": [12] }
         },
         "2": {
-            "landscape": { "rows": 1, "span": [3, 3] },
-            "portrait": { "rows": 2, "span": [6, 6] }
+            "landscape": { "rows": 1, "span": [6, 6] },
+            "portrait": { "rows": 2, "span": [12, 12] }
         },
         "3": {
-            "landscape": { "rows": 1, "span": [2, 2, 2] },
-            "portrait": { "rows": 3, "span": [6, 6, 6] }
+            "landscape": { "rows": 1, "span": [4, 4, 4] },
+            "portrait": { "rows": 3, "span": [12, 12, 12] }
         },
         "4": {
-            "landscape": { "rows": 2, "span": [3, 3, 3, 3] },
-            "portrait": { "rows": 2, "span": [3, 3, 3, 3] }
+            "landscape": { "rows": 2, "span": [6, 6, 6, 6] },
+            "portrait": { "rows": 2, "span": [6, 6, 6, 6] }
         },
         "5": {
-            "landscape": { "rows": 2, "span": [2, 2, 2, 3, 3] },
-            "portrait": { "rows": 3, "span": [3, 3, 3, 3, 6] }
+            "landscape": { "rows": 2, "span": [4, 4, 4, 6, 6] },
+            "portrait": { "rows": 3, "span": [6, 6, 6, 6, 12] }
         },
         "6": {
-            "landscape": { "rows": 2, "span": [2, 2, 2, 2, 2, 2] },
-            "portrait": { "rows": 3, "span": [3, 3, 3, 3, 3, 3] }
+            "landscape": { "rows": 2, "span": [4, 4, 4, 4, 4, 4] },
+            "portrait": { "rows": 3, "span": [6, 6, 6, 6, 6, 6] }
+        },
+         "7": {
+            "landscape": { "rows": 2, "span": [3, 3, 3, 3, 4, 4, 4] },
+            "portrait": { "rows": 3, "span": [6, 6, 6, 6, 4, 4, 4] }
+        },
+         "8": {
+            "landscape": { "rows": 2, "span": [3, 3, 3, 3, 3, 3, 3, 3] },
+            "portrait": { "rows": 3, "span": [4, 4, 4, 4, 4, 4, 6, 6] }
         }
+
     },
     "GROUP_COLORS":  [
         "#66cdaa",
@@ -39,5 +48,18 @@
         "#0000ff",
         "#1e90ff",
         "#ff1493"
-    ]
+    ],
+    "OPTIONS": {
+        "mode": {
+            "exam": true,
+            "free": false,
+            "instant": false,
+            "end": false
+        },
+        "hints": {
+            "available": true,
+            "always": false,
+            "smart": false
+        }
+    }
 }

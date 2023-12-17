@@ -1,4 +1,4 @@
-import { uploadFile, uploadQuizFile, convertLearningAppsDataToQuizData } from '$lib/server/helper';
+import { convertLearningAppsDataToQuizData } from '$lib/server/helper';
 
 export const actions = {
     default: async ({ request, fetch }) => {

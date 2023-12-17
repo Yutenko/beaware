@@ -3,6 +3,7 @@
     import { t } from "$lib/translations";
     import Quiz from "../shared";
     import { enhance } from "$app/forms";
+    import { OPTIONS } from "./constants";
 
     let title = "";
     let task = "";
@@ -10,20 +11,8 @@
     let currentFeedback;
     let iframeData = {};
     let openOptionsModal = false;
-
-    let options = {
-        mode: {
-            exam: true,
-            free: false,
-            instant: false,
-            end: false,
-        },
-        hints: {
-            available: true,
-            always: false,
-            smart: false,
-        },
-    };
+    let options = OPTIONS;
+    let id = null;
 
     function setCheckMode(mode) {
         options.mode.exam = mode === "exam";
@@ -83,6 +72,7 @@
             if (data.task) task = data.task;
             if (data.feedbacks) feedbacks = data.feedbacks;
             if (data.options) options = { ...options, ...data.options };
+            if (data.id) id = data.id;
 
             selectFeedback(100);
         },
@@ -212,6 +202,7 @@
         }}
     >
         <input class="hidden" name="state" value={state} />
+        <input class="hidden" name="id" value={id} />
         <div class="flex w-full flex-row-reverse mt-5 mb-5">
             <button type="submit" class="btn btn-primary"
                 ><i class="fas fa-save" />{$t("quiz.save")}</button

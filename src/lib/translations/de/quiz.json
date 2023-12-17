@@ -14,7 +14,7 @@
         "backgroundText": "Hintergrundtext",
         "backgroundImage": "Hintergrundbild"
     },
-    "import": "import",
+    "import": "import from learningapps",
     "title": "Titel",
     "task": "Aufgabenstellung",
     "taskDescription": "Wird am Anfang des Quiz' angezeigt, wenn vorhanden",

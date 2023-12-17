@@ -3,13 +3,26 @@
     let id = "";
 </script>
 
-<ul>
-    <li>
-        <a href="/quiz/1/setup?mode={mode}&id={id}">Iframe Edit Mode (Setup)</a>
-    </li>
-    <li>
-        <a href="/quiz/1/embed?mode={mode}&id={id}">Fullscreen Edit Mode</a>
-    </li>
-    <li><a href="/quiz/1/embed?id={id}">Fullscreen Play Mode</a></li>
-    <li><a href="/convertlearningapps">Convert LearningApps</a></li>
-</ul>
+<div class="content">
+    <div class="mockup-phone justify-center">
+        <div class="camera"></div>
+        <div class="display">
+            <div class="artboard artboard-demo phone-1">
+                <a
+                    class="btn btn-ghost btn-xs"
+                    href="/quiz/1/setup?mode={mode}&id={id}"
+                    >Create New Group Assignment Quiz</a
+                >
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+</style>

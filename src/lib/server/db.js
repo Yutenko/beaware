@@ -3,6 +3,8 @@ import { mkdirp } from 'mkdirp'
 import fs from 'fs'
 import { OPTIONS, MIN_GROUPS, GROUP_COLORS } from '$components/quiz/groupassignment/constants'
 import { default as QUIZ_TYPE } from '$components/quiz/quiztypes'
+import { readFile } from 'fs/promises'
+import { log } from 'console'
 
 
 export async function uploadFile(data) {
@@ -57,20 +59,6 @@ export async function createQuizFile(type) {
     return { id: newId, url: '/quiz/' + path.basename(filepath) }
 }
 
-export async function isValidQuizId(id, type) {
-    const filepath = path.join(
-        process.cwd(),
-        'static',
-        'quiz',
-        `${type}`,
-        `${id}.json`
-    )
-
-    return await fs.promises.access(filepath, fs.constants.F_OK)
-        .then(() => true)
-        .catch(() => false)
-}
-
 export async function updateQuizFile(id, type, data) {
     const isValidId = await isValidQuizId(id, type)
 
@@ -95,4 +83,74 @@ export async function updateQuizFile(id, type, data) {
     }
 
     return null
+}
+
+export async function deleteQuizFile(id, type) {
+    const filepath = path.join(
+        process.cwd(),
+        'static',
+        'quiz',
+        `${type}`,
+        `${id}.json`
+    )
+
+    return await fs.promises.unlink(filepath)
+}
+
+export async function getQuizFile(id, type) {
+    const filepath = path.join(
+        process.cwd(),
+        'static',
+        'quiz',
+        `${type}`,
+        `${id}.json`
+    )
+    const quiz = await readFile(filepath, { encoding: 'utf8' })
+    return JSON.parse(quiz)
+}
+
+export async function getAllQuizFiles(type) {
+    const filepath = path.join(
+        process.cwd(),
+        'static',
+        'quiz',
+        `${type}`
+    )
+
+    return await fs.promises.access(filepath, fs.constants.F_OK)
+        .then(async () => {
+            let files = await fs.promises.readdir(filepath)
+
+            files = await Promise.all(files.map(async file => {
+                const quizId = path.parse(file).name
+                const quiz = await getQuizFile(quizId, type)
+
+                return {
+                    id: quizId,
+                    title: quiz.title,
+                    play: `/quiz/${type}/embed?id=${quizId}`,
+                    edit: `/quiz/${type}/setup?mode=edit&id=${quizId}`
+                }
+            }))
+
+            return files
+        })
+        .catch(() => {
+            return []
+        })
+
+}
+
+export async function isValidQuizId(id, type) {
+    const filepath = path.join(
+        process.cwd(),
+        'static',
+        'quiz',
+        `${type}`,
+        `${id}.json`
+    )
+
+    return await fs.promises.access(filepath, fs.constants.F_OK)
+        .then(() => true)
+        .catch(() => false)
 }

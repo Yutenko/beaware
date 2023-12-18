@@ -41,18 +41,20 @@
         }
 
     },
-    "GROUP_COLORS":  [
-        "#66cdaa",
-        "#ff8c00",
-        "#00ff00",
-        "#0000ff",
-        "#1e90ff",
-        "#ff1493"
+    "GROUP_COLORS": [
+        "#9966ff",
+        "#ff6384",
+        "#36a2eb",
+        "#c9cbcf",
+        "#4bc0c0",
+        "#ff9f40",
+        "#7ac142",
+        "#ffcd56"
     ],
     "OPTIONS": {
         "mode": {
-            "exam": true,
-            "free": false,
+            "exam": false,
+            "free": true,
             "instant": false,
             "end": false
         },

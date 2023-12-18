@@ -160,8 +160,13 @@
             >
                 <i class="fal fa-wrench" />
             </div>
-            <button class="btn btn-primary"
-                ><i class="fas fa-gamepad" />{$t("quiz.play")}</button
+            <!-- svelte-ignore a11y-invalid-attribute -->
+            <a
+                class="btn btn-primary"
+                href="/quiz/{$page.params.type}/embed?id={$page.url.searchParams.get('id')}"
+                target="_blank"
+            >
+                <i class="fas fa-gamepad" />{$t("quiz.play")}</a
             >
         </div>
     </div>

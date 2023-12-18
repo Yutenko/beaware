@@ -37,7 +37,9 @@
     <div class="modal-box" on:click|stopPropagation>
         <h3 class="font-bold text-lg">{title}</h3>
         <div>
-            <p class="py-4" use:linkify>{@html task}</p>
+            <p class="py-4">
+                {@html task}
+            </p>
             <div class="relative" />
         </div>
 

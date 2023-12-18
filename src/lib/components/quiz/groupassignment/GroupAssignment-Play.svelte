@@ -291,7 +291,7 @@
                                         }}
                                         use:linkify
                                     >
-                                        {el.src}
+                                        {@html el.src}
                                     </div>
                                 {:else if el.type == "image"}
                                     <!-- svelte-ignore a11y-missing-attribute -->
@@ -374,17 +374,5 @@
     .user-card-unsolved {
         border: 5px solid rgb(239 68 68);
     }
-    .pin {
-        position: absolute;
-        top: -10px;
-        left: 0;
-        right: 0;
-        margin: 0 auto;
-        border: 3px solid #ffffff;
-        width: 30px;
-        height: 30px;
-        display: block;
-        border-radius: 50%;
-        z-index: 1;
-    }
+    
 </style>

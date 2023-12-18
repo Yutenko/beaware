@@ -421,7 +421,7 @@
                 options: gamestate?.options,
                 groups: gamestate?.groups,
                 elements: gamestate?.elements,
-                id
+                id,
             },
         });
 
@@ -809,6 +809,11 @@
                                 <i class="far fa-ear" />
                             </button>
                         {/if}
+                        <div
+                            class="pin"
+                            style="background-color:{groups[el.group]
+                                .backgroundColor};"
+                        ></div>
 
                         <div
                             class="absolute right-0 top-0 user-card-actions"

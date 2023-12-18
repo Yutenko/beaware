@@ -5,7 +5,7 @@
     import { enhance } from "$app/forms";
     import { OPTIONS } from "./constants";
     import { page } from "$app/stores";
-    import { invalidate } from "$app/navigation";
+    import { invalidateAll } from "$app/navigation";
 
     let learningappsurl = "";
 
@@ -92,8 +92,8 @@
             method="post"
             action="?/importla&id={$page.url.searchParams.get('id')}"
             use:enhance={({}) => {
-                return async ({ result, update }) => {
-                    invalidate(window.location.href);
+                return async ({ update }) => {
+                    update();
                     window.location.reload();
                 };
             }}
@@ -163,7 +163,8 @@
             <!-- svelte-ignore a11y-invalid-attribute -->
             <a
                 class="btn btn-primary"
-                href="/quiz/{$page.params.type}/embed?id={$page.url.searchParams.get('id')}"
+                href="/quiz/{$page.params
+                    .type}/embed?id={$page.url.searchParams.get('id')}"
                 target="_blank"
             >
                 <i class="fas fa-gamepad" />{$t("quiz.play")}</a

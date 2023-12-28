@@ -4,7 +4,6 @@ import fs from 'fs'
 import { OPTIONS, MIN_GROUPS, GROUP_COLORS } from '$components/quiz/groupassignment/constants'
 import { default as QUIZ_TYPE } from '$components/quiz/quiztypes'
 import { readFile } from 'fs/promises'
-import { log } from 'console'
 
 
 export async function uploadFile(data) {

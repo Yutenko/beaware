@@ -7,3 +7,7 @@ export { default as FileUploader } from './fileuploader/FileUploader.svelte';
 export { default as FileTypeOptions } from './fileuploader/FileTypeOptions.svelte';
 
 export { default as Modal } from './modal/Modal.svelte';
+
+export { default as CasestudyEditor } from './casestudy/Editor.svelte';
+
+export { default as QuizFinder } from './quiz/finder/Finder.svelte';

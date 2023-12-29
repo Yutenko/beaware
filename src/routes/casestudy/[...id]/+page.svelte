@@ -4,4 +4,4 @@
 </script>
 
 
-<CasestudyEditor />
+<CasestudyEditor editorstate={data.editorstate}/>

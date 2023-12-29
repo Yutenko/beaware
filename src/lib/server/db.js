@@ -47,7 +47,7 @@ export async function createQuizFile(type) {
     const filepath = path.join(
         process.cwd(),
         'static',
-        'quiz',
+        'quizzes',
         `${type}`,
         `${newId}.json`
     )
@@ -70,7 +70,7 @@ export async function updateQuizFile(id, type, data) {
         const filepath = path.join(
             process.cwd(),
             'static',
-            'quiz',
+            'quizzes',
             `${type}`,
             `${id}.json`
         )
@@ -88,7 +88,7 @@ export async function deleteQuizFile(id, type) {
     const filepath = path.join(
         process.cwd(),
         'static',
-        'quiz',
+        'quizzes',
         `${type}`,
         `${id}.json`
     )
@@ -100,7 +100,7 @@ export async function getQuizFile(id, type) {
     const filepath = path.join(
         process.cwd(),
         'static',
-        'quiz',
+        'quizzes',
         `${type}`,
         `${id}.json`
     )
@@ -112,7 +112,7 @@ export async function getAllQuizFiles(type) {
     const filepath = path.join(
         process.cwd(),
         'static',
-        'quiz',
+        'quizzes',
         `${type}`
     )
 
@@ -144,7 +144,7 @@ export async function isValidQuizId(id, type) {
     const filepath = path.join(
         process.cwd(),
         'static',
-        'quiz',
+        'quizzes',
         `${type}`,
         `${id}.json`
     )
@@ -152,4 +152,123 @@ export async function isValidQuizId(id, type) {
     return await fs.promises.access(filepath, fs.constants.F_OK)
         .then(() => true)
         .catch(() => false)
+}
+
+
+
+export async function isValidCasestudyId(id) {
+    const filepath = path.join(
+        process.cwd(),
+        'static',
+        'casestudies',
+        `${id}.json`
+    )
+
+    return await fs.promises.access(filepath, fs.constants.F_OK)
+        .then(() => true)
+        .catch(() => false)
+}
+
+export async function createCasestudyFile() {
+
+    let data = {
+        title: '',
+        editor: {},
+        quiz: {},
+        created: new Date().getTime(),
+        modified: new Date().getTime()
+    }
+
+
+    data = JSON.stringify(data)
+    const newId = crypto.randomUUID()
+
+    const filepath = path.join(
+        process.cwd(),
+        'static',
+        'casestudies',
+        `${newId}.json`
+    )
+
+    const made = mkdirp.sync(path.dirname(filepath))
+    fs.writeFileSync(filepath, data)
+
+    return { newId, url: '/casestudy/' + path.basename(filepath) }
+}
+
+export async function updateCasestudyFile(id, data) {
+    const isValidId = await isValidCasestudyId(id)
+
+    if (isValidId) {
+        data = JSON.parse(data)
+        if (!data.created) data.created = new Date().getTime()
+        data.modified = new Date().getTime()
+        data = JSON.stringify(data)
+
+        const filepath = path.join(
+            process.cwd(),
+            'static',
+            'casestudies',
+            `${id}.json`
+        )
+
+        const made = mkdirp.sync(path.dirname(filepath))
+        fs.writeFileSync(filepath, data)
+
+        return { url: '/casestudy/' + path.basename(filepath) }
+    }
+
+    return null
+}
+
+export async function deleteCasestudyFile(id, type) {
+    const filepath = path.join(
+        process.cwd(),
+        'static',
+        'casestudies',
+        `${id}.json`
+    )
+
+    return await fs.promises.unlink(filepath)
+}
+
+export async function getCasestudyFile(id, type) {
+    const filepath = path.join(
+        process.cwd(),
+        'static',
+        'casestudies',
+        `${id}.json`
+    )
+    const casestudy = await readFile(filepath, { encoding: 'utf8' })
+    return JSON.parse(casestudy)
+}
+
+export async function getAllCasestudyFiles(type) {
+    const filepath = path.join(
+        process.cwd(),
+        'static',
+        'casestudies',
+    )
+
+    return await fs.promises.access(filepath, fs.constants.F_OK)
+        .then(async () => {
+            let files = await fs.promises.readdir(filepath)
+
+            files = await Promise.all(files.map(async file => {
+                const casestudyId = path.parse(file).name
+                const casestudy = await getCasestudyFile(casestudyId)
+
+                return {
+                    id: casestudyId,
+                    title: casestudy.title,
+                    url: `/casestudy/${casestudyId}`
+                }
+            }))
+
+            return files
+        })
+        .catch(() => {
+            return []
+        })
+
 }

@@ -57,8 +57,46 @@
 
     <div class="casestudy">
         <a class="btn btn-ghost btn-xs" href="/casestudy/"
-        >Create New Case Study</a
-    >
+            >Create New Case Study</a
+        >
+        {#if data.casestudies.length > 0}
+            <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+            <div class="collapse bg-base-200">
+                <input type="checkbox" />
+                <div class="collapse-title text-xl font-medium">
+                    Alle Fallbeispiele
+                </div>
+                <div class="collapse-content">
+                    <div class="overflow-x-auto">
+                        <table class="table">
+                            <!-- head -->
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Name</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {#each data.casestudies as cs, i}
+                                    <tr>
+                                        <th>{i + 1}</th>
+                                        <td>{cs.title || ""}</td>
+                                        <td>
+                                            <a
+                                                class="btn btn-ghost btn-xs"
+                                                href={cs.url}>Edit</a
+                                            >
+                                        </td>
+                                    </tr>
+                                {/each}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {/if}
     </div>
 </div>
 

@@ -4,7 +4,7 @@ export async function load({ url, params, fetch }) {
     let gamestate
 
     if (id) {
-        const response = await fetch(`/quiz/${params.type}/${id}.json`)
+        const response = await fetch(`/quizzes/${params.type}/${id}.json`)
         gamestate = response.status === 200 ? await response.json() : {}
         return { mode, gamestate };
 

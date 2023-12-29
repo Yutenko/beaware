@@ -3,8 +3,9 @@
 node_modules
 /build
 /.svelte-kit
-/static/uploads
-/static/quiz
+/static/uploads/
+/static/casestudies/
+/static/quizzes/
 /package
 .env
 .env.*

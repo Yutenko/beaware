@@ -16,6 +16,11 @@ export const config = {
       locale: 'de',
       key: 'quiz',
       loader: async () => (await import('./de/quiz.json')).default,
+    }, 
+    {
+      locale: 'de',
+      key: 'editor',
+      loader: async () => (await import('./de/editor.json')).default,
     },
 
   ],

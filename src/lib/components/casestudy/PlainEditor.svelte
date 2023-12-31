@@ -10,7 +10,6 @@
     import Marker from "@editorjs/marker";
 
     export let data;
-    console.log(data);
 
     let EditorJS;
     let Image;

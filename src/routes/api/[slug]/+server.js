@@ -1,6 +1,5 @@
 import { json } from '@sveltejs/kit';
 import { uploadFile, getAllQuizFiles } from '$lib/server/db';
-import { default as QUIZ_TYPE } from '$components/quiz/quiztypes'
 
 
 export async function POST({ cookies, fetch, params, request, url }) {
@@ -30,10 +29,11 @@ export async function GET({ cookies, fetch, params, request, url }) {
     let o = { success: 0 }
 
     if (slug === "getallquizzes") {
-        const files = await getAllQuizFiles(QUIZ_TYPE.groupassignment)
+        const quizzes = await getAllQuizFiles()
+        
         o = {
             success: 1,
-            quizzes: files
+            quizzes
         }
         return json(o)
     }

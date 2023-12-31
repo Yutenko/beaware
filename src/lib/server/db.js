@@ -108,7 +108,25 @@ export async function getQuizFile(id, type) {
     return JSON.parse(quiz)
 }
 
-export async function getAllQuizFiles(type) {
+export async function getAllQuizFiles() {
+    const existingTypes = await getAllQuizTypes()
+
+    const quizzes = await Promise.all(existingTypes.map(getAllQuizFilesByType))
+    return quizzes[0] ? quizzes[0] : []
+}
+
+export async function getAllQuizTypes() {
+    const dirpath = path.join(
+        process.cwd(),
+        'static',
+        'quizzes',
+    )
+
+    let directories = await fs.promises.readdir(dirpath, { withFileTypes: true });
+
+    return directories.filter(dir => dir.isDirectory()).map(dir => dir.name);
+}
+export async function getAllQuizFilesByType(type) {
     const filepath = path.join(
         process.cwd(),
         'static',
@@ -127,6 +145,7 @@ export async function getAllQuizFiles(type) {
                 return {
                     id: quizId,
                     title: quiz.title,
+                    type,
                     play: `/quiz/${type}/embed?id=${quizId}`,
                     edit: `/quiz/${type}/setup?mode=edit&id=${quizId}`
                 }

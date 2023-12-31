@@ -1,5 +1,9 @@
 {
     "quiz": "Quiz",
+    "types": {
+        "0": "Alle Varianten",
+        "1": "Gruppenzuordnung"
+    },
     "hint": "Hinweis",
     "addHintDescription": "Du kannst hier zusätzliche Informationen hinzufügen, die nachher als Tooltip hinzugefügt werden.",
     "groupassignment": {
@@ -20,6 +24,7 @@
     "taskDescription": "Wird am Anfang des Quiz' angezeigt, wenn vorhanden",
     "tts": "Vorlesen",
     "play": "Spielen",
+    "edit": "Bearbeiten",
     "color": "Farbe",
     "feedback": {
         "title": "Feedback",

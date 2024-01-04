@@ -5,8 +5,9 @@ function createEditorStore(store) {
 
     return {
         subscribe,
-        setQuiz: (quiz) => update(state => ({ ...state, quiz:quiz.id })),
-        setEditor: (editor) => update(state => ({ ...state, editor }))
+        setQuiz: (quiz) => update(state => ({ ...state, quiz })),
+        setEditor: (editor) => update(state => ({ ...state, editor })),
+        resetQuiz: () => update(state => ({ ...state, quiz: {} }))
     }
 }
 

@@ -219,6 +219,7 @@ export async function updateCasestudyFile(id, data) {
 
     if (isValidId) {
         data.modified = new Date().getTime()
+        data.quiz = JSON.parse(data.quiz)
         data.editor = JSON.parse(data.editor)
         data = JSON.stringify(data)
 

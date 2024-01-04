@@ -13,7 +13,7 @@
 
     function save() {
         let formData = new FormData();
-        formData.append("quiz", $store.quiz);
+        formData.append("quiz", JSON.stringify($store.quiz));
         formData.append("editor", JSON.stringify($store.editor));
 
         fetch(window.location.href, {

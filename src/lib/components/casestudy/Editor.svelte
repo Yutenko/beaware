@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { default as PlainEditor } from "./PlainEditor.svelte";
     import { default as ChooseQuiz } from "./ChooseQuiz.svelte";
+    import { default as Navbar } from "./Navbar.svelte";
     import { store } from "./store.js";
 
     export let state = {};
@@ -29,11 +30,10 @@
     });
 </script>
 
-<button on:click={save}>Save</button>
-
 {#if is404}
     <p>404</p>
 {:else}
+    <Navbar />
     <PlainEditor />
     <ChooseQuiz />
 {/if}

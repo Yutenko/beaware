@@ -36,6 +36,7 @@
 
         editor = new EditorJS({
             holder: "editorjs",
+            autofocus: true,
             onChange: save,
             data: $store.editor,
             tools: {

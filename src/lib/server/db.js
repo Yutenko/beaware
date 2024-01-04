@@ -194,7 +194,6 @@ export async function createCasestudyFile() {
         title: '',
         editor: {},
         quiz: {},
-        created: new Date().getTime(),
         modified: new Date().getTime()
     }
 
@@ -219,9 +218,8 @@ export async function updateCasestudyFile(id, data) {
     const isValidId = await isValidCasestudyId(id)
 
     if (isValidId) {
-        data = JSON.parse(data)
-        if (!data.created) data.created = new Date().getTime()
         data.modified = new Date().getTime()
+        data.editor = JSON.parse(data.editor)
         data = JSON.stringify(data)
 
         const filepath = path.join(

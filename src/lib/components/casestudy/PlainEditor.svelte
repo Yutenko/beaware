@@ -8,8 +8,7 @@
     import List from "@editorjs/list";
     import Table from "@editorjs/table";
     import Marker from "@editorjs/marker";
-
-    export let data;
+    import { store } from "./store";
 
     let EditorJS;
     let Image;
@@ -18,21 +17,15 @@
 
     let editor;
 
-    function readFromLocalStorage() {}
-
-    function saveToLocalstorage() {
+    function save() {
         editor
             .save()
             .then((outputData) => {
-                console.log("save to localstorage", outputData);
+                store.setEditor(outputData);
             })
             .catch((error) => {
                 console.log("Saving failed: ", error);
             });
-    }
-
-    function save() {
-        console.log("save to server");
     }
 
     async function initEditorJS() {
@@ -43,7 +36,8 @@
 
         editor = new EditorJS({
             holder: "editorjs",
-            onChange: saveToLocalstorage,
+            onChange: save,
+            data: $store.editor,
             tools: {
                 header: Header,
                 quote: Quote,
@@ -87,7 +81,6 @@
     }
 
     onMount(async () => {
-        await readFromLocalStorage();
         await initEditorJS();
 
         return save;

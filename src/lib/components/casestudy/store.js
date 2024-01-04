@@ -1,13 +1,13 @@
 import { writable } from 'svelte/store';
 
-function createEditorStore() {
-    const { subscribe, update } = writable({});
+function createEditorStore(store) {
+    const { subscribe, update } = writable(store);
 
     return {
         subscribe,
-        setQuiz: (quiz) => update((o) => o.quiz = quiz),
-        setData: (data) => update((o) => o.data = data)
-    };
+        setQuiz: (quiz) => update(state => ({ ...state, quiz:quiz.id })),
+        setEditor: (editor) => update(state => ({ ...state, editor }))
+    }
 }
 
-export const store = createEditorStore();
+export const store = createEditorStore({});

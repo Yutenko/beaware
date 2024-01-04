@@ -10,10 +10,12 @@
         const response = await fetch("/api/getallquizzes");
         return await response.json();
     }
+
     let data;
     const types = Object.values(QUIZ_TYPE);
     let selectedTypes = [];
     let filteredQuizzes = [];
+    let searchText = "";
 
     function selectType(e) {
         let type = parseInt(e.target.value);
@@ -30,15 +32,23 @@
 
     $: filterQuizzes(selectedTypes);
 
-    function filterQuizzes(types) {
+    function filterQuizzes() {
         filteredQuizzes =
-            data?.quizzes.filter((quiz) =>
-                selectedTypes.includes(parseInt(quiz.type)),
-            ) || [];
+            data?.quizzes.filter((quiz) => {
+                let hasType = selectedTypes.includes(parseInt(quiz.type));
+                if (hasType) {
+                    let includesText = quiz.title
+                        .toLowerCase()
+                        .includes(searchText.toLowerCase());
+                    if (includesText) {
+                        return quiz;
+                    }
+                }
+            }) || [];
     }
 
     function selectQuiz(quiz) {
-        dispatch("on:select", quiz);
+        dispatch("select", quiz);
     }
 
     onMount(async () => {
@@ -52,15 +62,15 @@
     <p>Loading...</p>
 {:then}
     <form class="flex flex-col w-4/5">
-        <div class="flex gap-1">
+        <div class="flex gap-1 relative">
             <input
                 type="text"
                 placeholder={$t("quiz.quiz")}
                 class="input input-bordered w-full"
+                bind:value={searchText}
+                on:input={filterQuizzes}
+                on:click={filterQuizzes}
             />
-            <button class="btn btn-outline btn-primary"
-                ><i class="far fa-search"></i></button
-            >
             <select class="select w-auto" on:change={selectType}>
                 {#each types as type}
                     <option value={type}>{$t(`quiz.types.${type}`)}</option>
@@ -68,8 +78,9 @@
             </select>
         </div>
     </form>
+
     {#if filteredQuizzes.length > 0}
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto w-4/5 mt-2">
             <table class="table table-xs">
                 <tbody>
                     {#each filteredQuizzes as quiz, index}

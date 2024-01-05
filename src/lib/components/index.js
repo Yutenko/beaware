@@ -11,3 +11,4 @@ export { default as Modal } from './modal/Modal.svelte';
 export { default as CasestudyEditor } from './casestudy/Editor.svelte';
 
 export { default as QuizFinder } from './quiz/finder/Finder.svelte';
+export { default as CasestudyFinder } from './casestudy/finder/Finder.svelte';

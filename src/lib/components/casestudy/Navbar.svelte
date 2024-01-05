@@ -1,22 +1,96 @@
-<div class="navbar bg-base-100">
+<script>
+    import { t } from "$lib/translations";
+    import { store } from "./store";
+    import { fade } from "svelte/transition";
+    import { onMount } from "svelte";
+
+    const TIME_TO_IDLE = 10; // in seconds
+    let doFade = false;
+    function toggleFade() {
+        doFade = !doFade;
+    }
+
+    async function save() {
+        toggleFade();
+
+        let formData = new FormData();
+        formData.append("title", $store.title);
+        formData.append("quiz", JSON.stringify($store.quiz));
+        formData.append("editor", JSON.stringify($store.editor));
+
+        fetch(window.location.href, {
+            body: formData,
+            method: "post",
+        }).then(() => setTimeout(toggleFade, 2000));
+    }
+
+    onMount(() => {
+        let inactivityTime = function () {
+            let time;
+            window.onload = resetTimer;
+
+            document.onmousemove = resetTimer;
+            document.onkeydown = resetTimer;
+
+            function resetTimer() {
+                clearTimeout(time);
+                time = setTimeout(save, TIME_TO_IDLE * 1000);
+            }
+        };
+
+        inactivityTime();
+    });
+</script>
+
+<div class="navbar bg-base-100 fixed top-0 left-0 w-full z-20 shadow-sm">
     <div class="flex-1">
-        <!-- svelte-ignore a11y-missing-attribute -->
-        <a class="btn btn-ghost text-xl">daisyUI</a>
+        <input
+            type="text"
+            class="btn btn-ghost text-xl"
+            placeholder={$t("editor.untitledCasestudy")}
+            bind:value={$store.title}
+        />
     </div>
     <div class="flex-none">
-        <button class="btn btn-square btn-ghost">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                class="inline-block w-5 h-5 stroke-current"
-                ><path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                ></path></svg
+        {#if doFade}
+            <div
+                in:fade
+                out:fade
+                class="text-sm pr-4 pl-4 text-neutral-content"
             >
-        </button>
+                {$t("core.saving")}...
+            </div>
+        {/if}
+        <i class="fas fa-sync {doFade ? 'fa-spin' : ''}"></i>
+        <button class="btn btn-ghost" on:click={save}>{$t("core.save")}</button>
+        <div class="flex-none group-actions">
+            <div class="dropdown dropdown-end">
+                <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+                <!-- svelte-ignore a11y-label-has-associated-control -->
+                <label tabindex="0" class="btn btn-circle btn-ghost">
+                    <i class="far fa-ellipsis-v" />
+                </label>
+                <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+                <div
+                    tabindex="0"
+                    class="card compact dropdown-content z-[1] shadow bg-base-100 rounded-box w-64"
+                >
+                    <ul
+                        class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52"
+                    >
+                       
+
+                        <li>
+                            <!-- svelte-ignore a11y-click-events-have-key-events -->
+                            <!-- svelte-ignore a11y-no-static-element-interactions -->
+                            <!-- svelte-ignore a11y-missing-attribute -->
+                            <a class="text-error" on:click={(e) => {}}
+                                >{$t("editor.delete")}</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

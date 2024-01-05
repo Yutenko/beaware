@@ -6,10 +6,6 @@ iframe {
     border: 0px;
 }
 
-body {
-    background: #f3f4f6;
-}
-
 textarea {
     min-height: 10rem !important;
 }

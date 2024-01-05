@@ -8,26 +8,12 @@
     export let state = {};
     $: is404 = Object.keys(state).length === 0;
 
-    const { quiz, editor } = state;
+    const { title, quiz, editor } = state;
+    
+    if (title) store.setTitle(title);
     if (quiz) store.setQuiz(quiz);
     if (editor) store.setEditor(editor);
 
-    function save() {
-        let formData = new FormData();
-        formData.append("quiz", JSON.stringify($store.quiz));
-        formData.append("editor", JSON.stringify($store.editor));
-
-        fetch(window.location.href, {
-            body: formData,
-            method: "post",
-        });
-    }
-
-    onMount(() => {
-        return () => {
-            save();
-        };
-    });
 </script>
 
 {#if is404}

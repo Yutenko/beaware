@@ -1,111 +1,48 @@
 <script>
+    import { QuizFinder, CasestudyFinder, Modal } from "$components";
+
     let mode = "edit";
     let id = "";
-    export let data;
+    let openModal = false;
+    let selectedData = {};
+    let selectedType = "quiz";
+
+    function handleSelect(type, e) {
+        selectedData = e.detail;
+        selectedType = type;
+        openModal = true;
+    }
 </script>
 
-<div class="grid grid-cols-2 gap-4">
-    <div class="quiz">
-        <a class="btn btn-ghost btn-xs" href="/quiz/1/setup?mode={mode}&id={id}"
-            >Create New Group Assignment Quiz</a
+<a class="btn btn-ghost" href="/demo">Demo</a>
+<div class="grid grid-cols-2 max-w-7xl" style="margin:0 auto;">
+    <div class="">
+        <QuizFinder on:select={(e) => handleSelect("quiz", e)} />
+        <a
+            class="btn btn-ghost btn-sm w-full"
+            href="/quiz/1/setup?mode={mode}&id={id}">Neue Gruppenzuordnung</a
         >
-
-        {#if data.quizzes.length > 0}
-            <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-            <div class="collapse bg-base-200">
-                <input type="checkbox" />
-                <div class="collapse-title text-xl font-medium">
-                    Alle Quizzes
-                </div>
-                <div class="collapse-content">
-                    <div class="overflow-x-auto">
-                        <table class="table">
-                            <!-- head -->
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Name</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {#each data.quizzes as quiz, i}
-                                    <tr>
-                                        <th>{i + 1}</th>
-                                        <td>{quiz.title}</td>
-                                        <td>
-                                            <a
-                                                class="btn btn-ghost btn-xs"
-                                                href={quiz.play}>Play</a
-                                            >
-                                        </td><td>
-                                            <a
-                                                class="btn btn-ghost btn-xs"
-                                                href={quiz.edit}>Edit</a
-                                            >
-                                        </td>
-                                    </tr>
-                                {/each}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        {/if}
     </div>
-
-    <div class="casestudy">
-        <a class="btn btn-ghost btn-xs" href="/casestudy/"
-            >Create New Case Study</a
+    <div>
+        <CasestudyFinder on:select={(e) => handleSelect("casestudy", e)} />
+        <a class="btn btn-ghost btn-sm w-full" href="/casestudy"
+            >Neues Fallbeispiel</a
         >
-        {#if data.casestudies.length > 0}
-            <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-            <div class="collapse bg-base-200">
-                <input type="checkbox" />
-                <div class="collapse-title text-xl font-medium">
-                    Alle Fallbeispiele
-                </div>
-                <div class="collapse-content">
-                    <div class="overflow-x-auto">
-                        <table class="table">
-                            <!-- head -->
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Name</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {#each data.casestudies as cs, i}
-                                    <tr>
-                                        <th>{i + 1}</th>
-                                        <td>{cs.title || ""}</td>
-                                        <td>
-                                            <a
-                                                class="btn btn-ghost btn-xs"
-                                                href={cs.url}>Edit</a
-                                            >
-                                        </td>
-                                    </tr>
-                                {/each}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        {/if}
     </div>
 </div>
 
+<Modal bind:open={openModal}>
+    <h3 class="font-bold text-lg" slot="header">{selectedData.title}</h3>
+    <div slot="body">
+        {#if selectedType === "quiz"}
+            <a href={selectedData.play} class="btn btn-primary">Spielen</a>
+            <a href={selectedData.edit} class="btn btn-secondary">Bearbeiten</a>
+        {/if}
+        {#if selectedType === "casestudy"}
+            <a href={selectedData.url} class="btn btn-secondary">Bearbeiten</a>
+        {/if}
+    </div>
+</Modal>
+
 <style>
-    .content {
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        align-items: center;
-        height: 100vh;
-    }
 </style>

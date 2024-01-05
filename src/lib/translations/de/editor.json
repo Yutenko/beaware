@@ -1,6 +1,34 @@
 {
+    "quiz": "Quiz",
+    "casestudy": "Fallbeispiel",
     "quizAlert": "Bitte ein Quiz hinzufügen",
-    "quizAlertDescription": "Jedes Fallbeispiel muss mindestens 1 Quiz beinhalten",
-    "quizSelect": "auswählen",
-    "quizChange": "Quiz wechseln"
+    "quizAlertDescription": "Jedes Fallbeispiel muss ein Quiz beinhalten",
+    "select": "auswählen",
+    "change": "wechseln",
+    "delete": "Fallbeispiel löschen",
+    "untitledCasestudy": "Unbenanntes Fallbeispiel",
+    "toolNames": {
+        "Text": "Text",
+        "Heading": "Überschrift",
+        "List": "Liste",
+        "Warning": "Warnung",
+        "Checklist": "Checkliste",
+        "Quote": "Zitat",
+        "Code": "Code",
+        "Image": "Bild",
+        "Delimiter": "Abgrenzer",
+        "RawHTML": "Raw HTML",
+        "Table": "Tabelle",
+        "Link": "Link",
+        "Marker": "Marker",
+        "Bold": "Fett",
+        "Italic": "Italic",
+        "InlineCode": "Inline Code"
+    },
+    "blockTunes": {
+        "delete": "Entfernen",
+        "clickToDelete": "Bestätigen",
+        "moveUp": "Nach oben",
+        "moveDown": "Nach unten"
+    }
 }

@@ -55,7 +55,7 @@ export async function createQuizFile(type) {
     const made = mkdirp.sync(path.dirname(filepath))
     fs.writeFileSync(filepath, data)
 
-    return { id: newId, url: '/quiz/' + path.basename(filepath) }
+    return { id: newId, url: `/quiz/${type}/` + path.basename(filepath) }
 }
 
 export async function updateQuizFile(id, type, data) {
@@ -78,7 +78,7 @@ export async function updateQuizFile(id, type, data) {
         const made = mkdirp.sync(path.dirname(filepath))
         fs.writeFileSync(filepath, data)
 
-        return { url: '/quiz/' + path.basename(filepath) }
+        return { url: `/quiz/${type}/` + path.basename(filepath) }
     }
 
     return null
@@ -92,8 +92,11 @@ export async function deleteQuizFile(id, type) {
         `${type}`,
         `${id}.json`
     )
+    return await fs.promises.access(filepath, fs.constants.F_OK)
+        .then(async () => {
+            return await fs.promises.unlink(filepath)
+        })
 
-    return await fs.promises.unlink(filepath)
 }
 
 export async function getQuizFile(id, type) {
@@ -111,8 +114,11 @@ export async function getQuizFile(id, type) {
 export async function getAllQuizFiles() {
     const existingTypes = await getAllQuizTypes()
 
-    const quizzes = await Promise.all(existingTypes.map(getAllQuizFilesByType))
-    return quizzes[0] ? quizzes[0] : []
+    if (existingTypes) {
+        const quizzes = await Promise.all(existingTypes.map(getAllQuizFilesByType))
+        return quizzes[0] ? quizzes[0] : []
+    }
+    return []
 }
 
 export async function getAllQuizTypes() {
@@ -122,9 +128,15 @@ export async function getAllQuizTypes() {
         'quizzes',
     )
 
-    let directories = await fs.promises.readdir(dirpath, { withFileTypes: true });
+    return await fs.promises.access(dirpath, fs.constants.F_OK)
+        .then(async () => {
+            let directories = await fs.promises.readdir(dirpath, { withFileTypes: true });
+            return directories.filter(dir => dir.isDirectory()).map(dir => dir.name);
+        })
+        .catch(() => {
+            return []
+        })
 
-    return directories.filter(dir => dir.isDirectory()).map(dir => dir.name);
 }
 export async function getAllQuizFilesByType(type) {
     const filepath = path.join(
@@ -219,6 +231,7 @@ export async function updateCasestudyFile(id, data) {
 
     if (isValidId) {
         data.modified = new Date().getTime()
+        data.title = data.title.trim()
         data.quiz = JSON.parse(data.quiz)
         data.editor = JSON.parse(data.editor)
         data = JSON.stringify(data)
@@ -246,11 +259,13 @@ export async function deleteCasestudyFile(id, type) {
         'casestudies',
         `${id}.json`
     )
-
-    return await fs.promises.unlink(filepath)
+    return await fs.promises.access(filepath, fs.constants.F_OK)
+        .then(async () => {
+            return await fs.promises.unlink(filepath)
+        })
 }
 
-export async function getCasestudyFile(id, type) {
+export async function getCasestudyFile(id) {
     const filepath = path.join(
         process.cwd(),
         'static',

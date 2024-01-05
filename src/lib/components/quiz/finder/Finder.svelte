@@ -80,18 +80,18 @@
     </form>
 
     {#if filteredQuizzes.length > 0}
-        <div class="overflow-x-auto w-4/5 mt-2">
+        <div class="overflow-x-auto w-4/5 mt-2 h-[500px]">
             <table class="table table-xs">
                 <tbody>
                     {#each filteredQuizzes as quiz, index}
-                        <tr>
+                        <tr class="hover">
                             <th>{index + 1}</th>
                             <td>{quiz.title}</td>
                             <td
                                 ><button
                                     class="btn btn-ghost btn-xs"
                                     on:click={() => selectQuiz(quiz)}
-                                    >{$t("editor.quizSelect")}</button
+                                    >{$t("editor.select")}</button
                                 ></td
                             >
                             <td>{$t(`quiz.types.${quiz.type}`)}</td>

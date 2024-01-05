@@ -5,9 +5,9 @@
     import { enhance } from "$app/forms";
     import { OPTIONS } from "./constants";
     import { page } from "$app/stores";
-    import { invalidateAll } from "$app/navigation";
 
     let learningappsurl = "";
+    let importLAForm = null;
 
     let title = "";
     let task = "";
@@ -15,6 +15,8 @@
     let currentFeedback;
     let iframeData = {};
     let openOptionsModal = false;
+    let openImportLaModal = false;
+    let openDeleteQuizModal = false;
     let options = OPTIONS;
 
     function setCheckMode(mode) {
@@ -86,30 +88,49 @@
 
 <div class="pt-24" />
 
-<div class="container mx-auto max-w-6xl">
-    <div class="form-control w-full">
-        <form
-            method="post"
-            action="?/importla&id={$page.url.searchParams.get('id')}"
-            use:enhance={({}) => {
-                return async ({ update }) => {
-                    update();
-                    window.location.reload();
-                };
-            }}
+<div class="flex-none absolute right-0 top-0 group-actions">
+    <div class="dropdown dropdown-end">
+        <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+        <!-- svelte-ignore a11y-label-has-associated-control -->
+        <label tabindex="0" class="btn btn-circle btn-ghost">
+            <i class="far fa-ellipsis-v" />
+        </label>
+        <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+        <div
+            tabindex="0"
+            class="card compact dropdown-content z-[1] shadow bg-base-100 rounded-box w-64"
         >
-            <!-- svelte-ignore a11y-label-has-associated-control -->
-            <input
-                type="text"
-                class="input input-bordered w-full"
-                placeholder={$t("quiz.import")}
-                aria-label="Import"
-                name="learningappsurl"
-                bind:value={learningappsurl}
-            />
-        </form>
-    </div>
+            <ul
+                class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52"
+            >
+                <!-- svelte-ignore a11y-missing-attribute -->
+                <li>
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                    <a
+                        on:click={(e) => {
+                            openImportLaModal = true;
+                        }}>{$t("quiz.importLA")}</a
+                    >
+                </li>
 
+                <li>
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                    <!-- svelte-ignore a11y-missing-attribute -->
+                    <a
+                        class="text-error"
+                        on:click={(e) => {
+                            openDeleteQuizModal = true;
+                        }}>{$t("quiz.delete")}</a
+                    >
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="container mx-auto max-w-6xl">
     <div class="mb-6" />
 
     <h4 class="text-xl">{$t("quiz.title")}</h4>
@@ -370,6 +391,71 @@
     <button class="btn btn-primary" slot="footer">
         {$t("core.close")}
     </button>
+</Modal>
+
+<Modal bind:open={openImportLaModal}>
+    <h3 class="font-bold text-lg" slot="header">{$t("quiz.importLA")}</h3>
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div slot="body">
+        <div class="form-control w-full">
+            <form
+                bind:this={importLAForm}
+                method="post"
+                action="?/importla&id={$page.url.searchParams.get(
+                    'id',
+                )}&mode={$page.url.searchParams.get('mode')}"
+            >
+                <!-- svelte-ignore a11y-label-has-associated-control -->
+                <input
+                    type="text"
+                    class="input input-bordered w-full"
+                    aria-label="Import"
+                    name="learningappsurl"
+                    on:paste={(e) => {
+                        // timeout because paste is fired before input receives value
+                        // timeout waits until value is set
+                        setTimeout(() => {
+                            importLAForm.submit();
+                        }, 0);
+                    }}
+                    bind:value={learningappsurl}
+                />
+            </form>
+        </div>
+    </div>
+    <button
+        class="btn btn-primary"
+        slot="footer"
+        on:click={() => {
+            importLAForm?.submit();
+        }}
+    >
+        {$t("quiz.convert")}
+    </button>
+</Modal>
+
+<Modal bind:open={openDeleteQuizModal}>
+    <h3 class="font-bold text-lg" slot="header">{$t("quiz.delete")}</h3>
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div slot="body">
+        <p class="pt-4">{$t("quiz.deleteDescription")}</p>
+    </div>
+    <div slot="footer">
+        <form
+            method="post"
+            action="?/delete&id={$page.url.searchParams.get(
+                'id',
+            )}&mode={$page.url.searchParams.get('mode')}"
+            use:enhance
+        >
+            <button class="btn btn-secondary" type="submit">
+                {$t("quiz.deletePermanent")}
+            </button>
+            <button class="btn btn-primary" on:click={() => {}}>
+                {$t("core.close")}
+            </button>
+        </form>
+    </div>
 </Modal>
 
 <div class="pb-96" />

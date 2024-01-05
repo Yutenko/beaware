@@ -4,11 +4,14 @@
     import { store } from "./store.js";
 
     function setQuiz(e) {
-        const quiz = e.detail;
-        store.setQuiz(quiz);
+        store.setQuiz(e.detail);
     }
     function resetQuiz() {
         store.resetQuiz();
+    }
+    let openQuizFinder = false;
+    function showQuizFinder() {
+        openQuizFinder = true;
     }
 </script>
 
@@ -24,7 +27,7 @@
                     <div class="text-xs">{$store.quiz.title}</div>
                 </div>
                 <button class="btn btn-sm btn-primary" on:click={resetQuiz}
-                    >{$t("editor.quizChange")}</button
+                    >{$t("editor.quiz")} {$t("editor.change")}</button
                 >
             </div>
             <iframe
@@ -37,17 +40,17 @@
 
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div class="max-w-2xl mx-auto">
+    <div class="max-w-2xl mx-auto" on:click={showQuizFinder}>
         <div class="flex items-center justify-center w-full flex-col">
             <label
                 for="dropzone-file"
-                class="flex flex-col items-center justify-center w-full min-h-[250px] border-2 border-dashed rounded-lg cursor-pointer dark:hover:bg-bray-800"
+                class="flex flex-col items-center justify-center pt-6 pb-6 w-full min-h-[250px] max-h-[500px] border-2 border-dashed rounded-lg cursor-pointer dark:hover:bg-bray-800"
             >
                 <div
                     class="flex flex-col items-center justify-center pt-5 pb-6"
                 >
                     <i class="fal fa-question mb-2"></i>
-                    <p class="mb-2 text-sm">
+                    <p class="mb-2">
                         <span class="font-semibold"
                             >{$t("editor.quizAlert")}</span
                         >
@@ -56,7 +59,9 @@
                         {$t("editor.quizAlertDescription")}
                     </p>
                 </div>
-                <QuizFinder on:select={setQuiz} />
+                {#if openQuizFinder}
+                    <QuizFinder on:select={setQuiz} />
+                {/if}
             </label>
         </div>
     </div>

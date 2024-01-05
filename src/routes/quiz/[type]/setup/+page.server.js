@@ -1,4 +1,4 @@
-import { createQuizFile, updateQuizFile, isValidQuizId } from "$lib/server/db"
+import { createQuizFile, updateQuizFile, deleteQuizFile, isValidQuizId } from "$lib/server/db"
 import { convertLearningAppsDataToQuizData } from '$lib/server/helper';
 import { redirect } from '@sveltejs/kit';
 
@@ -20,11 +20,17 @@ export const actions = {
         let id = url.searchParams.get("id") !== 'null' ? url.searchParams.get("id") : null;
         const data = Object.fromEntries(await request.formData())
         await updateQuizFile(id, params.type, data.state)
-
+    },
+    delete: async ({ url, request, params }) => {
+        let id = url.searchParams.get("id") !== 'null' ? url.searchParams.get("id") : null;
+        await deleteQuizFile(id, params.type)
+        throw redirect(302, "/");
     },
     importla: async ({ url, request, fetch, params }) => {
         let id = url.searchParams.get("id") !== 'null' ? url.searchParams.get("id") : null;
+        let mode = url.searchParams.get("mode") !== 'null' ? url.searchParams.get("mode") : "";
         const data = Object.fromEntries(await request.formData())
+
 
         if (data.learningappsurl && data.learningappsurl.includes("learningapps.org") && isValidQuizId(id, params.type)) {
             let response = await fetch(data.learningappsurl);
@@ -43,10 +49,8 @@ export const actions = {
                     initparameters: json.initparameters
                 }
                 await convertLearningAppsDataToQuizData(id, data.learningappsurl, o)
-                return
+                throw redirect(302, `${url.pathname}?mode=${mode}&id=${id}`);
             }
         }
-
-        return null
     }
 }

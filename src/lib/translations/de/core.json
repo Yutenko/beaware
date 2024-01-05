@@ -4,6 +4,8 @@
     "reset":"Zurücksetzen",
     "add":"Hinzufügen",
     "change":"Ändern",
+    "save":"Speichern",
+    "saving":"speichert",
     "fileuploader": {
         "dnd": "Drag & Drop",
         "browse": "oder suche in deinen Dateien oder unserer Bibliothek",

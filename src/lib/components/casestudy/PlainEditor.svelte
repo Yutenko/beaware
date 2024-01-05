@@ -9,6 +9,7 @@
     import Table from "@editorjs/table";
     import Marker from "@editorjs/marker";
     import { store } from "./store";
+    import { t } from "$lib/translations";
 
     let EditorJS;
     let Image;
@@ -78,6 +79,40 @@
                     inlineToolbar: true,
                 },
             },
+            i18n: {
+                messages: {
+                    toolNames: {
+                        Text: $t("editor.toolNames.Text"),
+                        Heading: $t("editor.toolNames.Heading"),
+                        List: $t("editor.toolNames.List"),
+                        Warning: $t("editor.toolNames.Warning"),
+                        Checklist: $t("editor.toolNames.Checklist"),
+                        Quote: $t("editor.toolNames.Quote"),
+                        Code: $t("editor.toolNames.Code"),
+                        Image: $t("editor.toolNames.Image"),
+                        Delimiter: $t("editor.toolNames.Delimiter"),
+                        "Raw HTML": $t("editor.toolNames.RawHTML"),
+                        Table: $t("editor.toolNames.Table"),
+                        Link: $t("editor.toolNames.Link"),
+                        Marker: $t("editor.toolNames.Marker"),
+                        Bold: $t("editor.toolNames.Bold"),
+                        Italic: $t("editor.toolNames.Italic"),
+                        InlineCode: $t("editor.toolNames.InlineCode"),
+                    },
+                    blockTunes: {
+                        delete: {
+                            Delete: $t("editor.blockTunes.delete"),
+                            "Click to delete": $t("editor.blockTunes.clickToDelete"),
+                        },
+                        moveUp: {
+                            "Move up": $t("editor.blockTunes.moveUp"),
+                        },
+                        moveDown: {
+                            "Move down": $t("editor.blockTunes.moveDown"),
+                        },
+                    },
+                },
+            },
         });
     }
 
@@ -88,4 +123,4 @@
     });
 </script>
 
-<div id="editorjs"></div>
+<div id="editorjs" class="pt-24"></div>

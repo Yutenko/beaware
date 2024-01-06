@@ -103,10 +103,10 @@
 </div>
 
 <Modal bind:open={openDeleteCasestudyModal}>
-    <h3 class="font-bold text-lg" slot="header">{$t("quiz.delete")}</h3>
+    <h3 class="font-bold text-lg" slot="header">{$t("editor.delete")}</h3>
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div slot="body">
-        <p class="pt-4">{$t("quiz.deleteDescription")}</p>
+        <p class="pt-4">{$t("editor.deleteDescription")}</p>
     </div>
     <div slot="footer">
         <form
@@ -115,7 +115,7 @@
             use:enhance
         >
             <button class="btn btn-secondary" type="submit">
-                {$t("quiz.deletePermanent")}
+                {$t("editor.deletePermanent")}
             </button>
             <button class="btn btn-primary" on:click={() => {}}>
                 {$t("core.close")}

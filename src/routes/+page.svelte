@@ -19,14 +19,17 @@
     <div class="">
         <QuizFinder on:select={(e) => handleSelect("quiz", e)} />
         <a
+            data-sveltekit-preload-data="tap"
             class="btn btn-ghost btn-sm w-full"
             href="/quiz/1/setup?mode={mode}&id={id}">Neue Gruppenzuordnung</a
         >
     </div>
     <div>
         <CasestudyFinder on:select={(e) => handleSelect("casestudy", e)} />
-        <a class="btn btn-ghost btn-sm w-full" href="/casestudy"
-            >Neues Fallbeispiel</a
+        <a
+            class="btn btn-ghost btn-sm w-full"
+            data-sveltekit-preload-data="tap"
+            href="/casestudy">Neues Fallbeispiel</a
         >
     </div>
 </div>

@@ -1,11 +1,13 @@
 {
     "quiz": "Quiz",
+    "delete": "Fallbeispiel löschen",
+    "deletePermanent":"Endgültig löschen",
+    "deleteDescription": "Möchtest Du das Fallbeispiel endgültig löschen?",
     "casestudy": "Fallbeispiel",
     "quizAlert": "Bitte ein Quiz hinzufügen",
     "quizAlertDescription": "Jedes Fallbeispiel muss ein Quiz beinhalten",
     "select": "auswählen",
     "change": "wechseln",
-    "delete": "Fallbeispiel löschen",
     "untitledCasestudy": "Unbenanntes Fallbeispiel",
     "toolNames": {
         "Text": "Text",

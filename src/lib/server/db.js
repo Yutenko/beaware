@@ -252,7 +252,7 @@ export async function updateCasestudyFile(id, data) {
     return null
 }
 
-export async function deleteCasestudyFile(id, type) {
+export async function deleteCasestudyFile(id) {
     const filepath = path.join(
         process.cwd(),
         'static',

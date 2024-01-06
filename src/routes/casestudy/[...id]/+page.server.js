@@ -1,4 +1,4 @@
-import { createCasestudyFile, isValidCasestudyId, updateCasestudyFile } from "$lib/server/db"
+import { createCasestudyFile, isValidCasestudyId, updateCasestudyFile, deleteCasestudyFile } from "$lib/server/db"
 import { redirect } from '@sveltejs/kit';
 
 export async function load({ url, params }) {
@@ -12,8 +12,12 @@ export async function load({ url, params }) {
 };
 
 export const actions = {
-    default: async ({ request, params }) => {
+    update: async ({ request, params }) => {
         const formData = Object.fromEntries(await request.formData())
         await updateCasestudyFile(params.id, formData)
+    },
+    delete: async ({ params }) => {
+        await deleteCasestudyFile(params.id)
+        throw redirect(302, "/");
     },
 }

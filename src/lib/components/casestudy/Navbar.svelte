@@ -3,6 +3,11 @@
     import { store } from "./store";
     import { fade } from "svelte/transition";
     import { onMount } from "svelte";
+    import { Modal } from "$components"
+    import { enhance } from "$app/forms";
+    import { page } from "$app/stores";
+
+    let openDeleteCasestudyModal = false;
 
     const TIME_TO_IDLE = 10; // in seconds
     let doFade = false;
@@ -18,7 +23,7 @@
         formData.append("quiz", JSON.stringify($store.quiz));
         formData.append("editor", JSON.stringify($store.editor));
 
-        fetch(window.location.href, {
+        fetch(window.location.href+"?/update", {
             body: formData,
             method: "post",
         }).then(() => setTimeout(toggleFade, 2000));
@@ -84,7 +89,9 @@
                             <!-- svelte-ignore a11y-click-events-have-key-events -->
                             <!-- svelte-ignore a11y-no-static-element-interactions -->
                             <!-- svelte-ignore a11y-missing-attribute -->
-                            <a class="text-error" on:click={(e) => {}}
+                            <a class="text-error" on:click={(e) => {
+                                openDeleteCasestudyModal = true;
+                            }}
                                 >{$t("editor.delete")}</a
                             >
                         </li>
@@ -94,3 +101,25 @@
         </div>
     </div>
 </div>
+
+<Modal bind:open={openDeleteCasestudyModal}>
+    <h3 class="font-bold text-lg" slot="header">{$t("quiz.delete")}</h3>
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div slot="body">
+        <p class="pt-4">{$t("quiz.deleteDescription")}</p>
+    </div>
+    <div slot="footer">
+        <form
+            method="post"
+            action="?/delete"
+            use:enhance
+        >
+            <button class="btn btn-secondary" type="submit">
+                {$t("quiz.deletePermanent")}
+            </button>
+            <button class="btn btn-primary" on:click={() => {}}>
+                {$t("core.close")}
+            </button>
+        </form>
+    </div>
+</Modal>

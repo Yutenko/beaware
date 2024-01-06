@@ -55,7 +55,7 @@
     </form>
 
     {#if filteredCasestudies.length > 0}
-        <div class="overflow-x-auto w-4/5 mt-2">
+        <div class="overflow-x-auto w-4/5 mt-2 h-[500px]">
             <table class="table table-xs">
                 <tbody>
                     {#each filteredCasestudies as cs, index}

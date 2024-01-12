@@ -1,0 +1,8 @@
+{
+    "categories": {
+        "INBOX": 0,
+        "SPAM": 1,
+        "DRAFTS": 2,
+        "TRASH": 3
+    }
+}

@@ -7,7 +7,7 @@ export async function POST({ params, request }) {
     let o = { success: 0 }
 
 
-    if (slug === "uploadimage") {
+    if (slug === "upload") {
         const data = Object.fromEntries(await request.formData())
         const res = await uploadFile(data.image)
 

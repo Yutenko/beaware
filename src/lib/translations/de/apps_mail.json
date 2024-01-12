@@ -1,0 +1,19 @@
+{
+    "categories": {
+        "0": "Posteingang",
+        "1": "Spam",
+        "2": "Entwürfe",
+        "3": "Papierkorb"
+    },
+    "badges": {
+        "new": "neu"
+    },
+    "to": "An",
+    "empty": {
+        "0": "Du hast keine Emails im Posteingang.",
+        "1": "Hurra, kein Spam",
+        "2": "Noch keine Entwürfe vorhanden.",
+        "3": "Dein Papierkorb ist leer"
+    },
+    "noSearchResults": "Keine Einträge gefunden."
+}

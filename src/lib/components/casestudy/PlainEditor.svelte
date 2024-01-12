@@ -10,9 +10,11 @@
     import Marker from "@editorjs/marker";
     import { store } from "./store";
     import { t } from "$lib/translations";
+    
 
     let EditorJS;
     let Image;
+    let Video;
     let Underline;
     let Checklist;
 
@@ -32,6 +34,7 @@
     async function initEditorJS() {
         EditorJS = (await import("@editorjs/editorjs")).default;
         Image = (await import("@editorjs/image")).default;
+        Video = (await import("@weekwood/editorjs-video")).default;
         Underline = (await import("@editorjs/underline")).default;
         Checklist = (await import("@editorjs/checklist")).default;
 
@@ -62,7 +65,7 @@
                     class: Image,
                     config: {
                         endpoints: {
-                            byFile: "http://localhost:5173/api/uploadimage",
+                            byFile: "http://localhost:5173/api/upload",
                         },
                     },
                 },
@@ -102,7 +105,9 @@
                     blockTunes: {
                         delete: {
                             Delete: $t("editor.blockTunes.delete"),
-                            "Click to delete": $t("editor.blockTunes.clickToDelete"),
+                            "Click to delete": $t(
+                                "editor.blockTunes.clickToDelete",
+                            ),
                         },
                         moveUp: {
                             "Move up": $t("editor.blockTunes.moveUp"),

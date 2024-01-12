@@ -1,6 +1,10 @@
 import i18n from 'sveltekit-i18n';
 import lang from './lang.json';
 
+import dayjs from 'dayjs';
+import 'dayjs/locale/de';
+dayjs.locale('de')
+
 export const config = {
   fallbackLocale: 'de',
   translations: {
@@ -16,11 +20,16 @@ export const config = {
       locale: 'de',
       key: 'quiz',
       loader: async () => (await import('./de/quiz.json')).default,
-    }, 
+    },
     {
       locale: 'de',
       key: 'editor',
       loader: async () => (await import('./de/editor.json')).default,
+    },
+    {
+      locale: 'de',
+      key: 'mail',
+      loader: async () => (await import('./de/apps_mail.json')).default,
     },
 
   ],

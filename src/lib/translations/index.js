@@ -31,6 +31,11 @@ export const config = {
       key: 'mail',
       loader: async () => (await import('./de/apps_mail.json')).default,
     },
+    {
+      locale: 'de',
+      key: 'browser',
+      loader: async () => (await import('./de/apps_browser.json')).default,
+    },
 
   ],
 };

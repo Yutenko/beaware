@@ -20,11 +20,11 @@
     <div class="flex-1"></div>
 
     <div class="flex-none">
-        <button class="btn btn-circle" on:click={deleteMail}>
+        <button class="btn btn-circle btn-outline" on:click={deleteMail}>
             <i class="fas fa-trash"></i>
         </button>
         {#if portrait}
-            <button class="btn btn-circle" on:click={closeMail}>
+            <button class="btn btn-circle btn-outline" on:click={closeMail}>
                 <i class="fas fa-times"></i>
             </button>
         {/if}

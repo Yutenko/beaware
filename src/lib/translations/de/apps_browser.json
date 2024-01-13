@@ -1,0 +1,9 @@
+{
+    "typeurl": "Tippe eine URL",
+    "newtab": "Neuer Tab",
+    "security": "Sicherheit",
+    "connectionSafe": "Verbindung ist sicher",
+    "securityDescription": "Deine Daten wie Passwörter oder Kreditkartennummern sind geschützt, wenn du sie an diese Website sendest.",
+    "validCertificate": "Zertifikat ist gültig",
+    "certificateViewer":"Zertifikatsbetrachter"
+}

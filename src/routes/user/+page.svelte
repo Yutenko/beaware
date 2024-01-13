@@ -1,6 +1,6 @@
 <script>
-    import { MailClient } from "$components"
+    import { Browser } from "$components"
 </script>
 
 
-<MailClient />
+<Browser />

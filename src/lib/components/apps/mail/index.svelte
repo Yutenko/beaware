@@ -92,10 +92,7 @@
         </div>
         <div class="col-span-6 h-100vh">
             {#if openMail}
-                <Content
-                    data={currentMail}
-                    on:delete:mail={deleteMail}
-                />
+                <Content data={currentMail} on:delete:mail={deleteMail} />
             {/if}
         </div>
     </div>

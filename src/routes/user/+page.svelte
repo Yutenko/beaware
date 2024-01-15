@@ -1,6 +1,6 @@
 <script>
-    import { Browser } from "$components"
+    import { Browser, MailClient, Phishing } from "$components";
 </script>
 
-
-<Browser />
+<!-- HERE WOULD BE THE USER DESKTOP, ITS NOW ONLY FOR TESTING ISOLATED COMPONENTS -->
+<Phishing />

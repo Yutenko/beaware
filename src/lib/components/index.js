@@ -18,3 +18,6 @@ export { default as Modal } from './modal/Modal.svelte';
 // User Desktop
 export { default as MailClient } from './apps/mail/index.svelte';
 export { default as Browser } from './apps/browser/index.svelte';
+
+// Simulation
+export { default as Phishing } from './simulation/phishing/index.svelte';

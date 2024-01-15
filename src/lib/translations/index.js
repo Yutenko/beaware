@@ -36,6 +36,11 @@ export const config = {
       key: 'browser',
       loader: async () => (await import('./de/apps_browser.json')).default,
     },
+    {
+      locale: 'de',
+      key: 'phishing',
+      loader: async () => (await import('./de/simulation_phishing.json')).default,
+    },
 
   ],
 };

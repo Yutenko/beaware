@@ -1,0 +1,444 @@
+<script>
+    import { onMount } from "svelte";
+    import { fade } from "svelte/transition";
+    import { t } from "$lib/translations";
+
+    let config = {
+        logo: "/media/simulation/p/phlogo.png",
+        banner: "/media/simulation/p/phbanner.png",
+        redirect: "https://learningapps.org",
+    };
+
+    onMount(async () => {
+        document.title = $t("phishing.google.tabtitle");
+        var link = document.querySelector("link[rel~='icon']");
+        if (!link) {
+            link = document.createElement("link");
+            link.rel = "icon";
+            document.head.appendChild(link);
+        }
+        link.href = "/media/simulation/p/google/favicon.ico";
+    });
+
+    let delay = 1000;
+    let maxDelay = 2400;
+    let minDelay = 800;
+    let loading = false;
+    let hasError = false;
+    let step = {
+        EMAIL: 0,
+        PASSWORD: 1,
+    };
+    let currentStep = step.EMAIL;
+
+    let email = "";
+    let password = "";
+
+    function changeToEmail() {
+        hasError = false;
+        currentStep = step.EMAIL;
+    }
+
+    function changeToPassword() {
+        if (validateEmail(email)) {
+            hasError = false;
+            delay = Math.floor(
+                Math.random() * (maxDelay - minDelay + 1) + minDelay,
+            );
+            toggleLoading();
+            setTimeout(() => {
+                currentStep = step.PASSWORD;
+                toggleLoading();
+            }, delay);
+        } else {
+            hasError = true;
+        }
+    }
+    function toggleLoading() {
+        loading = !loading;
+    }
+    function validateEmail(email) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    }
+    function login() {
+        if (password.trim().length > 0) {
+            alert("Andrè wurde gephished!");
+        } else {
+            hasError = true;
+        }
+    }
+</script>
+
+<div class="bg">
+    <div class="center">
+        <div class="sign-in-box relative">
+            {#if loading}
+                <progress class="absolute progress w-full top-0 left-0">
+                </progress>
+            {/if}
+            <svg
+                viewBox="0 0 75 24"
+                width="75"
+                height="24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                class="BFr46e xduoyf"
+                ><g id="qaEJec"
+                    ><path
+                        fill="#ea4335"
+                        d="M67.954 16.303c-1.33 0-2.278-.608-2.886-1.804l7.967-3.3-.27-.68c-.495-1.33-2.008-3.79-5.102-3.79-3.068 0-5.622 2.41-5.622 5.96 0 3.34 2.53 5.96 5.92 5.96 2.73 0 4.31-1.67 4.97-2.64l-2.03-1.35c-.673.98-1.6 1.64-2.93 1.64zm-.203-7.27c1.04 0 1.92.52 2.21 1.264l-5.32 2.21c-.06-2.3 1.79-3.474 3.12-3.474z"
+                    ></path></g
+                ><g id="YGlOvc"
+                    ><path fill="#34a853" d="M58.193.67h2.564v17.44h-2.564z"
+                    ></path></g
+                ><g id="BWfIk"
+                    ><path
+                        fill="#4285f4"
+                        d="M54.152 8.066h-.088c-.588-.697-1.716-1.33-3.136-1.33-2.98 0-5.71 2.614-5.71 5.98 0 3.338 2.73 5.933 5.71 5.933 1.42 0 2.548-.64 3.136-1.36h.088v.86c0 2.28-1.217 3.5-3.183 3.5-1.61 0-2.6-1.15-3-2.12l-2.28.94c.65 1.58 2.39 3.52 5.28 3.52 3.06 0 5.66-1.807 5.66-6.206V7.21h-2.48v.858zm-3.006 8.237c-1.804 0-3.318-1.513-3.318-3.588 0-2.1 1.514-3.635 3.318-3.635 1.784 0 3.183 1.534 3.183 3.635 0 2.075-1.4 3.588-3.19 3.588z"
+                    ></path></g
+                ><g id="e6m3fd"
+                    ><path
+                        fill="#fbbc05"
+                        d="M38.17 6.735c-3.28 0-5.953 2.506-5.953 5.96 0 3.432 2.673 5.96 5.954 5.96 3.29 0 5.96-2.528 5.96-5.96 0-3.46-2.67-5.96-5.95-5.96zm0 9.568c-1.798 0-3.348-1.487-3.348-3.61 0-2.14 1.55-3.608 3.35-3.608s3.348 1.467 3.348 3.61c0 2.116-1.55 3.608-3.35 3.608z"
+                    ></path></g
+                ><g id="vbkDmc"
+                    ><path
+                        fill="#ea4335"
+                        d="M25.17 6.71c-3.28 0-5.954 2.505-5.954 5.958 0 3.433 2.673 5.96 5.954 5.96 3.282 0 5.955-2.527 5.955-5.96 0-3.453-2.673-5.96-5.955-5.96zm0 9.567c-1.8 0-3.35-1.487-3.35-3.61 0-2.14 1.55-3.608 3.35-3.608s3.35 1.46 3.35 3.6c0 2.12-1.55 3.61-3.35 3.61z"
+                    ></path></g
+                ><g id="idEJde"
+                    ><path
+                        fill="#4285f4"
+                        d="M14.11 14.182c.722-.723 1.205-1.78 1.387-3.334H9.423V8.373h8.518c.09.452.16 1.07.16 1.664 0 1.903-.52 4.26-2.19 5.934-1.63 1.7-3.71 2.61-6.48 2.61-5.12 0-9.42-4.17-9.42-9.29C0 4.17 4.31 0 9.43 0c2.83 0 4.843 1.108 6.362 2.56L14 4.347c-1.087-1.02-2.56-1.81-4.577-1.81-3.74 0-6.662 3.01-6.662 6.75s2.93 6.75 6.67 6.75c2.43 0 3.81-.972 4.69-1.856z"
+                    ></path></g
+                ></svg
+            >
+
+            <!-- E-MAIL -->
+            {#if currentStep === step.EMAIL}
+                <div in:fade>
+                    <div class="title mt-6 mb-2 text-center">
+                        {$t("phishing.google.signin")}
+                    </div>
+
+                    <div class="mb-8 text-center mid-text">
+                        {$t("phishing.google.signindescription")}
+                    </div>
+                    <div class="">
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder={$t(
+                                "phishing.google.email_placeholder",
+                            )}
+                            class="input-text-box text-small {hasError
+                                ? 'error'
+                                : ''}"
+                            bind:value={email}
+                        />
+                        {#if hasError}
+                            <div
+                                class="error small-text text-left mt-1"
+                                style="font-size:12px"
+                            >
+                                <span class="info"
+                                    ><i class="fal fa-info-circle"></i></span
+                                >
+                                {$t("phishing.google.email_error")}
+                            </div>
+                        {/if}
+                    </div>
+                    <div class="mb-16 small-text">
+                        <a class="link no-underline mt-2 mb-1" href="">
+                            {$t("phishing.google.noaccount")}
+                        </a>
+                    </div>
+                    <div class="mb-14 small-text">
+                        {$t("phishing.google.moreinfo_1")}<br />
+                        <a
+                            class="link"
+                            href="https://support.google.com/chrome/answer/6130773?hl=de"
+                            >{$t("phishing.google.moreinfo_2")}</a
+                        >
+                    </div>
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                    <div class="mb-4 flex justify-between items-center">
+                        <a
+                            class="link no-underline small-text"
+                            href="https://support.google.com/chrome/answer/6130773?hl=de"
+                            >{$t("phishing.google.createone")}</a
+                        >
+                        <!-- svelte-ignore a11y-click-events-have-key-events -->
+                        <div class="g-button" on:click={changeToPassword}>
+                            {$t("phishing.google.next")}
+                        </div>
+                    </div>
+                </div>
+            {/if}
+
+            {#if currentStep === step.PASSWORD}
+                <!-- PASSWORD -->
+                <div in:fade>
+                    <div class="identity-banner">
+                        <!-- svelte-ignore a11y-click-events-have-key-events -->
+                        <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+                        <img
+                            on:click={changeToEmail}
+                            src="/media/simulation/p/ms/arrow-left.svg"
+                            alt="arrow-left"
+                            class="btn btn-ghost btn-circle btn-xs inline-block"
+                        />
+                        <span class="identity">{email}</span>
+                    </div>
+                    <div class="title mb-4">
+                        {$t("phishing.google.enterpassword")}
+                    </div>
+                    {#if hasError}
+                        <div class="error small-text">
+                            {$t("phishing.google.password_error_1")}
+                            <a
+                                class="link"
+                                href="https://passwordreset.microsoftonline.com/?ru=https%3a%2f%2flogin.microsoftonline.com%2fcommon%2freprocess%3fctx%3drQQIARAAhZHNa9NwAIabpk1rwbVMkB5Eehgoznw2adNCYV03Z2qSrS1LlnpK0l-atM2HSdq1wavgwcPAi3jw4EUYDGQykLGDN6F42EnEo8eBQ3ba0foXyAvv4bm9z5tJklgRox_AFEZUVxhQ1EFJJ1BKIw2UplgGZXu0hpYZAMrsIkW65C9nct_v4eTRcYI_PfJPqMLTr4fQXTMMvaCK4yFQ7QCzLd13A9cIMd218b77GYLOIegwvkJXNMBW9CJaYlSA0ozRQzVDAyhLkixZKZUrqq7_jGe36-PQpP6V61sRuIqnDV_t28AJ38LPwazpdRtciRsI-0ok2cKGOeTlFiFEQihumJbSIWjRbtq83LTEqB6JkUAqMkcKDS7gnHbEDdzpgpNCtLkvDhSSbzTD7l7b1aiWtW01Z1257em2NOhtjsa9LWmmyCKhypUx5xC1YxhZLLJdZw4vuR5wrF7B813DGoEfMPQLzjuW7mJBCCxHU3VzzTM14DuYbp4noIvE7TSUg_OJQuz-MpGsptOZXDafKsSuE9D75MLq2rffV6_OMmsfIgXR7nyKzZO4atOmubW-MwSd1iRqPSmak34jaIu70f6I4rhxV5accDUYdaTdGlslDxDkALk1R1JCp85jzc4fJP4yFTu98Z933mSgLzdj10unx6_fnZ28uHx8kX3ISBJurI5KyvSZ6Q7Vvck0oBk51CqPduqD4UTi5UAUdzfXebFe-5iL_QU1&amp;mkt=de-DE&amp;hosted=0&amp;device_platform=macOS"
+                                >{$t("phishing.google.password_error_2")}
+                            </a>
+                        </div>
+                    {/if}
+                    <div class="mb-4">
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder={$t(
+                                "phishing.google.password_placeholder",
+                            )}
+                            class="input-text-box text-small"
+                            bind:value={password}
+                        />
+                    </div>
+                    <div class="mb-4 small-text">
+                        <a
+                            class="link"
+                            href="https://passwordreset.microsoftonline.com/?ru=https%3a%2f%2flogin.microsoftonline.com%2fcommon%2freprocess%3fctx%3drQQIARAAhZK_j9t0AMXj5C69i4A7HQi126liAEqSr792nPjKSSRxfjiO7fxwnNiL5fhHbMc_crFjpx6RQAwdTgwMlSokNm5CwABIIMR46tC5fwBDB9R26lKJAHPF8vSe3tvep3BAlDC8BErgwxwsgbP38CpRwfHKvIhBjSji5BwUa5hBFFGdxHYVrBKauj4pHP928sPtux-PqJ8X_Oe9V-dfXiGnVhStwrNyOUmSUmCatmaUtMAru6qv2_4ihj8hyGMEeZDd140i1brKhgRWwwEJUAgACVF8pyXOGS0lR1_ynUkkC7LLjwGQnWXaFxZbXpAiVqgD1uNc2ZE9mWJxVljifEe0JI-OOEe3WRsAXmhb_SkNJEGLZG9yj3Msd7cDPLVInmSP-PomsuA_Eqzt1HiRPTSDtaesgjB6kPsquwk7QieqoEHsJRczvoUDjkyE-YXiM02R4Ki5v8YJucixBM_PVxjbMNU2tgk1uhgYjAEVetC13arjebCth611z-1Wi2OtNWzcYwYKwbdJY8yh9WUnZUSrx_VrIiCHDpikom1URiov8E1ckW2hP4e6y0-GjW3gk2t2WGvNaWCuEj11Zo4aN7FUu6hvnMVU6cKBQzDVBs5DTZ7hfSmRplt0UGuqrNEjqd5IkIb1llVrUJUihInZ0tqOaRtVhm2OZxqtKq2Bidckbji23JnS9uLYmSYDRkm1mq0O0qbYoUD9KnfrNffG8Ptcfme8wL_OVYOV4dv66WodmLZrvA6JGJb5f1M38IxS3XUf7yFP9949yB_fvpk5zbz_Dtg_OzgoHB_dvHGaebmHfLO_I-7rD_789NtO-snD-w8vH90XMtf7ZdXDLavTGCyN8TBOhwxmxYtmOOImaeJCmt7IU9GP7oTuWJycV87Qyzxymc9f5w9pSuFaAqGAZ3nkixuZXw7_l90nb7xdKGxsxQ001TXCk_8Y_v3NzMu3fv3j-fXVj5_91X169JEGmN4YvWOL2zqzpTfdiSfBFfTnU6ncgz67QqVe2pXFGcVI598dZ_4G0&mkt=de-DE&hosted=0&device_platform=macOS"
+                            >{$t("phishing.google.forgotpassword")}
+                        </a>
+                    </div>
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                    <div class="mb-4 flex justify-end">
+                        <!-- svelte-ignore a11y-click-events-have-key-events -->
+                        <div class="g-button" on:click={login}>
+                            {$t("phishing.google.login")}
+                        </div>
+                    </div>
+                </div>
+            {/if}
+        </div>
+        <div
+            class="g-footer mt-2"
+            style="color:{currentStep === step.EMAIL ? '#000' : '#fff'}"
+        >
+            <a
+                href="https://support.google.com/accounts?hl=de&p=account_iph"
+                class=""
+                >{$t("phishing.google.help")}
+            </a>
+            <a
+                href="https://accounts.google.com/TOS?loc=CH&hl=de&privacy=true"
+                class=""
+                >{$t("phishing.google.privacy")}
+            </a>
+            <a href="https://accounts.google.com/TOS?loc=CH&hl=de" class=""
+                >{$t("phishing.google.agreement")}
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media only screen and (max-width: 600px) {
+        .sign-in-box {
+            margin-left: auto !important;
+            margin-right: auto !important;
+            position: relative;
+            padding: 44px;
+            margin-bottom: 28px;
+            background-color: #fff;
+            overflow: hidden;
+            width: 100% !important;
+            -webkit-box-shadow: inherit !important;
+            -moz-box-shadow: inherit !important;
+            box-shadow: inherit !important;
+            min-width: inherit !important;
+            min-height: inherit !important;
+            max-width: 100% !important;
+            justify-content: flex-start !important;
+            border: none !important;
+        }
+        .center {
+            display: block !important;
+        }
+    }
+    .bg {
+        background: #fff;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background-repeat: no-repeat, no-repeat;
+        background-position:
+            center center,
+            center center;
+        background-size: cover, cover;
+        font-family: roboto, "Noto Sans Myanmar UI", arial, sans-serif;
+    }
+    .sign-in-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #dadce0;
+        border-radius: 8px;
+        flex-shrink: 0;
+        margin: 0 auto;
+        min-height: 0;
+        width: 450px;
+        overflow-y: auto;
+        padding: 48px 40px 36px;
+    }
+    .progress {
+        --progress-color: rgb(26, 115, 232) !important;
+        height: 1px !important;
+    }
+    .center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        flex-direction: column;
+    }
+    .logo {
+        max-height: 36px;
+        vertical-align: middle;
+        overflow-clip-margin: content-box;
+        overflow: clip;
+    }
+    .title {
+        color: rgb(32, 33, 36);
+        font-size: 24px;
+        font-family: "Google Sans", "Noto Sans Myanmar UI", arial, sans-serif;
+        font-weight: 400;
+        line-height: 1.3333;
+    }
+    .link {
+        border-radius: 4px;
+        color: rgb(26, 115, 232) !important;
+        display: inline-block;
+        font-weight: 500;
+        letter-spacing: 0.25px;
+        outline: 0;
+        position: relative;
+        background-color: transparent;
+        cursor: pointer;
+        font-size: inherit;
+        text-align: left;
+        border: 0;
+    }
+    .small-text {
+        color: rgb(95, 99, 104);
+        font-size: 14px;
+        line-height: 1.4286;
+    }
+    .mid-text {
+        color: rgb(32, 33, 36);
+        font-size: 16px;
+        font-weight: 400;
+        letter-spacing: 0.1px;
+        line-height: 1.5;
+    }
+    .input-text-box {
+        border-radius: 4px;
+        color: rgb(32, 33, 36);
+        font-size: 16px;
+        height: 28px;
+        margin: 1px 1px 0 1px;
+        z-index: 1;
+        flex-grow: 1;
+        flex-shrink: 1;
+        background-color: transparent;
+        border: none;
+        display: block;
+        font:
+            400 16px Roboto,
+            RobotoDraft,
+            Helvetica,
+            Arial,
+            sans-serif;
+        line-height: 24px;
+        min-width: 0%;
+        outline: none;
+        width: 100%;
+        border: 1px solid #ccc;
+        padding: 25px 0px 25px 10px;
+    }
+
+    .g-button {
+        font-family: "Google Sans", Roboto, Arial, sans-serif;
+        font-size: 0.875rem;
+        letter-spacing: 0.0107142857em;
+        font-weight: 500;
+        text-transform: none;
+        transition:
+            border 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+            box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: none;
+        color: #fff;
+        background-color: rgb(26, 115, 232);
+        padding: 0 24px 0 24px;
+        font-weight: 500;
+        text-transform: none;
+        transition:
+            border 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+            box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: none;
+        letter-spacing: 0.0892857143em;
+        height: 36px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+    .error {
+        color: rgb(217, 48, 37);
+        border-color: rgb(217, 48, 37);
+    }
+    .error .info {
+        margin-right: 8px;
+        margin-top: -2px;
+        width: 16px;
+        height: 16px;
+    }
+    .identity-banner {
+        height: 24px;
+        background: #fff;
+        margin-top: 16px;
+        margin-bottom: -4px;
+    }
+    .identity-banner .identity {
+        line-height: 24px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .g-footer {
+        opacity: 70%;
+        font-size: 13px;
+    }
+    .g-footer a {
+        color: inherit;
+        font-size: 12px;
+        line-height: 28px;
+        white-space: nowrap;
+        display: inline-block;
+        margin-left: 8px;
+        margin-right: 8px;
+    }
+</style>

@@ -3,12 +3,6 @@
     import { fade } from "svelte/transition";
     import { t } from "$lib/translations";
 
-    let config = {
-        logo: "/media/simulation/p/phlogo.png",
-        banner: "/media/simulation/p/phbanner.png",
-        redirect: "https://learningapps.org",
-    };
-
     onMount(async () => {
         document.title = $t("phishing.google.tabtitle");
         var link = document.querySelector("link[rel~='icon']");
@@ -31,11 +25,13 @@
     };
     let currentStep = step.EMAIL;
 
-    let email = "nico.steinbach@phbern.ch";
+    let email = "";
     let password = "";
+    let showPassword = false;
 
     function changeToEmail() {
         hasError = false;
+        password = "";
         currentStep = step.EMAIL;
     }
 
@@ -63,7 +59,7 @@
     }
     function login() {
         if (password.trim().length > 0) {
-            alert("Andrè wurde gephished!");
+            alert("gephished");
         } else {
             hasError = true;
         }
@@ -208,17 +204,31 @@
                     </div>
 
                     <div class="mb-2">
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder={$t(
-                                "phishing.google.password_placeholder",
-                            )}
-                            class="input-text-box text-small {hasError
-                                ? 'error'
-                                : ''}"
-                            bind:value={password}
-                        />
+                        {#if showPassword}
+                            <input
+                                type="text"
+                                name="password"
+                                placeholder={$t(
+                                    "phishing.google.password_placeholder",
+                                )}
+                                class="input-text-box text-small {hasError
+                                    ? 'error'
+                                    : ''}"
+                                bind:value={password}
+                            />
+                        {:else}
+                            <input
+                                type="password"
+                                name="password"
+                                placeholder={$t(
+                                    "phishing.google.password_placeholder",
+                                )}
+                                class="input-text-box text-small {hasError
+                                    ? 'error'
+                                    : ''}"
+                                bind:value={password}
+                            />
+                        {/if}
                         {#if hasError}
                             <div
                                 class="error small-text text-left mt-1"
@@ -236,6 +246,7 @@
                             type="checkbox"
                             class="checkbox checkbox-sm"
                             style="--chkbg:rgb(26, 115, 232)"
+                            bind:checked={showPassword}
                         />
                         {$t("phishing.google.password_show")}
                     </div>

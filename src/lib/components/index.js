@@ -20,4 +20,5 @@ export { default as MailClient } from './apps/mail/index.svelte';
 export { default as Browser } from './apps/browser/index.svelte';
 
 // Simulation
-export { default as Phishing } from './simulation/phishing/index.svelte';
+export { default as GoogleLogin } from './simulation/phishing/GoogleLogin.svelte';
+export { default as MS365Login } from './simulation/phishing/MS365Login.svelte';

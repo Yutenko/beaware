@@ -3,11 +3,7 @@
     import { fade } from "svelte/transition";
     import { t } from "$lib/translations";
 
-    let config = {
-        logo: "/media/simulation/p/phlogo.png",
-        banner: "/media/simulation/p/phbanner.png",
-        redirect: "https://learningapps.org",
-    };
+    export let config = {};
 
     onMount(async () => {
         document.title = $t("phishing.ms.tabtitle");
@@ -36,6 +32,7 @@
 
     function changeToEmail() {
         hasError = false;
+        password = "";
         currentStep = step.EMAIL;
     }
 
@@ -63,7 +60,7 @@
     }
     function login() {
         if (password.trim().length > 0) {
-            alert("Andrè wurde gephished!");
+            alert("gephished!");
         } else {
             hasError = true;
         }

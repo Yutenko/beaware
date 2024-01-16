@@ -3,6 +3,8 @@
     import { onMount } from "svelte";
     import { t } from "$lib/translations";
 
+    export let config = {};
+
     let counter = 0;
     let tabs = [];
     let currentTab;
@@ -20,7 +22,10 @@
             ...tabs,
             {
                 id: counter++,
-                url: { hostname: $t("browser.newtab") },
+                url: null,
+                displayname: null,
+                favicon: null,
+                title: $t("browser.newtab"),
             },
         ];
         return changeTab(tabs.length - 1);
@@ -34,41 +39,55 @@
         tabs = tabs.filter((_, i) => i !== index);
     }
     function changeTab(index) {
+        loading = false;
         currentTab = tabs[index];
-        if (!currentTab.url.origin) {
+        if (!currentTab.url) {
             url = "";
             urlInput?.focus();
         } else {
-            url = currentTab.url.hostname;
+            url = currentTab.displayname;
         }
     }
     function enterURL(e) {
         if (e.keyCode === 13 || e.which === 13) {
-            forceReload();
+            reload();
         }
     }
-    function loadURL() {
+
+    function setTab({ tab, displayname, favicon, title }) {
+        // check if url is a phishing simulated url
+        if (config.specialURLs) {
+            for (let i = 0; i < config.specialURLs.length; i++) {
+                if (config.specialURLs[i].url === url) {
+                    displayname = config.specialURLs[i].displayname;
+                    favicon = config.specialURLs[i].favicon;
+                    title = config.specialURLs[i].title;
+                }
+            }
+        }
+        if (url !== "") {
+            tab.url = new URL(withHttp(url));
+            tab.displayname = displayname ? displayname : tab.url.href;
+            tab.favicon = favicon ? favicon : null;
+            tab.title = title ? title : tab.url.hostname;
+        } else {
+            tab.url = null;
+            tab.displayname = "";
+            tab.title = $t("browser.newtab");
+        }
+        currentTab = tab;
+        tabs = tabs;
+        url = currentTab.displayname;
+    }
+
+    function reload() {
         if (url !== "") {
             loading = true;
-            currentTab.url = new URL(withHttp(url));
-        } else {
-            currentTab.url = { hostname: $t("browser.newtab") };
         }
-
-        tabs = tabs;
-        urlInput.blur();
-    }
-    function reload() {
-        if (currentTab.url.hostname) {
-            forceReload();
-        }
-    }
-    function forceReload() {
-        // nice hacky way to reload current tab
-        currentTab.url = url;
-        setTimeout(loadURL, 10);
+        setTab({ tab: currentTab });
     }
     function handleLoad(e) {
+        urlInput.blur();
         loading = false;
     }
     function withHttp(url) {
@@ -79,14 +98,16 @@
     }
 
     onMount(() => {
-        url = "https://spieldeinleben.ch/";
-        forceReload();
+        if (config.startscreen) {
+            url = config.startscreen;
+            reload();
+        }
     });
 </script>
 
 <Modal bind:open={openCertificateModal}>
     <h3 class="font-bold text-lg" slot="header">
-        {$t("browser.certificateViewer")}: {currentTab.url.hostname}
+        {$t("browser.certificateViewer")}: {currentTab.url?.hostname}
     </h3>
     <div slot="body">
         <div class="overflow-x-auto">
@@ -96,7 +117,7 @@
                     <tbody>
                         <tr>
                             <td>Common Name (CN)</td>
-                            <td>*{currentTab.url.host}</td>
+                            <td>*{currentTab.url?.hostname}</td>
                         </tr>
                         <tr>
                             <td>Organisation (O)</td>
@@ -182,13 +203,30 @@
                     : ''} pr-0 overflow-hidden"
                 on:click={() => changeTab(index)}
             >
-                <div class="flex items-center min-w-[100px] max-w-[200px]">
-                    <span
-                        class="{currentTab.id === tab.id && loading
-                            ? 'visible'
-                            : 'invisible'} loading loading-ring loading-xs mr-2"
-                    ></span>
-                    <div class="pr-5">{tab.url.hostname}</div>
+                <div class="flex items-center min-w-[100px] max-w-[240px]">
+                    {#if tab.favicon}
+                        <div class="pr-2">
+                            <img
+                                src={tab.favicon}
+                                class="h-[16px] w-[16px] {currentTab.id ===
+                                    tab.id && loading
+                                    ? 'spin-it'
+                                    : ''}"
+                                aria-hidden="true"
+                                alt="favicon"
+                            />
+                        </div>
+                    {:else}
+                        <div class="pr-2">
+                            <i
+                                class="fal fa-globe {currentTab.id === tab.id &&
+                                loading
+                                    ? 'fa-spin'
+                                    : ''}"
+                            ></i>
+                        </div>
+                    {/if}
+                    <span class="pr-5 max-h-[28px]">{tab.title}</span>
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <!-- svelte-ignore a11y-no-static-element-interactions -->
                     {#if tabs.length > 1}
@@ -235,7 +273,7 @@
             <div class="w-full flex items-center">
                 <div class="absolute z-10">
                     <div class="dropdown">
-                        {#if currentTab.url.origin}
+                        {#if currentTab.url}
                             <div
                                 tabindex="0"
                                 role="button"
@@ -324,8 +362,8 @@
                 </div>
                 <input
                     bind:this={urlInput}
-                    bind:value={url}
                     on:keydown={enterURL}
+                    bind:value={url}
                     type="text"
                     placeholder={$t("browser.typeurl")}
                     class="input input-bordered w-full pl-14 rounded-full"
@@ -341,10 +379,12 @@
 
     <!-- CONTENT-FRAME -->
     <div class="content-frame border-t border-base-200 overflow-auto">
-        {#if currentTab.url.origin}
+        {#if currentTab.url}
             <iframe
                 bind:this={iframe}
-                src={currentTab.url.origin}
+                src={currentTab.url.href +
+                    "?beawaretimestamp=" +
+                    new Date().getTime()}
                 on:load={handleLoad}
                 title="content-iframe"
             ></iframe>
@@ -367,7 +407,7 @@
     .match-browser-window {
         margin-top: -5px;
         margin-left: -1px;
-        margin-bottom: -2px;
+        margin-bottom: -3px;
     }
     .content-frame {
         height: 89.5%;
@@ -391,5 +431,19 @@
         position: absolute;
         z-index: 1;
         background: #fff;
+    }
+    .spin-it {
+        animation-name: spin;
+        animation-duration: 5000ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+    }
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
     }
 </style>

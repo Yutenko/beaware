@@ -31,7 +31,7 @@
     };
     let currentStep = step.EMAIL;
 
-    let email = "";
+    let email = "nico.steinbach@phbern.ch";
     let password = "";
 
     function changeToEmail() {
@@ -74,8 +74,9 @@
     <div class="center">
         <div class="sign-in-box relative">
             {#if loading}
-                <progress class="absolute progress w-full top-0 left-0">
-                </progress>
+                <progress class="absolute progress w-full top-0 left-0"
+                ></progress>
+                <div class="loading-overlay"></div>
             {/if}
             <svg
                 viewBox="0 0 75 24"
@@ -140,10 +141,10 @@
                         {#if hasError}
                             <div
                                 class="error small-text text-left mt-1"
-                                style="font-size:12px"
+                                style="font-size:13px"
                             >
                                 <span class="info"
-                                    ><i class="fal fa-info-circle"></i></span
+                                    ><i class="fas fa-info-circle"></i></span
                                 >
                                 {$t("phishing.google.email_error")}
                             </div>
@@ -179,54 +180,75 @@
 
             {#if currentStep === step.PASSWORD}
                 <!-- PASSWORD -->
-                <div in:fade>
-                    <div class="identity-banner">
-                        <!-- svelte-ignore a11y-click-events-have-key-events -->
-                        <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-                        <img
-                            on:click={changeToEmail}
-                            src="/media/simulation/p/ms/arrow-left.svg"
-                            alt="arrow-left"
-                            class="btn btn-ghost btn-circle btn-xs inline-block"
-                        />
-                        <span class="identity">{email}</span>
+                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                <div in:fade class="w-full">
+                    <div class="title mt-6 mb-2 text-center">
+                        {$t("phishing.google.welcome")}
                     </div>
-                    <div class="title mb-4">
-                        {$t("phishing.google.enterpassword")}
-                    </div>
-                    {#if hasError}
-                        <div class="error small-text">
-                            {$t("phishing.google.password_error_1")}
-                            <a
-                                class="link"
-                                href="https://passwordreset.microsoftonline.com/?ru=https%3a%2f%2flogin.microsoftonline.com%2fcommon%2freprocess%3fctx%3drQQIARAAhZHNa9NwAIabpk1rwbVMkB5Eehgoznw2adNCYV03Z2qSrS1LlnpK0l-atM2HSdq1wavgwcPAi3jw4EUYDGQykLGDN6F42EnEo8eBQ3ba0foXyAvv4bm9z5tJklgRox_AFEZUVxhQ1EFJJ1BKIw2UplgGZXu0hpYZAMrsIkW65C9nct_v4eTRcYI_PfJPqMLTr4fQXTMMvaCK4yFQ7QCzLd13A9cIMd218b77GYLOIegwvkJXNMBW9CJaYlSA0ozRQzVDAyhLkixZKZUrqq7_jGe36-PQpP6V61sRuIqnDV_t28AJ38LPwazpdRtciRsI-0ok2cKGOeTlFiFEQihumJbSIWjRbtq83LTEqB6JkUAqMkcKDS7gnHbEDdzpgpNCtLkvDhSSbzTD7l7b1aiWtW01Z1257em2NOhtjsa9LWmmyCKhypUx5xC1YxhZLLJdZw4vuR5wrF7B813DGoEfMPQLzjuW7mJBCCxHU3VzzTM14DuYbp4noIvE7TSUg_OJQuz-MpGsptOZXDafKsSuE9D75MLq2rffV6_OMmsfIgXR7nyKzZO4atOmubW-MwSd1iRqPSmak34jaIu70f6I4rhxV5accDUYdaTdGlslDxDkALk1R1JCp85jzc4fJP4yFTu98Z933mSgLzdj10unx6_fnZ28uHx8kX3ISBJurI5KyvSZ6Q7Vvck0oBk51CqPduqD4UTi5UAUdzfXebFe-5iL_QU1&amp;mkt=de-DE&amp;hosted=0&amp;device_platform=macOS"
-                                >{$t("phishing.google.password_error_2")}
-                            </a>
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <div
+                        class="badge badge-info gap-2 g-badge"
+                        on:click={changeToEmail}
+                    >
+                        <div class="avatar placeholder w-5">
+                            <div
+                                class="bg-neutral text-neutral-content rounded-full w-8"
+                                style="background: #78909c;"
+                            >
+                                <span class="text-xs"
+                                    >{email.charAt(0).toUpperCase()}
+                                </span>
+                            </div>
                         </div>
-                    {/if}
-                    <div class="mb-4">
+                        {email}
+                        <i class="fas fa-angle-down opacity-50"></i>
+                    </div>
+                    <div class="small-text mt-6 mb-8" style="color:#000;">
+                        {$t("phishing.google.verifyIdentity")}
+                    </div>
+
+                    <div class="mb-2">
                         <input
                             type="password"
                             name="password"
                             placeholder={$t(
                                 "phishing.google.password_placeholder",
                             )}
-                            class="input-text-box text-small"
+                            class="input-text-box text-small {hasError
+                                ? 'error'
+                                : ''}"
                             bind:value={password}
                         />
+                        {#if hasError}
+                            <div
+                                class="error small-text text-left mt-1"
+                                style="font-size:13px"
+                            >
+                                <span class="info"
+                                    ><i class="fas fa-info-circle"></i></span
+                                >
+                                {$t("phishing.google.password_error")}
+                            </div>
+                        {/if}
                     </div>
-                    <div class="mb-4 small-text">
-                        <a
-                            class="link"
-                            href="https://passwordreset.microsoftonline.com/?ru=https%3a%2f%2flogin.microsoftonline.com%2fcommon%2freprocess%3fctx%3drQQIARAAhZK_j9t0AMXj5C69i4A7HQi126liAEqSr792nPjKSSRxfjiO7fxwnNiL5fhHbMc_crFjpx6RQAwdTgwMlSokNm5CwABIIMR46tC5fwBDB9R26lKJAHPF8vSe3tvep3BAlDC8BErgwxwsgbP38CpRwfHKvIhBjSji5BwUa5hBFFGdxHYVrBKauj4pHP928sPtux-PqJ8X_Oe9V-dfXiGnVhStwrNyOUmSUmCatmaUtMAru6qv2_4ihj8hyGMEeZDd140i1brKhgRWwwEJUAgACVF8pyXOGS0lR1_ynUkkC7LLjwGQnWXaFxZbXpAiVqgD1uNc2ZE9mWJxVljifEe0JI-OOEe3WRsAXmhb_SkNJEGLZG9yj3Msd7cDPLVInmSP-PomsuA_Eqzt1HiRPTSDtaesgjB6kPsquwk7QieqoEHsJRczvoUDjkyE-YXiM02R4Ki5v8YJucixBM_PVxjbMNU2tgk1uhgYjAEVetC13arjebCth611z-1Wi2OtNWzcYwYKwbdJY8yh9WUnZUSrx_VrIiCHDpikom1URiov8E1ckW2hP4e6y0-GjW3gk2t2WGvNaWCuEj11Zo4aN7FUu6hvnMVU6cKBQzDVBs5DTZ7hfSmRplt0UGuqrNEjqd5IkIb1llVrUJUihInZ0tqOaRtVhm2OZxqtKq2Bidckbji23JnS9uLYmSYDRkm1mq0O0qbYoUD9KnfrNffG8Ptcfme8wL_OVYOV4dv66WodmLZrvA6JGJb5f1M38IxS3XUf7yFP9949yB_fvpk5zbz_Dtg_OzgoHB_dvHGaebmHfLO_I-7rD_789NtO-snD-w8vH90XMtf7ZdXDLavTGCyN8TBOhwxmxYtmOOImaeJCmt7IU9GP7oTuWJycV87Qyzxymc9f5w9pSuFaAqGAZ3nkixuZXw7_l90nb7xdKGxsxQ001TXCk_8Y_v3NzMu3fv3j-fXVj5_91X169JEGmN4YvWOL2zqzpTfdiSfBFfTnU6ncgz67QqVe2pXFGcVI598dZ_4G0&mkt=de-DE&hosted=0&device_platform=macOS"
-                            >{$t("phishing.google.forgotpassword")}
-                        </a>
+                    <div class="mb-2 small-text flex gap-2">
+                        <input
+                            type="checkbox"
+                            class="checkbox checkbox-sm"
+                            style="--chkbg:rgb(26, 115, 232)"
+                        />
+                        {$t("phishing.google.password_show")}
                     </div>
                     <!-- svelte-ignore a11y-no-static-element-interactions -->
-                    <div class="mb-4 flex justify-end">
+                    <div class="mt-12 mb-4 flex justify-between items-center">
+                        <a
+                            class="link no-underline small-text"
+                            href="https://support.google.com/chrome/answer/6130773?hl=de"
+                            >{$t("phishing.google.password_forgot")}</a
+                        >
                         <!-- svelte-ignore a11y-click-events-have-key-events -->
                         <div class="g-button" on:click={login}>
-                            {$t("phishing.google.login")}
+                            {$t("phishing.google.next")}
                         </div>
                     </div>
                 </div>
@@ -303,10 +325,11 @@
         width: 450px;
         overflow-y: auto;
         padding: 48px 40px 36px;
+        position: relative;
     }
     .progress {
         --progress-color: rgb(26, 115, 232) !important;
-        height: 1px !important;
+        height: 5px !important;
     }
     .center {
         display: flex;
@@ -314,12 +337,6 @@
         justify-content: center;
         height: 100%;
         flex-direction: column;
-    }
-    .logo {
-        max-height: 36px;
-        vertical-align: middle;
-        overflow-clip-margin: content-box;
-        overflow: clip;
     }
     .title {
         color: rgb(32, 33, 36);
@@ -379,7 +396,15 @@
         border: 1px solid #ccc;
         padding: 25px 0px 25px 10px;
     }
-
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.5);
+        z-index: 1;
+    }
     .g-button {
         font-family: "Google Sans", Roboto, Arial, sans-serif;
         font-size: 0.875rem;
@@ -416,17 +441,31 @@
         width: 16px;
         height: 16px;
     }
-    .identity-banner {
-        height: 24px;
-        background: #fff;
-        margin-top: 16px;
-        margin-bottom: -4px;
+    .arrow-down {
+        color: rgb(60, 64, 67);
+        flex-shrink: 0;
+        height: 18px;
+        margin-left: 4px;
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 18px;
     }
-    .identity-banner .identity {
-        line-height: 24px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+    .g-badge {
+        align-items: center;
+        background: #fff;
+        border: 1px solid rgb(218, 220, 224);
+        box-sizing: border-box;
+        cursor: pointer;
+        display: inline-flex;
+        font-family: "Google Sans", "Noto Sans Myanmar UI", arial, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.25px;
+        max-width: 100%;
+        position: relative;
+        display: block;
+        margin: 0 auto;
+        height: 35px;
+        padding-top: 7px;
     }
     .g-footer {
         opacity: 70%;

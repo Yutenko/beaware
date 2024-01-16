@@ -22,19 +22,23 @@
     },
     "google": {
         "tabtitle": "Anmelden - Google Konten",
-        "signin":"Anmeldung",
-        "signindescription":"Mit Google-Konto anmelden.",
-        "email_placeholder":"E-Mail-Adresse oder Telefonnummer",
-        "email_error":"E-Mail-Adresse oder Telefonnummer eingeben",
-        "noaccount":"E-Mail-Adresse vergessen?",
-        "createone":"Konto erstellen",
-        "moreinfo_1":"Nicht Ihr Computer? Dann können Sie den Gastmodus verwenden, um sich privat anzumelden.",
-        "moreinfo_2":"Weitere Informationen zur Verwendung des Gastmodus",
-        "next":"Weiter",
-        "help":"Hilfe",
+        "signin": "Anmeldung",
+        "signindescription": "Mit Google-Konto anmelden.",
+        "email_placeholder": "E-Mail-Adresse oder Telefonnummer",
+        "email_error": "Das Google-Konto wurde nicht gefunden.",
+        "noaccount": "E-Mail-Adresse vergessen?",
+        "createone": "Konto erstellen",
+        "moreinfo_1": "Nicht Ihr Computer? Dann können Sie den Gastmodus verwenden, um sich privat anzumelden.",
+        "moreinfo_2": "Weitere Informationen zur Verwendung des Gastmodus",
+        "next": "Weiter",
+        "help": "Hilfe",
         "privacy": "Datenschutz",
-        "agreement": "Nutzungsbedingungen"
-
-
+        "agreement": "Nutzungsbedingungen",
+        "welcome": "Willkommen",
+        "verifyIdentity": "Bestätigen Sie Ihre Identität um fortzufahren",
+        "password_placeholder": "Passwort eingeben",
+        "password_show": "Passwort anzeigen",
+        "password_forgot": "Passwort vergessen?",
+        "password_error": "Passwort eingeben"
     }
 }

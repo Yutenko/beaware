@@ -1,9 +1,10 @@
 import i18n from 'sveltekit-i18n';
 import lang from './lang.json';
 
-import dayjs from 'dayjs';
-import 'dayjs/locale/de';
-dayjs.locale('de')
+import dayjs from "dayjs";
+import "dayjs/locale/de";
+
+dayjs.locale("de");
 
 export const config = {
   fallbackLocale: 'de',

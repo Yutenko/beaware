@@ -103,6 +103,7 @@ export const resizetext = (node, options) => {
     }
 }
 
+
 export const linkify = (node) => {
     const linkRegex = /((http(s)?(\:\/\/))?(www\.)?([\w\-\.\/])*(\.[a-zA-Z]{2,3}\/?))(?!(.*a>)|(\'|\"))/g
 
@@ -227,19 +228,3 @@ export function clicksound(node, options) {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

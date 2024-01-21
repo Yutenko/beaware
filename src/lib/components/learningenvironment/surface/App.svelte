@@ -1,14 +1,16 @@
 <script>
     import { onMount } from "svelte";
+    import AppWindow from "./AppWindow.svelte";
     import { breakpoint } from "$lib/utils";
 
     export let installed = true;
     export let icon = "phedge";
     export let badge = 10;
     export let program = "";
+    let openAppWindow = false;
 
     let appIconSize = 100;
-    let appBadgeSize = (appIconSize * 30) / 100;
+    let appBadgeSize = (appIconSize * 29) / 100;
     const progressFillColor = "white";
     const progressOpacity = 0.9;
     const progressDuration = installed ? 0 : 10;
@@ -25,9 +27,14 @@
     }
 </script>
 
+<AppWindow component={program} bind:open={openAppWindow} />
+
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
-    class="indicator min-h-[100px] items-center mb-[2.5rem]"
+    class="indicator items-center mb-[1rem] mt-[1rem]"
     style="padding:{$breakpoint.isSm ? 0 : 1}rem"
+    on:click={() => (openAppWindow = true)}
 >
     <div
         class="app-icon"
@@ -65,7 +72,7 @@
         {#if badge > 0}
             <span
                 class="w-10 h-10 indicator-item badge"
-                style="width:{appBadgeSize}px;height:{appBadgeSize}px;background:#eb4f3e;border:none;color:#fff;font-size:18px"
+                style="width:{appBadgeSize}px;height:{appBadgeSize}px;"
             >
                 {badge}
             </span>
@@ -74,6 +81,12 @@
 </div>
 
 <style>
+    .badge {
+        background: #eb4f3e;
+        border: none;
+        color: #fff;
+        font-size: 18px;
+    }
     .app-icon {
         user-select: none;
         cursor: pointer;

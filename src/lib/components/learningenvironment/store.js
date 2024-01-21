@@ -1,13 +1,19 @@
 import { writable } from 'svelte/store';
+import { APPS_PER_PAGE } from './constants.json';
 
-function createLearningenvironmentStore(store) {
-    const { subscribe, update, set } = writable(store);
+function createLearningenvironmentStore() {
+    const { subscribe, update, set } = writable({
+        config: { apps: new Array(APPS_PER_PAGE + 4) },
+        icons: ["phedge", "saphari", "phrome", "mail"],
+        currentApp: {}
+    });
+
 
     return {
         subscribe,
         set,
-        setTitle: (title) => update(state => ({ ...state, title }))
+        setCurrentApp: (target) => update(state => ({ ...state, currentApp: { target } })),
     }
 }
 
-export const store = createLearningenvironmentStore({});
+export const store = createLearningenvironmentStore();

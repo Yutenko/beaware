@@ -413,12 +413,13 @@
 
 <style>
     .browser {
-        height: 90vh;
-        margin: 1rem;
+        height: 75vh;
+        width: 100%;
         padding-top: 4px;
         border: 1px solid #ddd;
         border-radius: 10px;
         overflow: hidden;
+        text-align: left;
     }
     .tab-active {
         background-color: #f2f2f2 !important;

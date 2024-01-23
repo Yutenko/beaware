@@ -116,6 +116,12 @@
         openCertificateModal = true;
     }
 
+    let browserWindowHeight = 0;
+    let browserTabsHeight = 0;
+    let browserNavHeight = 0;
+
+    $: cframeH = browserWindowHeight - (browserTabsHeight + browserNavHeight);
+
     onMount(() => {
         if (config.startscreen) {
             url = config.startscreen;
@@ -124,93 +130,13 @@
     });
 </script>
 
-<Modal bind:open={openCertificateModal}>
-    <h3 class="font-bold text-lg" slot="header">
-        {$t("browser.certificateViewer")}: {currentTab.url?.hostname}
-    </h3>
-    <div slot="body">
-        <div class="overflow-x-auto">
-            <div class="mt-4 mb-4">
-                <p class="mb-4">Issued To</p>
-                <table class="table table-xs pl-4">
-                    <tbody>
-                        <tr>
-                            <td>Common Name (CN)</td>
-                            <td>*{currentTab.url?.hostname}</td>
-                        </tr>
-                        <tr>
-                            <td>Organisation (O)</td>
-                            <td>Not part of the certificate</td>
-                        </tr>
-                        <tr>
-                            <td>Organisational Unit (OU)</td>
-                            <td>Not part of the certificate</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="mt-4 mb-4">
-                <p class="mb-4">Issued By</p>
-                <table class="table table-xs pl-4">
-                    <tbody>
-                        <tr>
-                            <td>Common Name (CN)</td>
-                            <td>GTS CA 1C3</td>
-                        </tr>
-                        <tr>
-                            <td>Organisation (O)</td>
-                            <td>Google Trust Services LLC</td>
-                        </tr>
-                        <tr>
-                            <td>Organisational Unit (OU)</td>
-                            <td>Not part of the certificate</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="mt-4 mb-4">
-                <p class="mb-4">Validity Period</p>
-                <table class="table table-xs pl-4">
-                    <tbody>
-                        <tr>
-                            <td>Issued On</td>
-                            <td>heute</td>
-                        </tr>
-                        <tr>
-                            <td>Expires On</td>
-                            <td>2090</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="mt-4 mb-4">
-                <p class="mb-4">SHA-256 Fingerprints</p>
-                <table class="table table-xs pl-4">
-                    <tbody>
-                        <tr>
-                            <td>Certificate</td>
-                            <td
-                                >3u2193u9281u838998u189u32819u3984u9u9bu982398n4ux93843249v34c3898x324c9823cn2u4xn32u4</td
-                            >
-                        </tr>
-                        <tr>
-                            <td>Public Key</td>
-                            <td
-                                >34i30928if2i309i3029i44324324234kml320990n93024xu49n3u29x3nu3a39s2b9832vu49b3u2u2392s</td
-                            >
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</Modal>
-
-<div class="browser">
+<div class="browser" bind:clientHeight={browserWindowHeight}>
     <!-- TABS -->
-    <div role="tablist" class="tabs tabs-lifted block match-browser-window">
+    <div
+        role="tablist"
+        class="tabs tabs-lifted block match-browser-window"
+        bind:clientHeight={browserTabsHeight}
+    >
         <!-- svelte-ignore a11y-missing-attribute -->
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         {#each tabs as tab, index}
@@ -270,7 +196,7 @@
     </div>
 
     <!-- NAVBAR -->
-    <div class="navbar bg-base-200">
+    <div class="navbar bg-base-200" bind:clientHeight={browserNavHeight}>
         <div class="justify-start">
             <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
                 <i class="fas fa-long-arrow-left"></i>
@@ -397,9 +323,15 @@
     </div>
 
     <!-- CONTENT-FRAME -->
-    <div class="content-frame border-t border-base-200 overflow-auto">
+
+    <div
+        class="content-frame relative w-full border-t border-base-200 overflow-hidden"
+        style="height: {cframeH}px;"
+    >
         {#if currentTab.url}
             <iframe
+                class="w-full min-w-full h-full"
+                style="z-index:-1"
                 bind:this={iframe}
                 src={currentTab.url.href +
                     "?beawaretimestamp=" +
@@ -411,14 +343,96 @@
     </div>
 </div>
 
+<Modal bind:open={openCertificateModal}>
+    <h3 class="font-bold text-lg" slot="header">
+        {$t("browser.certificateViewer")}: {currentTab.url?.hostname}
+    </h3>
+    <div slot="body">
+        <div class="overflow-x-auto">
+            <div class="mt-4 mb-4">
+                <p class="mb-4">Issued To</p>
+                <table class="table table-xs pl-4">
+                    <tbody>
+                        <tr>
+                            <td>Common Name (CN)</td>
+                            <td>*{currentTab.url?.hostname}</td>
+                        </tr>
+                        <tr>
+                            <td>Organisation (O)</td>
+                            <td>Not part of the certificate</td>
+                        </tr>
+                        <tr>
+                            <td>Organisational Unit (OU)</td>
+                            <td>Not part of the certificate</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 mb-4">
+                <p class="mb-4">Issued By</p>
+                <table class="table table-xs pl-4">
+                    <tbody>
+                        <tr>
+                            <td>Common Name (CN)</td>
+                            <td>GTS CA 1C3</td>
+                        </tr>
+                        <tr>
+                            <td>Organisation (O)</td>
+                            <td>Google Trust Services LLC</td>
+                        </tr>
+                        <tr>
+                            <td>Organisational Unit (OU)</td>
+                            <td>Not part of the certificate</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 mb-4">
+                <p class="mb-4">Validity Period</p>
+                <table class="table table-xs pl-4">
+                    <tbody>
+                        <tr>
+                            <td>Issued On</td>
+                            <td>heute</td>
+                        </tr>
+                        <tr>
+                            <td>Expires On</td>
+                            <td>2090</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 mb-4">
+                <p class="mb-4">SHA-256 Fingerprints</p>
+                <table class="table table-xs pl-4">
+                    <tbody>
+                        <tr>
+                            <td>Certificate</td>
+                            <td
+                                >3u2193u9281u838998u189u32819u3984u9u9bu982398n4ux93843249v34c3898x324c9823cn2u4xn32u4</td
+                            >
+                        </tr>
+                        <tr>
+                            <td>Public Key</td>
+                            <td
+                                >34i30928if2i309i3029i44324324234kml320990n93024xu49n3u29x3nu3a39s2b9832vu49b3u2u2392s</td
+                            >
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</Modal>
+
 <style>
     .browser {
-        height: 75vh;
         width: 100%;
-        padding-top: 4px;
-        border: 1px solid #ddd;
+        height: 100%;
+        padding-top: 5px;
         border-radius: 10px;
-        overflow: hidden;
         text-align: left;
     }
     .tab-active {
@@ -430,27 +444,10 @@
         margin-bottom: -3px;
     }
     .content-frame {
-        height: 89.5%;
-        overflow: auto;
-        position: relative;
-    }
-    .content-frame::before {
-        content: "";
-        position: absolute;
-        background-image: url(/media/edge.webp);
-        width: 100%;
-        height: 100%;
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center center;
+        border: none;
     }
     iframe {
-        width: 100%;
-        height: 100%;
         border: none;
-        position: absolute;
-        z-index: 1;
-        background: #fff;
     }
     .spin-it {
         animation-name: spin;

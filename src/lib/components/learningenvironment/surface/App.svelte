@@ -1,13 +1,15 @@
 <script>
-    import { onMount } from "svelte";
     import AppWindow from "./AppWindow.svelte";
     import { breakpoint } from "$lib/utils";
+    import { lestore } from "../store.js";
+    import { APP_STATE } from "../constants.json";
+    import { MailClient, Browser } from "$components";
+    import { onMount } from "svelte";
 
     export let installed = true;
-    export let icon = "phedge";
-    export let badge = 10;
-    export let program = "";
-    let openAppWindow = false;
+    export let id;
+
+    $: app = $lestore.config.apps[id] || {};
 
     let appIconSize = 100;
     let appBadgeSize = (appIconSize * 29) / 100;
@@ -25,16 +27,31 @@
         else if (breakpoint.is2Xl) appIconSize = 150;
         else appIconSize = 170;
     }
+
+    function getAppComponent() {
+        if (app.program === "browser") return Browser;
+        if (app.program === "mail") return MailClient;
+    }
+
+    onMount(() => {
+        app.component = getAppComponent();
+    });
 </script>
 
-<AppWindow component={program} bind:open={openAppWindow} />
+<AppWindow
+    component={app.component}
+    state={app.state}
+    title={app.title}
+    id={app.id}
+/>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-mouse-events-have-key-events -->
 <div
     class="indicator items-center mb-[1rem] mt-[1rem]"
     style="padding:{$breakpoint.isSm ? 0 : 1}rem"
-    on:click={() => (openAppWindow = true)}
+    on:click={() => lestore.setAppState(id, APP_STATE.OPEN)}
 >
     <div
         class="app-icon"
@@ -65,16 +82,17 @@
         <div class="absolute top-0 left-0 p-1">
             <img
                 class="w-full h-full"
-                src="/media/learningenvironment/appicons/{icon}.svg"
+                src="/media/learningenvironment/appicons/{app.icon}.svg"
                 alt="appicon"
             />
+            <p class="text-base-100 mt-2">{app.title}</p>
         </div>
-        {#if badge > 0}
+        {#if app.badge > 0}
             <span
                 class="w-10 h-10 indicator-item badge"
                 style="width:{appBadgeSize}px;height:{appBadgeSize}px;"
             >
-                {badge}
+                {app.badge}
             </span>
         {/if}
     </div>
@@ -100,7 +118,7 @@
         transition: all 0.2s ease-in-out;
     }
     .app-icon:hover {
-        transform: scale(0.9);
+        transform: scale(1.1);
     }
     .app-icon:before {
         content: var(--installed);

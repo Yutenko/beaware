@@ -37,9 +37,10 @@
 		"@editorjs/warning": "^1.4.0",
 		"@neoconfetti/svelte": "^1.0.0",
 		"@neodrag/svelte": "^2.0.3",
+		"animate.css": "^4.1.1",
 		"dayjs": "^1.11.10",
+		"iframe-resizer": "^4.3.9",
 		"mkdirp": "^3.0.1",
-		"svelte-actions-resize": "^0.1.1",
 		"svelte-moveable": "^0.45.0",
 		"sveltekit-i18n": "^2.4.2",
 		"tippy.js": "^6.2.5"

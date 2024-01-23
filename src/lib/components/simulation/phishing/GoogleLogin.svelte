@@ -312,7 +312,6 @@
     }
     .bg {
         background: #fff;
-        position: fixed;
         width: 100%;
         height: 100%;
         background-repeat: no-repeat, no-repeat;
@@ -346,8 +345,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100%;
         flex-direction: column;
+        height: 100vh;
     }
     .title {
         color: rgb(32, 33, 36);

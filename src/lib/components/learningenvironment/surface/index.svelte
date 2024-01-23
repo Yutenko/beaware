@@ -1,24 +1,25 @@
 <script>
     import { onMount } from "svelte";
     import App from "./App.svelte";
-    import { store } from "../store.js";
-    import { APPS_PER_PAGE } from "../constants.json";
-    import { MailClient, Browser } from "$components";
+    import { lestore } from "../store.js";
+    import { APPS_PER_PAGE, APP_STATE } from "../constants.json";
+    import Moveable from "svelte-moveable";
 
-    let icons = $store.icons;
-    let config = $store.config;
+    let config = $lestore.config;
+    let apps = Object.keys(config.apps);
 
-    const pages = new Array(Math.ceil(config.apps.length / APPS_PER_PAGE));
+    const pages = new Array(Math.ceil(apps.length / APPS_PER_PAGE));
 
     let currentPage = 0;
     let carousel;
 
     function getAppsForPage(page) {
-        return config.apps.slice(
+        return apps.slice(
             page * APPS_PER_PAGE,
             page * APPS_PER_PAGE + APPS_PER_PAGE,
         );
     }
+
     function handleScroll() {
         const scrollLeft = carousel.scrollLeft;
         const slideWidth = carousel.offsetWidth;
@@ -34,6 +35,24 @@
     });
 </script>
 
+{#if $lestore.currentApp.state === APP_STATE.OPEN}
+    <Moveable
+        target={$lestore.currentApp.target}
+        draggable={true}
+        throttleDrag={1}
+        resizable={true}
+        throttleResize={1}
+        on:drag={({ detail: e }) => {
+            e.target.style.transform = e.transform;
+        }}
+        on:resize={({ detail: e }) => {
+            e.target.style.width = `${e.width}px`;
+            e.target.style.height = `${e.height}px`;
+            e.target.style.transform = e.drag.transform;
+        }}
+    />
+{/if}
+
 <section class="p-8 flex flex-col">
     <div class="carousel rounded-box w-full" bind:this={carousel}>
         {#each pages as _, index}
@@ -41,29 +60,26 @@
                 <div
                     class="grid grid-cols-4 grid-rows-4 lg:grid-cols-5 lg:grid-rows-3 w-full items-baseline text-center"
                 >
-                    {#each getAppsForPage(index) as __}
+                    {#each getAppsForPage(index) as id}
                         <div class="overflow-hidden">
-                            <App
-                                badge={Math.floor(Math.random() * 11)}
-                                installed={Math.random() > 0.5 ? true : false}
-                                icon={icons[
-                                    Math.floor(Math.random() * icons.length)
-                                ]}
-                                program={Browser}
-                            />
+                            <App {id} />
                         </div>
                     {/each}
                 </div>
             </div>
         {/each}
     </div>
-    <div class="page-nav rounded-full bg-base-100 flex p-2 gap-2">
-        {#each pages as _, index}
-            <div
-                class="badge badge-xs {currentPage === index ? 'active' : ''}"
-            ></div>
-        {/each}
-    </div>
+    {#if pages.length > 1}
+        <div class="page-nav rounded-full bg-base-100 flex p-2 gap-2">
+            {#each pages as _, index}
+                <div
+                    class="badge badge-xs {currentPage === index
+                        ? 'active'
+                        : ''}"
+                ></div>
+            {/each}
+        </div>
+    {/if}
 </section>
 
 <style>

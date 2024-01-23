@@ -79,7 +79,9 @@
 </script>
 
 {#if $orientation === "landscape"}
-    <div class="grid grid-cols-12 container overflow-hidden text-left">
+    <div
+        class="grid grid-cols-12 container overflow-hidden text-left bg-base-100"
+    >
         <div class="col-span-2 h-100vh">
             <Categories {emails} on:select:item={selectCategory} />
         </div>
@@ -97,7 +99,9 @@
         </div>
     </div>
 {:else}
-    <div class="grid grid-cols-12 container overflow-hidden text-left">
+    <div
+        class="grid grid-cols-12 container overflow-hidden text-left bg-base-100"
+    >
         <div class="col-span-12 h-100vh">
             <div class="navbar bg-base-100">
                 <div class="flex-1">

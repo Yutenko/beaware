@@ -1,6 +1,6 @@
 <script>
     import { onMount } from "svelte";
-    import { default as QUIZ_TYPE } from "$components/quiz/quiztypes";
+    import { default as QUIZ_TYPE } from "$components/quiz/types";
     import { t } from "$lib/translations";
     import { createEventDispatcher } from "svelte";
 

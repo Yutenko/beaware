@@ -2,7 +2,7 @@ import path from 'path'
 import { mkdirp } from 'mkdirp'
 import fs from 'fs'
 import { OPTIONS, MIN_GROUPS, GROUP_COLORS } from '$components/quiz/groupassignment/constants'
-import { default as QUIZ_TYPE } from '$components/quiz/quiztypes'
+import { default as QUIZ_TYPE } from '$components/quiz/types'
 import { readFile } from 'fs/promises'
 
 

@@ -2,7 +2,7 @@
     import Table from "./Table.svelte";
     import Categories from "./Categories.svelte";
     import Content from "./Content.svelte";
-    import { orientation } from "$lib/utils";
+    import { breakpoint } from "$lib/utils";
     import { categories } from "./constants";
 
     let emails = [
@@ -44,7 +44,7 @@
     let currentMail = emails[0];
     let currentCategory = categories.INBOX;
     let openMail = false;
-    $: portrait = $orientation === "portrait";
+    $: isMobile = $breakpoint.isSm || $breakpoint.isMd || $breakpoint.isLg;
 
     function closeMailContent() {
         openMail = false;
@@ -78,10 +78,8 @@
     }
 </script>
 
-{#if $orientation === "landscape"}
-    <div
-        class="grid grid-cols-12 container overflow-hidden text-left bg-base-100"
-    >
+{#if !isMobile}
+    <div class="grid grid-cols-12 overflow-hidden text-left">
         <div class="col-span-2 h-100vh">
             <Categories {emails} on:select:item={selectCategory} />
         </div>
@@ -99,14 +97,12 @@
         </div>
     </div>
 {:else}
-    <div
-        class="grid grid-cols-12 container overflow-hidden text-left bg-base-100"
-    >
+    <div class="grid grid-cols-12 overflow-hidden text-left">
         <div class="col-span-12 h-100vh">
             <div class="navbar bg-base-100">
                 <div class="flex-1">
                     <Categories
-                        {portrait}
+                        {isMobile}
                         {emails}
                         on:select:item={selectCategory}
                     />
@@ -115,7 +111,7 @@
             </div>
             {#if openMail}
                 <Content
-                    {portrait}
+                    {isMobile}
                     data={currentMail}
                     on:close:mail={closeMailContent}
                     on:delete:mail={deleteMail}
@@ -133,10 +129,6 @@
 
 <style>
     .h-100vh {
-        height: 100vh;
-    }
-    .container {
-        width: 100vw;
         height: 100vh;
     }
 </style>

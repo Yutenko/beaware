@@ -1,5 +1,5 @@
 import { getAllQuizFiles,getAllCasestudyFiles } from "$lib/server/db"
-import { default as QUIZ_TYPE } from '$components/quiz/quiztypes'
+import { default as QUIZ_TYPE } from '$components/quiz/types'
 
 
 export async function load() {

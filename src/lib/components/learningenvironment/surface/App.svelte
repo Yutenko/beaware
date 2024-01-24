@@ -3,7 +3,7 @@
     import { breakpoint } from "$lib/utils";
     import { lestore } from "../store.js";
     import { APP_STATE } from "../constants.json";
-    import { MailClient, Browser } from "$components";
+    import { MailClientEmbed, Browser } from "$components";
     import { onMount } from "svelte";
 
     export let installed = true;
@@ -30,7 +30,7 @@
 
     function getAppComponent() {
         if (app.program === "browser") return Browser;
-        if (app.program === "mail") return MailClient;
+        if (app.program === "mail") return MailClientEmbed;
     }
 
     onMount(() => {

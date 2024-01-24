@@ -13,7 +13,7 @@
     }
 
     export let data = {};
-    export let portrait = false;
+    export let isMobile = false;
 </script>
 
 <div class="navbar bg-base-100">
@@ -23,7 +23,7 @@
         <button class="btn btn-circle btn-outline" on:click={deleteMail}>
             <i class="fas fa-trash"></i>
         </button>
-        {#if portrait}
+        {#if isMobile}
             <button class="btn btn-circle btn-outline" on:click={closeMail}>
                 <i class="fas fa-times"></i>
             </button>
@@ -35,7 +35,7 @@
     class="pl-12 pr-12 pt-12"
     transition:slide={{
         duration: 200,
-        axis: portrait ? "x" : "y",
+        axis: isMobile ? "x" : "y",
     }}
 >
     <div class="flex">

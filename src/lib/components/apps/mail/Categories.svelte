@@ -5,7 +5,7 @@
     const dispatch = createEventDispatcher();
 
     export let emails = [];
-    export let portrait = false;
+    export let isMobile = false;
 
     let active = categories.INBOX;
     function selectItem(item) {
@@ -39,7 +39,7 @@
 
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 <ul
-    class="{portrait
+    class="{isMobile
         ? 'menu-horizontal center w-full'
         : ''} menu h-full bg-base-200"
 >
@@ -51,7 +51,7 @@
             on:click={() => selectItem(categories.INBOX)}
             class={active === categories.INBOX ? "active" : ""}
         >
-            {#if portrait}
+            {#if isMobile}
                 {$t(`mail.categories.${categories.INBOX}`).slice(0, 4)}
             {:else}
                 <i class="fas fa-inbox"></i>
@@ -70,7 +70,7 @@
             on:click={() => selectItem(categories.SPAM)}
             class={active === categories.SPAM ? "active" : ""}
         >
-            {#if portrait}
+            {#if isMobile}
                 {$t(`mail.categories.${categories.SPAM}`).slice(0, 4)}
             {:else}
                 <i class="fas fa-inbox"></i>
@@ -91,7 +91,7 @@
             class={active === categories.TRASH ? "active" : ""}
         >
             <i class="fas fa-trash"></i>
-            {#if portrait}
+            {#if isMobile}
                 {$t(`mail.categories.${categories.TRASH}`).slice(0, 1)}
             {:else}
                 {$t(`mail.categories.${categories.TRASH}`)}

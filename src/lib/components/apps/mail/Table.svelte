@@ -9,6 +9,7 @@
     export let category = categories.INBOX;
     let filteredEmails = emails;
     let searchText = "";
+    let navbarHeight = 0;
 
     $: title = $t(`mail.categories.${category}`);
     $: filterEmails(emails);
@@ -45,7 +46,7 @@
     }
 </script>
 
-<div class="navbar bg-base-100">
+<div class="navbar bg-base-100" bind:clientHeight={navbarHeight}>
     <div class="flex-1">
         <!-- svelte-ignore a11y-missing-attribute -->
         <a class="font-bold text-xl pl-4">{title}</a>
@@ -54,8 +55,8 @@
         <div class="form-control">
             <input
                 type="text"
-                placeholder="Search"
-                class="input input-bordered w-24 md:w-auto"
+                placeholder={$t("mail.search")}
+                class="input input-bordered w-24"
                 bind:value={searchText}
                 on:input={() => filterEmails(emails)}
                 on:click={() => filterEmails(emails)}
@@ -65,7 +66,8 @@
 </div>
 
 <div
-    class="overflow-x-auto h-full overflow-y-auto"
+    class="overflow-x-auto overflow-y-auto"
+    style="height:calc(100% - {navbarHeight}px)"
     transition:slide={{
         duration: 150,
         axis: "y",
@@ -131,5 +133,3 @@
     </table>
 </div>
 
-<style>
-</style>

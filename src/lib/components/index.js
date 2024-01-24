@@ -17,6 +17,7 @@ export { default as Modal } from './modal/Modal.svelte';
 
 // User Desktop
 export { default as LearningEnvironment } from './learningenvironment/index.svelte';
+export { default as AppIcon } from './learningenvironment/surface/AppIcon.svelte';
 export { default as MailClient } from './apps/mail/index.svelte';
 export { default as MailClientEmbed } from './apps/mail/Embed.svelte';
 export { default as Browser } from './apps/browser/index.svelte';

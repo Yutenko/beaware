@@ -1,29 +1,70 @@
 <script>
     import { lestore } from "../store.js";
     import { APP_STATE } from "../constants.json";
+    import { tooltip } from "$lib/actions";
+    import { AppIcon } from "$components";
+    import { t } from "$lib/translations";
 
-    $: minimizedapps = Object.values($lestore.config.apps).filter(
-        (app) => app.state === APP_STATE.MINIMIZED,
-    );
+    $: minimizedapps = Object.values($lestore.config.apps)
+        .filter((app) => app.state !== APP_STATE.CLOSED)
+        .sort((a, b) => a.opened - b.opened);
+
+    let lastAction = APP_STATE.OPEN;
+    let dockHovered = false;
+
+    function handleAppState(app) {
+        if (app.state === APP_STATE.MINIMIZED) {
+            app.state = APP_STATE.OPEN;
+        }
+        lestore.setCurrentApp(app.id, app.target);
+    }
+    function handleAllApps() {
+        if (lastAction === APP_STATE.OPEN) {
+            lestore.minimizeAllOpenApps();
+            lastAction = APP_STATE.MINIMIZED;
+        } else {
+            lestore.openAllMinimizedApps();
+            lastAction = APP_STATE.OPEN;
+        }
+    }
+    function toggleHovered() {
+        dockHovered = !dockHovered;
+    }
+    $: dockHoveredTooltipContent =
+        lastAction === APP_STATE.OPEN
+            ? $t("lenv.minimizeall")
+            : $t("lenv.openall");
 </script>
 
 {#if minimizedapps.length > 0}
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
-        class="appwindow-bar flex gap-2 items-center text-center justify-center rounded-badge p-3 bg-base-300 min-w-[15%] max-w-[80%]"
+        class="appwindow-bar flex gap-2 items-center text-center justify-center rounded-badge p-3 bg-base-300 min-w-[20%] max-w-[80%]"
         style="width:{minimizedapps.length * 7.5}%"
+        on:mouseenter={toggleHovered}
+        on:mouseleave={toggleHovered}
+        on:touchstart={toggleHovered}
+        on:touchend={toggleHovered}
     >
+        {#if dockHovered}
+            <button
+                class="absolute right-0 btn btn-square btn-ghost btn-sm opacity-80"
+                on:click={handleAllApps}
+                use:tooltip={{ content: dockHoveredTooltipContent }}
+            >
+                <i class="fas fa-window-restore"></i>
+            </button>
+        {/if}
+
         {#each minimizedapps as app}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <!-- svelte-ignore a11y-no-static-element-interactions -->
             <div
                 class="app-icon puff-in-center"
-                on:click={() => lestore.setAppState(app.id, APP_STATE.OPEN)}
+                on:click={() => handleAppState(app)}
+                use:tooltip={{ content: app.title }}
             >
-                <img
-                    class="w-full h-full"
-                    src="/media/learningenvironment/appicons/{app.icon}.svg"
-                    alt="appicon"
-                />
+                <AppIcon icon={app.icon} opacity={80} />
             </div>
         {/each}
     </div>

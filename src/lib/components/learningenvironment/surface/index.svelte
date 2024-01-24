@@ -42,13 +42,31 @@
         throttleDrag={1}
         resizable={true}
         throttleResize={1}
+        bounds={{
+            left: 0,
+            top: 0,
+            right: 0,
+            bottom: 0,
+            position: "css",
+            minWidth: 100,
+            minHeight: 100,
+        }}
+        renderDirections={["nw", "ne", "sw", "se"]}
+        minWidth={100}
         on:drag={({ detail: e }) => {
             e.target.style.transform = e.transform;
+        }}
+        on:resizeStart={() => {
+            lestore.setAppResizing(true);
         }}
         on:resize={({ detail: e }) => {
             e.target.style.width = `${e.width}px`;
             e.target.style.height = `${e.height}px`;
             e.target.style.transform = e.drag.transform;
+            lestore.setAppDimensions(e.width, e.height);
+        }}
+        on:resizeEnd={() => {
+            lestore.setAppResizing(false);
         }}
     />
 {/if}
@@ -61,7 +79,7 @@
                     class="grid grid-cols-4 grid-rows-4 lg:grid-cols-5 lg:grid-rows-3 w-full items-baseline text-center"
                 >
                     {#each getAppsForPage(index) as id}
-                        <div class="overflow-hidden">
+                        <div>
                             <App {id} />
                         </div>
                     {/each}
@@ -94,5 +112,11 @@
     }
     .page-nav .active {
         background: rgba(255, 255, 255, 1);
+    }
+
+    :global(.moveable-line) {
+        display: none !important;
+    }
+    :global(.moveable-control) {
     }
 </style>

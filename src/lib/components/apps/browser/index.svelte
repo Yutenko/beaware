@@ -5,7 +5,7 @@
 
     export let config = {};
     config = {
-        startscreen: "http://localhost:5173/p/google",
+        startscreen: "http://localhost:5173/p/microsoft",
         bookmarks: [],
         specialURLs: [
             {

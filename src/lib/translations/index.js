@@ -42,6 +42,11 @@ export const config = {
       key: 'phishing',
       loader: async () => (await import('./de/simulation_phishing.json')).default,
     },
+    {
+      locale: 'de',
+      key: 'lenv',
+      loader: async () => (await import('./de/learningenvironment.json')).default,
+    },
 
   ],
 };

@@ -1,9 +1,10 @@
 <script>
     import AppWindow from "./AppWindow.svelte";
+
     import { breakpoint } from "$lib/utils";
     import { lestore } from "../store.js";
     import { APP_STATE } from "../constants.json";
-    import { MailClientEmbed, Browser } from "$components";
+    import { MailClientEmbed, Browser, AppIcon } from "$components";
     import { onMount } from "svelte";
 
     export let installed = true;
@@ -42,6 +43,7 @@
     component={app.component}
     state={app.state}
     title={app.title}
+    icon={app.icon}
     id={app.id}
 />
 
@@ -80,11 +82,7 @@
         {/if}
 
         <div class="absolute top-0 left-0 p-1">
-            <img
-                class="w-full h-full"
-                src="/media/learningenvironment/appicons/{app.icon}.svg"
-                alt="appicon"
-            />
+            <AppIcon icon={app.icon} />
             <p class="text-base-100 mt-2">{app.title}</p>
         </div>
         {#if app.badge > 0}

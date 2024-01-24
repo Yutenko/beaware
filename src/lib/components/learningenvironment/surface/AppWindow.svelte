@@ -1,9 +1,11 @@
 <script>
     import { lestore } from "../store.js";
     import { APP_STATE } from "../constants.json";
+    import { AppIcon } from "$components";
 
     export let id;
     export let state = APP_STATE.CLOSED;
+    export let icon;
     export let title;
     export let component;
 
@@ -16,6 +18,13 @@
         lestore.setCurrentApp(id, appwindow);
     }
     $: minimized = state === APP_STATE.MINIMIZED;
+
+    function handleClose() {
+        lestore.setAppState(id, APP_STATE.CLOSED);
+    }
+    function handleMinimize() {
+        lestore.setAppState(id, APP_STATE.MINIMIZED);
+    }
 
     function toggleMaximization() {
         if (state === APP_STATE.MAXIMIZED) {
@@ -41,6 +50,19 @@
             lestore.setAppState(id, APP_STATE.MAXIMIZED);
         }
     }
+    $: isForeground = $lestore.currentApp.target === appwindow;
+    $: dimensions = {
+        w: $lestore.currentApp.width
+            ? $lestore.currentApp.width
+            : $lestore.currentApp.target?.clientWidth,
+        h: $lestore.currentApp.height
+            ? $lestore.currentApp.height
+            : $lestore.currentApp.target?.clientHeight,
+    };
+
+    $: isMeResizing =
+        $lestore.currentApp.target === appwindow &&
+        $lestore.currentApp.isResizing;
 </script>
 
 {#if state !== APP_STATE.CLOSED}
@@ -48,36 +70,63 @@
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
         bind:this={appwindow}
+        on:click={() => lestore.setCurrentApp(id, appwindow)}
         class="mockup-window fade-in {minimized
             ? 'hidden'
-            : ''} mac-window fixed top-4 left-8 border border-base-300 bg-base-200
+            : ''} mac-window fixed top-4 left-8 border border-base-300 bg-base-200 {isForeground
+            ? 'shadow-lg'
+            : ''}
         "
-        on:click={() => lestore.setCurrentApp(id, appwindow)}
-        style="width:{startWidth}px;height:{startHeight}px;z-index:{$lestore
-            .currentApp.target === appwindow
+        style="width:{startWidth}px;height:{startHeight}px;z-index:{isForeground
             ? '999999'
-            : '30'}"
+            : '30'};"
     >
-        <div class="title-bar">
+        <!-- HELPER, if window is in background, wrap it with this invisible div, to make it possible to click it from the background-->
+        {#if !isForeground}
+            <div
+                class="absolute w-full h-full top-0 left-0 z-50"
+                on:click={() => lestore.setCurrentApp(id, appwindow)}
+            ></div>
+        {/if}
+        <div class="title-bar" on:dblclick={toggleMaximization}>
             <div class="buttons">
-                <div
-                    class="close"
-                    on:click={() => lestore.setAppState(id, APP_STATE.CLOSED)}
-                ></div>
-                <div
-                    class="minimize"
-                    on:click={() =>
-                        lestore.setAppState(id, APP_STATE.MINIMIZED)}
-                ></div>
+                <div class="close" on:click={handleClose}></div>
+                <div class="minimize" on:click={handleMinimize}></div>
                 <div class="maximize" on:click={toggleMaximization}></div>
             </div>
-            <div class="title">{title}</div>
+            <div class="title">
+                {title}
+            </div>
+            <div class="pr-4">
+                <AppIcon {icon} width={8} opacity={80}/>
+            </div>
         </div>
+        {#if isMeResizing}
+            <div
+                class="absolute top-0 left-0 w-full h-full z-20 flex items-center justify-center flex-col bg-opacity-75 bg-base-100"
+            >
+                <p class="text-lg">
+                    {dimensions.w}px x {dimensions.h}px
+                </p>
+            </div>
+        {/if}
         <svelte:component this={component} />
     </div>
 {/if}
 
 <style>
+    .app-icon {
+        user-select: none;
+        cursor: pointer;
+        width: 10vmax;
+        height: 10vmax;
+        background: rgba(255, 255, 255, 1);
+        background-size: cover;
+        border-radius: 20%;
+        position: relative;
+        /*-webkit-mask-image: linear-gradient(white, black);*/
+        transition: all 0.2s ease-in-out;
+    }
     .mockup-window {
         padding: 0px !important;
     }

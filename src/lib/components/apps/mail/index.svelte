@@ -99,7 +99,10 @@
 {:else}
     <div class="grid grid-cols-12 overflow-hidden text-left">
         <div class="col-span-12 h-100vh">
-            <div class="navbar bg-base-100">
+            <div
+                class="navbar bg-base-100"
+                style="min-height:unset;padding:0px;"
+            >
                 <div class="flex-1">
                     <Categories
                         {isMobile}

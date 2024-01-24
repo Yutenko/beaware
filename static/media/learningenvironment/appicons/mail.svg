@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
+   xmlns:vectornator="http://vectornator.io"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
@@ -13,7 +13,7 @@
    width="500"
    height="500"
    viewBox="0 0 500.00001 500.00001"
-   sodipodi:docname="Icon_BeAware_iOSMailKlon.svg"
+   sodipodi:docname="Desktop_Icons_BeAware_OfficeMailKlon.svg"
    inkscape:version="1.0 (4035a4fb49, 2020-05-01)">
   <metadata
      id="metadata8">
@@ -28,30 +28,7 @@
     </rdf:RDF>
   </metadata>
   <defs
-     id="defs6">
-    <linearGradient
-       inkscape:collect="always"
-       id="linearGradient1764">
-      <stop
-         style="stop-color:#004eff;stop-opacity:1"
-         offset="0"
-         id="stop1760" />
-      <stop
-         style="stop-color:#31c8ff;stop-opacity:1"
-         offset="1"
-         id="stop1762" />
-    </linearGradient>
-    <linearGradient
-       gradientTransform="matrix(1.0031801,0,0,1.0045461,-0.79179803,-0.11365371)"
-       inkscape:collect="always"
-       xlink:href="#linearGradient1764"
-       id="linearGradient1766"
-       x1="225"
-       y1="50"
-       x2="225"
-       y2="373.24228"
-       gradientUnits="userSpaceOnUse" />
-  </defs>
+     id="defs6" />
   <sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -65,13 +42,13 @@
      inkscape:window-height="1017"
      id="namedview4"
      showgrid="true"
-     inkscape:zoom="0.49635851"
-     inkscape:cx="72.912118"
-     inkscape:cy="221.40693"
+     inkscape:zoom="0.35097847"
+     inkscape:cx="-735.19107"
+     inkscape:cy="-29.61925"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer5"
+     inkscape:current-layer="layer1"
      inkscape:document-rotation="0">
     <inkscape:grid
        type="xygrid"
@@ -83,39 +60,26 @@
   </sodipodi:namedview>
   <g
      inkscape:groupmode="layer"
-     id="layer5"
-     inkscape:label="iOsMail_Klon">
+     id="layer1"
+     inkscape:label="OfficeMail_Klon"
+     style="display:inline"
+     sodipodi:insensitive="true">
     <g
-       id="g899">
-      <rect
-         rx="84.976234"
-         ry="84.976234"
-         y="25"
-         x="24.287706"
-         height="450"
-         width="449.38806"
-         id="rect1750"
-         style="fill:url(#linearGradient1766);fill-opacity:1;stroke-width:0;stroke-linejoin:round" />
-      <path
-         style="fill:#ffffff;fill-opacity:1;stroke-width:0;stroke-linejoin:round"
-         d="M 205.84375,283.62695 80.53125,388.77734 C 81.131878,388.9182 81.755594,389 82.400391,389 H 416.88867 c 0.74945,0 1.47019,-0.10835 2.15821,-0.29688 l -124.97266,-104.86523 -43.86524,36.80859 -0.10156,0.1211 z"
-         id="path183" />
-      <path
-         style="fill:#ffffff;fill-opacity:1;stroke-width:0;stroke-linejoin:round"
-         d="M 425,173.98047 298.55078,280.08398 423.7793,385.16406 c 0.76954,-1.2411 1.2207,-2.7017 1.2207,-4.27539 z"
-         id="path181" />
-      <path
-         style="fill:#ffffff;fill-opacity:1;stroke-width:0;stroke-linejoin:round"
-         d="m 74.287109,173.23633 v 207.65234 c 0,1.66169 0.498944,3.20085 1.34961,4.48438 L 201.36914,279.87109 Z"
-         id="path179" />
-      <path
-         style="fill:#ffffff;fill-opacity:1;stroke-width:0;stroke-linejoin:round"
-         d="m 177.23438,121.46094 c -1.63207,0 -2.94727,1.31519 -2.94727,2.94726 v 31.88672 H 82.400391 c -1.658253,0 -3.196575,0.49436 -4.478516,1.3418 l 172.464845,144.71484 171.76172,-144.125 c -1.41468,-1.20401 -3.24804,-1.93164 -5.25977,-1.93164 H 324.13281 V 124.4082 c 0,-1.63207 -1.31325,-2.94726 -2.94531,-2.94726 z"
-         id="path177" />
-      <path
-         style="fill:#ffffff;fill-opacity:1;stroke-width:0;stroke-linejoin:round"
-         d="m 174.85156,94.958984 c -0.31201,0 -0.56445,0.250489 -0.56445,0.5625 v 14.474606 c 0,0.31201 0.25244,0.5625 0.56445,0.5625 h 148.71875 c 0.31201,0 0.5625,-0.25049 0.5625,-0.5625 V 95.521484 c 0,-0.312011 -0.25049,-0.5625 -0.5625,-0.5625 z"
-         id="rect73" />
+       transform="matrix(1.0891181,0,0,1.0891181,24.509505,2.2949578)"
+       id="g1094"
+       style="clip-rule:evenodd;fill-rule:nonzero;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10">
+      <g
+         id="Ebene-1"
+         vectornator:layerName="Ebene 1">
+        <path
+           d="M 263.108,10 10.0139,70 c -0.02063,0.0057 -0.01633,314.312 0,314.312 L 263.108,450 c 0.018,0.003 -62.55,-120.172 -63.094,-120 -190.0001,60 -190.0001,-260 0,-190 z m -73.094,290 c -4.387,-7.622 -30.038,-69.744 -30.038,-69.744 L 190.014,160 c -130.0001,-80 -130.0001,210 0,140 z m 50,-200 c -0.009,0 -20,50 -20,50 l 40,40 130,-90 z m 160,10 -140,100 -50,-40 c 0,0 -30,59.989 -30,60 0,0 59.973,130 60,130 h 140 c 16.774,0 20,-5.101 20,-20 z"
+           fill="#0070d1"
+           fill-rule="nonzero"
+           opacity="1"
+           stroke="none"
+           vectornator:layerName="Kurve 3"
+           id="path1083" />
+      </g>
     </g>
   </g>
 </svg>

@@ -9,7 +9,7 @@
 
     let appwindow = null;
     let stylesBeforeMaximation = {};
-    let startWidth = 900;
+    let startWidth = 1100;
     let startHeight = 600;
 
     $: if (state === APP_STATE.OPEN) {

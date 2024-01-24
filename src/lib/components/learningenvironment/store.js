@@ -1,4 +1,4 @@
-import { derived, writable } from 'svelte/store';
+import { writable } from 'svelte/store';
 import { APP_STATE } from './constants.json';
 
 
@@ -6,8 +6,8 @@ export const lestore = (() => {
     const { subscribe, update } = writable({
         config: {
             apps: {
-                "1234": { id: "1234", title: "Phedge", icon: "phedge", program: "browser", badge: 0, target: null, state: APP_STATE.CLOSED },
-                "2345": { id: "2345", title: "Mail", icon: "mail", program: "mail", badge: 2, target: null, state: APP_STATE.CLOSED },
+                "1234": { id: "1234", title: "Phedge", icon: "phedge", program: "browser", badge: 0, target: null, state: APP_STATE.CLOSED, lastMinimized: null },
+                "2345": { id: "2345", title: "Mail", icon: "mail", program: "mail", badge: 2, target: null, state: APP_STATE.CLOSED, lastMinimized: null },
             }
         },
         currentApp: {}

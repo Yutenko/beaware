@@ -2,6 +2,7 @@
     import { Modal } from "$components";
     import { onMount } from "svelte";
     import { t } from "$lib/translations";
+    import { isRealMobileBrowser } from "$lib/utils";
 
     export let config = {};
     config = {
@@ -33,6 +34,7 @@
     let iframe;
     let loading = false;
     let openCertificateModal = false;
+    let isrealmobilebrowser = isRealMobileBrowser();
 
     addTab();
 
@@ -197,23 +199,33 @@
 
     <!-- NAVBAR -->
     <div class="navbar bg-base-200" bind:clientHeight={browserNavHeight}>
-        <div class="justify-start">
-            <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
-                <i class="fas fa-long-arrow-left"></i>
+        {#if !isrealmobilebrowser}
+            <div class="justify-start">
+                <div
+                    tabindex="0"
+                    role="button"
+                    class="btn btn-ghost btn-circle"
+                >
+                    <i class="fas fa-long-arrow-left"></i>
+                </div>
+                <div
+                    tabindex="0"
+                    role="button"
+                    class="btn btn-ghost btn-circle"
+                >
+                    <i class="fas fa-long-arrow-right"></i>
+                </div>
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <div
+                    tabindex="0"
+                    role="button"
+                    class="btn btn-ghost btn-circle"
+                    on:click={reload}
+                >
+                    <i class="fas fa-redo-alt"></i>
+                </div>
             </div>
-            <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
-                <i class="fas fa-long-arrow-right"></i>
-            </div>
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <div
-                tabindex="0"
-                role="button"
-                class="btn btn-ghost btn-circle"
-                on:click={reload}
-            >
-                <i class="fas fa-redo-alt"></i>
-            </div>
-        </div>
+        {/if}
         <div class="justify-center w-11/12">
             <div class="w-full flex items-center">
                 <div class="absolute z-10">

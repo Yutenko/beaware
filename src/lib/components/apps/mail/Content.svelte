@@ -48,7 +48,7 @@
             class="card overflow-hidden pl-4 pb-4 w-full border-b rounded-none"
         >
             <div class="card-body">
-                <div class="date absolute top-2 right-2 opacity-50">
+                <div class="date top-2 right-2 opacity-50">
                     {dayjs(data.created).format("MMMM D, YYYY h:mm A")}
                 </div>
                 <h2 class="card-title">

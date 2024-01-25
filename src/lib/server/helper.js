@@ -2,6 +2,9 @@ import { createQuizFile, updateQuizFile, uploadFile } from '$lib/server/db';
 import { GROUP_COLORS, OPTIONS } from '$components/quiz/groupassignment/constants'
 import { default as QUIZ_TYPE } from '$components/quiz/types'
 
+const LA_QUIZ_TYPES = {
+    groupassignment: 86,
+}
 
 export async function convertLearningAppsDataToQuizData(id, learningappsurl, data) {
     let quiz = {
@@ -9,8 +12,8 @@ export async function convertLearningAppsDataToQuizData(id, learningappsurl, dat
         task: data.task,
         convertedFrom: learningappsurl,
     }
-    // groupassignment
-    if (data.tool == 86) {
+    
+    if (data.tool == LA_QUIZ_TYPES.groupassignment) {
         quiz.groups = []
         quiz.elements = []
 

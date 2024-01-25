@@ -3,7 +3,6 @@
     import { APP_STATE } from "../constants.json";
     import { AppIcon, Modal } from "$components";
     import { isRealMobileBrowser } from "$lib/utils";
-    import { t } from "$lib/translations";
 
     export let id;
     export let state = APP_STATE.CLOSED;
@@ -13,6 +12,7 @@
 
     let isrealmobilebrowser = isRealMobileBrowser();
     $: openFullscreenApp = state !== APP_STATE.CLOSED;
+
     let appwindow = null;
     let stylesBeforeMaximation = {};
     let startWidth = 1100;
@@ -119,17 +119,30 @@
 {/if}
 
 {#if state !== APP_STATE.CLOSED && isrealmobilebrowser}
-    <Modal bind:open={openFullscreenApp} fullscreen={true}>
-        <h3 class="font-bold text-lg" slot="header"></h3>
-        <div slot="body">
-            <div class="relative">
-                <svelte:component this={component} />
+    <Modal
+        bind:open={openFullscreenApp}
+        fullscreen={true}
+        on:close={handleClose}
+    >
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <div class="navbar bg-base-100" slot="header">
+            <div class="flex-1">
+                <!-- svelte-ignore a11y-missing-attribute -->
+                <a class="font-bold text-xl pl-4">
+                    <AppIcon {icon} width={8} opacity={80} />
+                </a>
+            </div>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <div class="flex-none gap-2" on:click={handleClose}>
+                <div class="btn btn-circle btn-ghost">
+                    <i class="fal fa-times"></i>
+                </div>
             </div>
         </div>
-
-        <button class="btn btn-primary" slot="footer">
-            {$t("core.close")}
-        </button>
+        <div class="h-[100vh]" slot="body">
+            <svelte:component this={component} />
+        </div>
     </Modal>
 {/if}
 

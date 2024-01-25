@@ -4,10 +4,13 @@
     import { tooltip } from "$lib/actions";
     import { AppIcon } from "$components";
     import { t } from "$lib/translations";
+    import { isRealMobileBrowser } from "$lib/utils";
 
     $: minimizedapps = Object.values($lestore.config.apps)
         .filter((app) => app.state !== APP_STATE.CLOSED)
         .sort((a, b) => a.opened - b.opened);
+
+    $: irmb = isRealMobileBrowser();
 
     let lastAction = APP_STATE.OPEN;
     let dockHovered = false;
@@ -36,7 +39,7 @@
             : $t("lenv.openall");
 </script>
 
-{#if minimizedapps.length > 0}
+{#if minimizedapps.length > 0 && !irmb}
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
         class="appwindow-bar flex gap-2 items-center text-center justify-center rounded-badge p-3 bg-base-300 min-w-[20%] max-w-[80%]"

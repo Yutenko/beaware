@@ -1,7 +1,9 @@
 <script>
     import { lestore } from "../store.js";
     import { APP_STATE } from "../constants.json";
-    import { AppIcon } from "$components";
+    import { AppIcon, Modal } from "$components";
+    import { isRealMobileBrowser } from "$lib/utils";
+    import { t } from "$lib/translations";
 
     export let id;
     export let state = APP_STATE.CLOSED;
@@ -9,6 +11,8 @@
     export let title;
     export let component;
 
+    let isrealmobilebrowser = isRealMobileBrowser();
+    $: openFullscreenApp = state !== APP_STATE.CLOSED;
     let appwindow = null;
     let stylesBeforeMaximation = {};
     let startWidth = 1100;
@@ -65,7 +69,7 @@
         $lestore.currentApp.isResizing;
 </script>
 
-{#if state !== APP_STATE.CLOSED}
+{#if state !== APP_STATE.CLOSED && !isrealmobilebrowser}
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
@@ -98,7 +102,7 @@
                 {title}
             </div>
             <div class="pr-4">
-                <AppIcon {icon} width={8} opacity={80}/>
+                <AppIcon {icon} width={8} opacity={80} />
             </div>
         </div>
         {#if isMeResizing}
@@ -112,6 +116,21 @@
         {/if}
         <svelte:component this={component} />
     </div>
+{/if}
+
+{#if state !== APP_STATE.CLOSED && isrealmobilebrowser}
+    <Modal bind:open={openFullscreenApp} fullscreen={true}>
+        <h3 class="font-bold text-lg" slot="header"></h3>
+        <div slot="body">
+            <div class="relative">
+                <svelte:component this={component} />
+            </div>
+        </div>
+
+        <button class="btn btn-primary" slot="footer">
+            {$t("core.close")}
+        </button>
+    </Modal>
 {/if}
 
 <style>

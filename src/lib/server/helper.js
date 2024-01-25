@@ -1,6 +1,6 @@
 import { createQuizFile, updateQuizFile, uploadFile } from '$lib/server/db';
 import { GROUP_COLORS, OPTIONS } from '$components/quiz/groupassignment/constants'
-import { default as QUIZ_TYPE } from '$components/quiz/quiztypes'
+import { default as QUIZ_TYPE } from '$components/quiz/types'
 
 
 export async function convertLearningAppsDataToQuizData(id, learningappsurl, data) {

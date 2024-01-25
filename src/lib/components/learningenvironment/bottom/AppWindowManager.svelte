@@ -5,6 +5,7 @@
     import { AppIcon } from "$components";
     import { t } from "$lib/translations";
     import { isRealMobileBrowser } from "$lib/utils";
+    import { fade } from "svelte/transition";
 
     $: minimizedapps = Object.values($lestore.config.apps)
         .filter((app) => app.state !== APP_STATE.CLOSED)
@@ -37,13 +38,15 @@
         lastAction === APP_STATE.OPEN
             ? $t("lenv.minimizeall")
             : $t("lenv.openall");
+    $: dockWidth = minimizedapps.length * 7.5;
 </script>
 
 {#if minimizedapps.length > 0 && !irmb}
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
-        class="appwindow-bar flex gap-2 items-center text-center justify-center rounded-badge p-3 bg-base-300 min-w-[20%] max-w-[80%]"
-        style="width:{minimizedapps.length * 7.5}%"
+        class="appwindow-bar flex gap-2 items-center text-center justify-center rounded-badge p-3 bg-base-300 min-w-[17%] max-w-[80%]"
+        style="width:{dockWidth}%"
+        transition:fade
         on:mouseenter={toggleHovered}
         on:mouseleave={toggleHovered}
         on:touchstart={toggleHovered}
@@ -77,6 +80,7 @@
     .appwindow-bar {
         position: absolute;
         background-color: rgba(255, 255, 255, 0.5);
+        background-image: linear-gradient(180deg, #91e7db, #505a78);
         margin: 0 auto;
         bottom: 5px;
         left: 0;

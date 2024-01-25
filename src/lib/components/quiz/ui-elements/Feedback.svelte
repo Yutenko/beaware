@@ -3,6 +3,7 @@
     import { confetti } from "@neoconfetti/svelte";
     import { tweened } from "svelte/motion";
     import { cubicOut } from "svelte/easing";
+    import Quiz from "../shared";
 
     export let solved;
     export let feedbacks;
@@ -18,6 +19,7 @@
     $: progressPercent = parseInt($progress * 100);
 
     $: if (dialog && solved) {
+        Quiz.receiver.finished();
         feedback = getFeedback();
         progress.set(result / 100);
         dialog.showModal();
@@ -45,7 +47,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 {#if solved && result > 49}
-    <div class="center" use:confetti={{ particleCount: result, force: 0.9, }} />
+    <div class="center" use:confetti={{ particleCount: result, force: 0.9 }} />
 {/if}
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
@@ -89,10 +91,9 @@
     }
     .center {
         position: absolute;
-        top:20%;
+        top: 20%;
         left: 50%;
         transform: translate(-50%, -50%);
         padding: 10px;
-
     }
 </style>

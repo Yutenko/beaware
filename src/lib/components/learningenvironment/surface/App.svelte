@@ -4,8 +4,14 @@
     import { breakpoint } from "$lib/utils";
     import { lestore } from "../store.js";
     import { APP_STATE } from "../constants.json";
-    import { MailClientEmbed, Browser, AppIcon } from "$components";
+    import {
+        MailClientEmbed,
+        LearningUnitEmbed,
+        Browser,
+        AppIcon,
+    } from "$components";
     import { onMount } from "svelte";
+    import APP_TYPE from "$components/apps/types";
 
     export let installed = true;
     export let id;
@@ -30,8 +36,9 @@
     }
 
     function getAppComponent() {
-        if (app.program === "browser") return Browser;
-        if (app.program === "mail") return MailClientEmbed;
+        if (app.program === APP_TYPE.BROWSER) return Browser;
+        if (app.program === APP_TYPE.MAIL) return MailClientEmbed;
+        if (app.program === APP_TYPE.LEARNINGUNIT) return LearningUnitEmbed;
     }
 
     onMount(() => {

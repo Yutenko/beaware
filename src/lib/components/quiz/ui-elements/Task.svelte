@@ -1,6 +1,5 @@
 <script>
     import { t } from "$lib/translations";
-    import { linkify } from "$lib/actions";
 
     let dialog;
 

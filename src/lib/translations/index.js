@@ -47,6 +47,11 @@ export const config = {
       key: 'lenv',
       loader: async () => (await import('./de/learningenvironment.json')).default,
     },
+    {
+      locale: 'de',
+      key: 'lunit',
+      loader: async () => (await import('./de/apps_learningunit.json')).default,
+    },
 
   ],
 };

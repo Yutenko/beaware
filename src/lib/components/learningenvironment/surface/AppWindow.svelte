@@ -3,6 +3,7 @@
     import { APP_STATE } from "../constants.json";
     import { AppIcon, Modal } from "$components";
     import { isRealMobileBrowser } from "$lib/utils";
+    import { fade } from "svelte/transition";
 
     export let id;
     export let state = APP_STATE.CLOSED;
@@ -75,7 +76,8 @@
     <div
         bind:this={appwindow}
         on:click={() => lestore.setCurrentApp(id, appwindow)}
-        class="mockup-window fade-in {minimized
+        transition:fade
+        class="mockup-window {minimized
             ? 'hidden'
             : ''} mac-window fixed top-4 left-8 border border-base-300 bg-base-200 {isForeground
             ? 'shadow-lg'
@@ -120,8 +122,8 @@
 
 {#if state !== APP_STATE.CLOSED && isrealmobilebrowser}
     <Modal
-        bind:open={openFullscreenApp}
         fullscreen={true}
+        bind:open={openFullscreenApp}
         on:close={handleClose}
     >
         <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -194,7 +196,6 @@
         width: 100%;
         clear: both;
         padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
         display: flex;
     }
 
@@ -306,49 +307,5 @@
 
     .mac-window .title-bar .title {
         margin: 0 auto;
-    }
-
-    .fade-in {
-        -webkit-animation: fade-in 0.5s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-        animation: fade-in 0.5s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-    }
-
-    @-webkit-keyframes fade-in {
-        0% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
-    }
-    @keyframes fade-in {
-        0% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
-    }
-
-    .fade-out {
-        -webkit-animation: fade-out 0.5s ease-out both;
-        animation: fade-out 0.5s ease-out both;
-    }
-
-    @-webkit-keyframes fade-out {
-        0% {
-            opacity: 1;
-        }
-        100% {
-            opacity: 0;
-        }
-    }
-    @keyframes fade-out {
-        0% {
-            opacity: 1;
-        }
-        100% {
-            opacity: 0;
-        }
     }
 </style>

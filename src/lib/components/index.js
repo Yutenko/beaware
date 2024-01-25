@@ -22,6 +22,9 @@ export { default as AppIcon } from './learningenvironment/surface/AppIcon.svelte
 export { default as MailClient } from './apps/mail/index.svelte';
 export { default as MailClientEmbed } from './apps/mail/Embed.svelte';
 export { default as Browser } from './apps/browser/index.svelte';
+export { default as LearningUnit } from './apps/learningunit/index.svelte';
+export { default as LearningUnitEmbed } from './apps/learningunit/Embed.svelte';
+
 
 // Simulation
 export { default as GoogleLogin } from './simulation/phishing/GoogleLogin.svelte';

@@ -6,6 +6,6 @@
     let { type } = data.params;
 </script>
 
-{#if type == types.groupAssignment}
+{#if type == types.groupassignment}
     <GroupAssignmentEmbed />
 {/if}

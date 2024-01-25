@@ -1,3 +1,5 @@
 {
-    "mail": 1
+    "MAIL": 1,
+    "BROWSER": 2,
+    "LEARNINGUNIT": 3
 }

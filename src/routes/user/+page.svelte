@@ -1,5 +1,10 @@
 <script>
-    import { LearningEnvironment, MailClient, Browser } from "$components";
+    import {
+        LearningEnvironment,
+        MailClient,
+        Browser,
+        LearningUnit,
+    } from "$components";
 </script>
 
 <LearningEnvironment />

@@ -3,4 +3,4 @@
     import "../app.css";
 </script>
 
-<iframe src="/user/apps/{types.mail}/view" title="frames-user-app"></iframe>
+<iframe src="/user/apps/{types.MAIL}/view" title="frames-user-app"></iframe>

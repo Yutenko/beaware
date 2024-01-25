@@ -2,13 +2,20 @@ import { browser } from '$app/environment'
 
 
 const messages = {
+    
+    // setup and edit
     ADD_CONTAINER: 'add-container',
     REMOVE_CONTAINER: 'remove-container',
     RESET_CONTAINER: 'reset-container',
     ADD_ELEMENT: 'add-element',
     REMOVE_ELEMENT: 'remove-element',
     UPDATE_PARENT: 'update-parent',
-    INITIAL_DATA: 'initial-data'
+    INITIAL_DATA: 'initial-data',
+
+    // evaluation
+    FINISHED: 'finished',
+    PROGRESS: 'progress'
+
 }
 
 const Quiz = {
@@ -51,6 +58,12 @@ const Quiz = {
             if (Quiz.receiver._updateFn)
                 Quiz.receiver._send({ cmd: messages.UPDATE_PARENT, data: Quiz.receiver._updateFn() });
         },
+        progress: (data) => {
+            Quiz.receiver._send({ cmd: messages.PROGRESS, data });
+        },
+        finished: (data) => {
+            Quiz.receiver._send({ cmd: messages.FINISHED, data });
+        },
         _send: (options) => {
             window.parent.postMessage(JSON.stringify(options), "*")
         },
@@ -62,7 +75,7 @@ const Quiz = {
         init: (options) => {
             if (browser) {
 
-                const { onUpdate, onInitalData } = options;
+                const { onUpdate, onInitalData, onFinished, onProgress } = options;
 
                 window.addEventListener('message', function (event) {
                     if (event.data) {
@@ -72,6 +85,10 @@ const Quiz = {
                             onUpdate(JSON.parse(message.data));
                         } else if (message.cmd === messages.INITIAL_DATA) {
                             onInitalData(JSON.parse(message.data));
+                        } else if (message.cmd === messages.FINISHED) {
+                            onFinished(JSON.parse(message.data));
+                        } else if (message.cmd === messages.PROGRESS) {
+                            onProgress(JSON.parse(message.data));
                         }
                     }
                 });

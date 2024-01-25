@@ -115,6 +115,7 @@
         return !/^https?:\/\//i.test(url) ? `https://${url}` : url;
     }
     function openCertificateModalHandler() {
+        console.log("modal");
         openCertificateModal = true;
     }
 

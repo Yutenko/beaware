@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
 import { APP_STATE } from './constants.json';
+import APP_TYPE from '$components/apps/types';
 
 
 let store = {
@@ -9,7 +10,7 @@ let store = {
                 id: "1234",
                 title: "BEFox",
                 icon: "phirephox",
-                program: "browser",
+                program: APP_TYPE.BROWSER,
                 badge: 0,
                 target: null,
                 state: APP_STATE.CLOSED,
@@ -22,7 +23,7 @@ let store = {
                 id: "2345",
                 title: "BEMail",
                 icon: "gmail",
-                program: "mail",
+                program: APP_TYPE.MAIL,
                 badge: 2,
                 target: null,
                 state: APP_STATE.CLOSED,
@@ -31,6 +32,19 @@ let store = {
                 width: 0,
                 height: 0
             },
+            "3456": {
+                id: "3456",
+                title: "Datenschutz Allgemein",
+                icon: null,
+                program: APP_TYPE.LEARNINGUNIT,
+                badge: 15,
+                target: null,
+                state: APP_STATE.CLOSED,
+                opened: null,
+                isResizing: false,
+                width: 0,
+                height: 0
+            }
         }
     },
     currentApp: {}

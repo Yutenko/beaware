@@ -1,7 +1,7 @@
 <script>
     import { onMount } from "svelte";
     const powerLevel = ["full", "half", "quarter", "empty"].reverse();
-    let powerPercent = 80;
+    let powerPercent = 84;
     let step = 0;
 
     onMount(() => {

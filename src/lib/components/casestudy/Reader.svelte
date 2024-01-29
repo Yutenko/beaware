@@ -1,20 +1,18 @@
 <script>
     import { default as PlainEditor } from "./PlainEditor.svelte";
-    import { default as Navbar } from "./Navbar.svelte";
     import { store } from "./store.js";
 
     export let state = {};
     $: is404 = Object.keys(state).length === 0;
 
-    const { title, editor } = state;
+    const { readingtime, editor } = state;
 
-    if (title) store.setTitle(title);
     if (editor) store.setEditor(editor);
+    if (readingtime) store.setReadingtime(readingtime);
 </script>
 
 {#if is404}
     <p>404</p>
 {:else}
-    <Navbar />
-    <PlainEditor />
+    <PlainEditor readOnly={true} />
 {/if}

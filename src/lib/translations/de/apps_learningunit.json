@@ -1,3 +1,6 @@
 {
-    "start": "Start"
+    "start": "Start",
+    "next": "Nächste",
+    "finished": "Fertig",
+    "endit": "beenden"
 }

@@ -84,6 +84,12 @@
         el.zIndex = zIndex++;
         draggableelement = e.target;
         draggableelement.style.zIndex = el.zIndex;
+
+        // if card is dragged and was solved before, remove solved flag
+        if (currentElement.solved !== "undefined") {
+            delete currentElement.solved;
+            elements = elements;
+        }
     }
     function handleCardDragEnd(e, el) {
         draggableelement = null;
@@ -374,5 +380,4 @@
     .user-card-unsolved {
         border: 5px solid rgb(239 68 68);
     }
-    
 </style>

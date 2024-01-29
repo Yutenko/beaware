@@ -12,7 +12,7 @@ export async function convertLearningAppsDataToQuizData(id, learningappsurl, dat
         task: data.task,
         convertedFrom: learningappsurl,
     }
-    
+
     if (data.tool == LA_QUIZ_TYPES.groupassignment) {
         quiz.groups = []
         quiz.elements = []
@@ -93,4 +93,39 @@ export async function convertLearningAppsDataToQuizData(id, learningappsurl, dat
     }
 
     return null
+}
+
+
+
+export function calcReadindAndViewingTime(data) {
+    const wordsPerMinute = 238;
+    const secondsPerImage = 10;
+    let wordCount = 0;
+    let imageViewingTime = 0;
+
+    data.blocks.map(el => {
+        if (el.type == 'paragraph' || el.type == 'header') {
+            wordCount += el.data.text.length;
+        } else if (el.type == 'checklist') {
+            el.data.items.map(item => wordCount += item.text.length)
+        } else if (el.type == 'table') {
+            el.data.content.map(item => {
+                item.map(text => wordCount += text.length)
+            })
+        } else if (el.type == 'quote') {
+            wordCount += el.data.text.length;
+            wordCount += el.data.caption.length;
+        } else if (el.type == 'list') {
+            el.data.items.map(item => wordCount += item.length)
+        } else if (el.type == 'warning') {
+            wordCount += el.data.title.length;
+            wordCount += el.data.message.length;
+        } else if (el.type == 'image') {
+            imageViewingTime += secondsPerImage;
+        }
+    })
+
+    const readingTime = Math.ceil(wordCount / wordsPerMinute)
+    
+    return readingTime + imageViewingTime
 }

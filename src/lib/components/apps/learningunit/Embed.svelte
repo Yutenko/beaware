@@ -3,4 +3,4 @@
     import "../app.css";
 </script>
 
-<iframe src="/user/apps/{types.LEARNINGUNIT}/view" title="frames-user-app"></iframe>
+<iframe src="/user/apps/{types.LEARNINGUNIT}/embed" title="frames-user-app"></iframe>

@@ -1,7 +1,6 @@
 <script>
     export let data;
-    import { CasestudyEditor } from "$components/index";
+    import { CasestudyReader } from "$components/index";
 </script>
 
-
-<CasestudyEditor state={data.state}/>
+<CasestudyReader state={data.state} />

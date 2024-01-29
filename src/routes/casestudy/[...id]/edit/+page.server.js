@@ -7,7 +7,7 @@ export async function load({ url, params }) {
     // if there is no valid id, create a new empty quiz
     if (!id || !isValidCasestudyId(id)) {
         const { newId } = await createCasestudyFile();
-        throw redirect(302, `${url.pathname}/${newId}`);
+        throw redirect(302, `${url.pathname}/${newId}/edit`);
     }
 };
 

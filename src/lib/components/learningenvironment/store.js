@@ -1,65 +1,62 @@
-import { writable } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
 import { APP_STATE } from './constants.json';
 import APP_TYPE from '$components/apps/types';
 
 
-let store = {
-    config: {
-        apps: {
-            "1234": {
-                id: "1234",
-                title: "BEFox",
-                icon: "phirephox",
-                program: APP_TYPE.BROWSER,
-                badge: 0,
-                target: null,
-                state: APP_STATE.CLOSED,
-                opened: null,
-                isResizing: false,
-                width: 0,
-                height: 0
-            },
-            "2345": {
-                id: "2345",
-                title: "BEMail",
-                icon: "gmail",
-                program: APP_TYPE.MAIL,
-                badge: 2,
-                target: null,
-                state: APP_STATE.CLOSED,
-                opened: null,
-                isResizing: false,
-                width: 0,
-                height: 0
-            },
-            "3456": {
-                id: "3456",
-                title: "Datenschutz Allgemein",
-                icon: null,
-                program: APP_TYPE.LEARNINGUNIT,
-                badge: 15,
-                target: null,
-                state: APP_STATE.CLOSED,
-                opened: null,
-                isResizing: false,
-                width: 0,
-                height: 0
+function createStore() {
+    const { update, subscribe } = writable({
+        config: {
+            apps: {
+                "1234": {
+                    id: "1234",
+                    title: "PHedge",
+                    icon: "phrome",
+                    program: APP_TYPE.BROWSER,
+                    badge: 0,
+                    target: null,
+                    state: APP_STATE.CLOSED,
+                    opened: null,
+                    isResizing: false,
+                    width: 0,
+                    height: 0
+                },
+                "2345": {
+                    id: "2345",
+                    title: "PHmail",
+                    icon: "mail",
+                    program: APP_TYPE.MAIL,
+                    badge: 2,
+                    target: null,
+                    state: APP_STATE.CLOSED,
+                    opened: null,
+                    isResizing: false,
+                    width: 0,
+                    height: 0
+                },
+                "3456": {
+                    id: "3456",
+                    title: "Datenschutz Allgemein",
+                    icon: null,
+                    program: APP_TYPE.LEARNINGUNIT,
+                    badge: 15,
+                    target: null,
+                    state: APP_STATE.CLOSED,
+                    opened: null,
+                    isResizing: false,
+                    width: 0,
+                    height: 0
+                }
             }
-        }
-    },
-    currentApp: {}
-}
-
-
-export const lestore = ((store) => {
-    const { subscribe, update } = writable(store);
+        },
+        currentApp: {}
+    });
 
 
     function setCurrentApp(id, appwindow) {
         update(state => {
             state.config.apps[id].target = appwindow;
             state.currentApp = state.config.apps[id]
-            return state
+            return { ...state }
         })
     }
     function setAppResizing(isResizing, w, h) {
@@ -67,14 +64,14 @@ export const lestore = ((store) => {
             state.currentApp.isResizing = isResizing
             state.currentApp.width = w
             state.currentApp.height = h
-            return state
+            return { ...state }
         })
     }
     function setAppDimensions(w, h) {
         update(state => {
             state.currentApp.width = w
             state.currentApp.height = h
-            return state
+            return { ...state }
         })
     }
 
@@ -94,8 +91,7 @@ export const lestore = ((store) => {
                     })
                 }
             }
-
-            return state
+            return { ...state }
         })
     }
 
@@ -106,7 +102,7 @@ export const lestore = ((store) => {
                     setAppState(app.id, APP_STATE.MINIMIZED)
                 }
             })
-            return state
+            return { ...state }
         })
     }
     function openAllMinimizedApps() {
@@ -116,7 +112,7 @@ export const lestore = ((store) => {
                     setAppState(app.id, APP_STATE.OPEN)
                 }
             })
-            return state
+            return { ...state }
         })
     }
 
@@ -127,8 +123,11 @@ export const lestore = ((store) => {
         setAppResizing,
         setAppDimensions,
         minimizeAllOpenApps,
-        openAllMinimizedApps
+        openAllMinimizedApps,
     }
-})(store);
+}
+
+
+export const lestore = createStore()
 
 

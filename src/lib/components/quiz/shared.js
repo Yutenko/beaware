@@ -2,7 +2,7 @@ import { browser } from '$app/environment'
 
 
 const messages = {
-    
+
     // setup and edit
     ADD_CONTAINER: 'add-container',
     REMOVE_CONTAINER: 'remove-container',
@@ -86,7 +86,7 @@ const Quiz = {
                         } else if (message.cmd === messages.INITIAL_DATA) {
                             onInitalData(JSON.parse(message.data));
                         } else if (message.cmd === messages.FINISHED) {
-                            onFinished(JSON.parse(message.data));
+                            onFinished();
                         } else if (message.cmd === messages.PROGRESS) {
                             onProgress(JSON.parse(message.data));
                         }
@@ -95,7 +95,7 @@ const Quiz = {
             }
         },
         _send: (options) => {
-            const iframe = document.querySelector('iframe[data-is-receiver="true"]')
+            const iframe = document.querySelector('iframe[data-is-quiz-receiver="true"]')
             iframe.contentWindow.postMessage(JSON.stringify(options), "*")
         },
         api: {

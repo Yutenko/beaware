@@ -10,7 +10,11 @@
     import Marker from "@editorjs/marker";
     import { store } from "./store";
     import { t } from "$lib/translations";
-    
+    import ReadTimeTrigger from "./ReadtimeTrigger.svelte";
+    import Casestudy from "./shared";
+
+    export let readOnly = false;
+    let loaded = false;
 
     let EditorJS;
     let Image;
@@ -21,6 +25,8 @@
     let editor;
 
     function save() {
+        if (readOnly) return;
+
         editor
             .save()
             .then((outputData) => {
@@ -40,9 +46,9 @@
 
         editor = new EditorJS({
             holder: "editorjs",
-            autofocus: true,
-            onChange: save,
             data: $store.editor,
+            onChange: save,
+            readOnly,
             tools: {
                 header: Header,
                 quote: Quote,
@@ -123,9 +129,16 @@
 
     onMount(async () => {
         await initEditorJS();
+        loaded = true;
+
 
         return save;
     });
 </script>
 
-<div id="editorjs" class="pt-24"></div>
+<div>
+    <div id="editorjs" class="pt-24"></div>
+    {#if readOnly && loaded}
+        <ReadTimeTrigger time={$store.readingtime} />
+    {/if}
+</div>

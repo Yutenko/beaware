@@ -4,6 +4,7 @@ import fs from 'fs'
 import { OPTIONS, MIN_GROUPS, GROUP_COLORS } from '$components/quiz/groupassignment/constants'
 import { default as QUIZ_TYPE } from '$components/quiz/types'
 import { readFile } from 'fs/promises'
+import { calcReadindAndViewingTime } from "./helper"
 
 
 export async function uploadFile(data) {
@@ -205,7 +206,6 @@ export async function createCasestudyFile() {
     let data = {
         title: '',
         editor: {},
-        quiz: {},
         modified: new Date().getTime()
     }
 
@@ -232,8 +232,9 @@ export async function updateCasestudyFile(id, data) {
     if (isValidId) {
         data.modified = new Date().getTime()
         data.title = data.title.trim()
-        data.quiz = JSON.parse(data.quiz)
         data.editor = JSON.parse(data.editor)
+        // rvt = reading and viewing time
+        data.rvt = calcReadindAndViewingTime(data.editor)
         data = JSON.stringify(data)
 
         const filepath = path.join(
@@ -294,7 +295,8 @@ export async function getAllCasestudyFiles(type) {
                 return {
                     id: casestudyId,
                     title: casestudy.title,
-                    url: `/casestudy/${casestudyId}`
+                    read: `/casestudy/${casestudyId}`,
+                    edit: `/casestudy/${casestudyId}/edit`
                 }
             }))
 

@@ -5,9 +5,10 @@ export { default as GroupAssignmentSetup } from './quiz/groupassignment/GroupAss
 export { default as GroupAssignmentEmbed } from './quiz/groupassignment/GroupAssignment-Embed.svelte';
 
 export { default as CasestudyEditor } from './casestudy/Editor.svelte';
+export { default as CasestudyReader } from './casestudy/Reader.svelte';
 
-export { default as QuizFinder } from './quiz/finder/Finder.svelte';
 export { default as CasestudyFinder } from './casestudy/finder/Finder.svelte';
+export { default as QuizFinder } from './quiz/finder/Finder.svelte';
 
 // Core
 export { default as FileUploader } from './fileuploader/FileUploader.svelte';

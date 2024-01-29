@@ -41,7 +41,8 @@
             <a href={selectedData.edit} class="btn btn-secondary">Bearbeiten</a>
         {/if}
         {#if selectedType === "casestudy"}
-            <a href={selectedData.url} class="btn btn-secondary">Bearbeiten</a>
+            <a href={selectedData.read} class="btn btn-primary">Lesen</a>
+            <a href={selectedData.edit} class="btn btn-secondary">Bearbeiten</a>
         {/if}
     </div>
 </Modal>

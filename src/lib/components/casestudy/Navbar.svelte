@@ -5,7 +5,6 @@
     import { onMount } from "svelte";
     import { Modal } from "$components"
     import { enhance } from "$app/forms";
-    import { page } from "$app/stores";
 
     let openDeleteCasestudyModal = false;
 
@@ -111,7 +110,7 @@
     <div slot="footer">
         <form
             method="post"
-            action="?/delete"
+            action="?/delete&mode=edit"
             use:enhance
         >
             <button class="btn btn-secondary" type="submit">

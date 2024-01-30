@@ -1,5 +1,5 @@
 <script>
-    import { lestore } from "../store.js";
+    import { globalStore } from "$components/global-store";
     import { APP_STATE } from "../constants.json";
     import { tooltip } from "$lib/actions";
     import { AppIcon } from "$components";
@@ -7,7 +7,7 @@
     import { isRealMobileBrowser } from "$lib/utils";
     import { fade } from "svelte/transition";
 
-    $: minimizedapps = Object.values($lestore.config.apps)
+    $: minimizedapps = Object.values($globalStore.config.apps)
         .filter((app) => app.state !== APP_STATE.CLOSED)
         .sort((a, b) => a.opened - b.opened);
 
@@ -20,14 +20,14 @@
         if (app.state === APP_STATE.MINIMIZED) {
             app.state = APP_STATE.OPEN;
         }
-        lestore.setCurrentApp(app.id, app.target);
+        globalStore.setCurrentApp(app.id, app.target);
     }
     function handleAllApps() {
         if (lastAction === APP_STATE.OPEN) {
-            lestore.minimizeAllOpenApps();
+            globalStore.minimizeAllOpenApps();
             lastAction = APP_STATE.MINIMIZED;
         } else {
-            lestore.openAllMinimizedApps();
+            globalStore.openAllMinimizedApps();
             lastAction = APP_STATE.OPEN;
         }
     }

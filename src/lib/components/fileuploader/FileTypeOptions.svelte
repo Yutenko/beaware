@@ -1,7 +1,7 @@
 <script>
     import { t } from "$lib/translations";
     import { createEventDispatcher } from "svelte";
-    import fileTypes from "./filetypes.json";
+    import { default as fileTypes } from "./types.json";
 
     const dispatch = createEventDispatcher();
 
@@ -28,7 +28,7 @@
     export let imageText = $t("core.fileuploader.image");
     export let videoText = $t("core.fileuploader.video");
     export let audioText = $t("core.fileuploader.audio");
-    export let types = fileTypes
+    export let types = fileTypes;
 
     let isMedia = types.image && types.video && types.audio;
 </script>
@@ -41,15 +41,13 @@
     {/if}
     <div class="join justify-center">
         {#if types.text}
-            <button
-                class="btn {color} join-item"
-                on:click={handleTextOption}>{textText}</button
+            <button class="btn {color} join-item" on:click={handleTextOption}
+                >{textText}</button
             >
         {/if}
         {#if isMedia}
-            <button
-                class="btn {color} join-item"
-                on:click={handleMediaOption}>{mediaText}</button
+            <button class="btn {color} join-item" on:click={handleMediaOption}
+                >{mediaText}</button
             >
         {:else}
             {#if types.image}

@@ -1,11 +1,11 @@
 <script>
     import { onMount } from "svelte";
-    import { lestore } from "../store.js";
     import { APP_STATE } from "../constants.json";
     import { AppIcon, Modal } from "$components";
     import { isRealMobileBrowser } from "$lib/utils";
     import { fade } from "svelte/transition";
     import LearningEnvironment from "../shared";
+    import { globalStore } from "$components/global-store";
 
     export let id;
     export let state = APP_STATE.CLOSED;
@@ -22,15 +22,15 @@
     let startHeight = 600;
 
     $: if (state === APP_STATE.OPEN) {
-        lestore.setCurrentApp(id, appwindow);
+        globalStore.setCurrentApp(id, appwindow);
     }
     $: minimized = state === APP_STATE.MINIMIZED;
 
     function handleClose() {
-        lestore.setAppState(id, APP_STATE.CLOSED);
+        globalStore.setAppState(id, APP_STATE.CLOSED);
     }
     function handleMinimize() {
-        lestore.setAppState(id, APP_STATE.MINIMIZED);
+        globalStore.setAppState(id, APP_STATE.MINIMIZED);
     }
 
     function toggleMaximization() {
@@ -41,7 +41,7 @@
             appwindow.style.left = "3rem";
             appwindow.style.top = "3rem";
 
-            lestore.setAppState(id, APP_STATE.OPEN);
+            globalStore.setAppState(id, APP_STATE.OPEN);
         } else {
             stylesBeforeMaximation.width = appwindow.style.width;
             stylesBeforeMaximation.height = appwindow.style.height;
@@ -54,22 +54,22 @@
             appwindow.style.left = "0";
             appwindow.style.transform = "";
 
-            lestore.setAppState(id, APP_STATE.MAXIMIZED);
+            globalStore.setAppState(id, APP_STATE.MAXIMIZED);
         }
     }
-    $: isForeground = $lestore.currentApp.target === appwindow;
+    $: isForeground = $globalStore.currentApp.target === appwindow;
     $: dimensions = {
-        w: $lestore.currentApp.width
-            ? $lestore.currentApp.width
-            : $lestore.currentApp.target?.clientWidth,
-        h: $lestore.currentApp.height
-            ? $lestore.currentApp.height
-            : $lestore.currentApp.target?.clientHeight,
+        w: $globalStore.currentApp.width
+            ? $globalStore.currentApp.width
+            : $globalStore.currentApp.target?.clientWidth,
+        h: $globalStore.currentApp.height
+            ? $globalStore.currentApp.height
+            : $globalStore.currentApp.target?.clientHeight,
     };
 
     $: isMeResizing =
-        $lestore.currentApp.target === appwindow &&
-        $lestore.currentApp.isResizing;
+        $globalStore.currentApp.target === appwindow &&
+        $globalStore.currentApp.isResizing;
 
     onMount(() => {
         LearningEnvironment.sender.init({
@@ -83,7 +83,7 @@
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
         bind:this={appwindow}
-        on:click={() => lestore.setCurrentApp(id, appwindow)}
+        on:click={() => globalStore.setCurrentApp(id, appwindow)}
         transition:fade
         class="mockup-window {minimized
             ? 'hidden'
@@ -99,7 +99,7 @@
         {#if !isForeground}
             <div
                 class="absolute w-full h-full top-0 left-0 z-50"
-                on:click={() => lestore.setCurrentApp(id, appwindow)}
+                on:click={() => globalStore.setCurrentApp(id, appwindow)}
             ></div>
         {/if}
         <div class="title-bar" on:dblclick={toggleMaximization}>

@@ -2,7 +2,7 @@
     import AppWindow from "./AppWindow.svelte";
 
     import { breakpoint } from "$lib/utils";
-    import { lestore } from "../store.js";
+    import { globalStore } from "$components/global-store";
     import { APP_STATE } from "../constants.json";
     import {
         MailClientEmbed,
@@ -16,7 +16,7 @@
     export let installed = true;
     export let id;
 
-    $: app = $lestore.config.apps[id] || {};
+    $: app = $globalStore.config.apps[id] || {};
 
     let appIconSize = 100;
     let appBadgeSize = (appIconSize * 29) / 100;
@@ -60,7 +60,7 @@
 <div
     class="indicator items-center mb-[1rem] mt-[1rem]"
     style="padding:{$breakpoint.isSm ? 0 : 1}rem"
-    on:click={() => lestore.setAppState(id, APP_STATE.OPEN)}
+    on:click={() => globalStore.setAppState(id, APP_STATE.OPEN)}
 >
     <div
         class="app-icon"

@@ -1,11 +1,11 @@
 <script>
     import { onMount } from "svelte";
     import App from "./App.svelte";
-    import { lestore } from "../store.js";
+    import { globalStore } from "$components/global-store";
     import { APPS_PER_PAGE, APP_STATE } from "../constants.json";
     import Moveable from "svelte-moveable";
 
-    let config = $lestore.config;
+    let config = $globalStore.config;
     let apps = Object.keys(config.apps);
 
     const pages = new Array(Math.ceil(apps.length / APPS_PER_PAGE));
@@ -35,9 +35,9 @@
     });
 </script>
 
-{#if $lestore.currentApp.state === APP_STATE.OPEN}
+{#if $globalStore.currentApp.state === APP_STATE.OPEN}
     <Moveable
-        target={$lestore.currentApp.target}
+        target={$globalStore.currentApp.target}
         draggable={true}
         throttleDrag={1}
         resizable={true}
@@ -57,16 +57,16 @@
             e.target.style.transform = e.transform;
         }}
         on:resizeStart={() => {
-            lestore.setAppResizing(true);
+            globalStore.setAppResizing(true);
         }}
         on:resize={({ detail: e }) => {
             e.target.style.width = `${e.width}px`;
             e.target.style.height = `${e.height}px`;
             e.target.style.transform = e.drag.transform;
-            lestore.setAppDimensions(e.width, e.height);
+            globalStore.setAppDimensions(e.width, e.height);
         }}
         on:resizeEnd={() => {
-            lestore.setAppResizing(false);
+            globalStore.setAppResizing(false);
         }}
     />
 {/if}

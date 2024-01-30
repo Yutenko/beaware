@@ -64,11 +64,14 @@
     on:enterViewport={handleScroll}
     class="float-right mr-2 mb-2 rounded-full btn btn-secondary"
 >
+    {#if h > 0}
+        {h}{$t("lunit.time.hoursShort")}
+    {/if}
     {#if m > 0}
-        {m}m
+        {m}{$t("lunit.time.minutesShort")}
     {/if}
     {#if s > 0}
-        {s}s
+        {s}{$t("lunit.time.secondsShort")}
     {/if}
     {$t("lunit.next")}
 </button>

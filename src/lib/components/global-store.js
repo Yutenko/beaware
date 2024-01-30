@@ -1,9 +1,9 @@
-import { writable, derived } from 'svelte/store';
-import { APP_STATE } from './constants.json';
+import { writable } from 'svelte/store';
+import { APP_STATE } from '$components/learningenvironment/constants.json';
 import APP_TYPE from '$components/apps/types';
 
 
-function createStore() {
+function createGlobalStore() {
     const { update, subscribe } = writable({
         config: {
             apps: {
@@ -128,6 +128,6 @@ function createStore() {
 }
 
 
-export const lestore = createStore()
+export const globalStore = createGlobalStore()
 
 

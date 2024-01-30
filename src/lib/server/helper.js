@@ -95,37 +95,42 @@ export async function convertLearningAppsDataToQuizData(id, learningappsurl, dat
     return null
 }
 
-
+function getWordCount(str) {
+    return str?.split(' ')
+        .filter(function (n) { return n != '' })
+        .length || 0;
+}
 
 export function calcReadindAndViewingTime(data) {
     const wordsPerMinute = 238;
-    const secondsPerImage = 10;
+    const secondsPerImage = 5;
+
     let wordCount = 0;
     let imageViewingTime = 0;
 
     data.blocks.map(el => {
         if (el.type == 'paragraph' || el.type == 'header') {
-            wordCount += el.data.text.length;
+            wordCount += getWordCount(el.data.text);
         } else if (el.type == 'checklist') {
-            el.data.items.map(item => wordCount += item.text.length)
+            el.data.items.map(item => wordCount += getWordCount(item.text))
         } else if (el.type == 'table') {
             el.data.content.map(item => {
-                item.map(text => wordCount += text.length)
+                item.map(text => wordCount += getWordCount(text))
             })
         } else if (el.type == 'quote') {
-            wordCount += el.data.text.length;
-            wordCount += el.data.caption.length;
+            wordCount += getWordCount(el.data.text);
+            wordCount += getWordCount(el.data.caption);
         } else if (el.type == 'list') {
-            el.data.items.map(item => wordCount += item.length)
+            el.data.items.map(text => wordCount += getWordCount(text))
         } else if (el.type == 'warning') {
-            wordCount += el.data.title.length;
-            wordCount += el.data.message.length;
+            wordCount += getWordCount(el.data.title);
+            wordCount += getWordCount(el.data.message);
         } else if (el.type == 'image') {
             imageViewingTime += secondsPerImage;
         }
     })
 
     const readingTime = Math.ceil(wordCount / wordsPerMinute)
-    
+
     return readingTime + imageViewingTime
 }

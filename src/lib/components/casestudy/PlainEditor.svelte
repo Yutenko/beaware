@@ -10,8 +10,7 @@
     import Marker from "@editorjs/marker";
     import { store } from "./store";
     import { t } from "$lib/translations";
-    import ReadTimeTrigger from "./ReadtimeTrigger.svelte";
-    import Casestudy from "./shared";
+    import RVTTrigger from "./RVTTrigger.svelte";
 
     export let readOnly = false;
     let loaded = false;
@@ -131,7 +130,6 @@
         await initEditorJS();
         loaded = true;
 
-
         return save;
     });
 </script>
@@ -139,6 +137,6 @@
 <div>
     <div id="editorjs" class="pt-24"></div>
     {#if readOnly && loaded}
-        <ReadTimeTrigger time={$store.readingtime} />
+        <RVTTrigger time={$store.rvt} />
     {/if}
 </div>

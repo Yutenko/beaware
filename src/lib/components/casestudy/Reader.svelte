@@ -5,10 +5,10 @@
     export let state = {};
     $: is404 = Object.keys(state).length === 0;
 
-    const { readingtime, editor } = state;
+    const { rvt, editor } = state;
 
     if (editor) store.setEditor(editor);
-    if (readingtime) store.setReadingtime(readingtime);
+    if (rvt) store.setRVT(rvt);
 </script>
 
 {#if is404}

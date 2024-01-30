@@ -1,19 +1,19 @@
 <script>
-    import { onMount, tick } from "svelte";
+    import { onMount } from "svelte";
     import { t } from "$lib/translations";
     import { blur } from "svelte/transition";
     import Quiz from "$components/quiz/shared";
     import Casestudy from "$components/casestudy/shared";
     import types from "./types";
-    import { lestore } from "$lib/components/learningenvironment/store.js";
-
-   
+    import LearningEnvironment from "$components/learningenvironment/shared";
+    import { order } from "./constants";
 
     const config = {
         id: "collection-id",
         title: "Datenschutz allgemein",
         description:
             "In diesem Projekt können Sie die Datenschutz allgemeinen Fragen zur Verfügung gestellt werden.",
+        order: order.SQUENTIAL,
         apps: [
             {
                 type: types.CASESTUDY,
@@ -66,8 +66,12 @@
             onFinished: handleFinished,
             onProgress: handleProgress,
         });
-        await tick();
-        console.log($lestore.currentApp);
+
+        if (config.order === order.RANDOM) {
+            const firstElement = config.apps.shift();
+            config.apps = config.apps.sort(() => 0.5 - Math.random());
+            config.apps = [firstElement, ...config.apps];
+        }
     });
 
     $: isStart = step === -1;
@@ -122,6 +126,13 @@
             <div class="max-w-md">
                 <h1 class="mb-5 text-5xl font-bold">{$t("lunit.finished")}</h1>
                 <p class="mb-5"></p>
+                <button
+                    class="btn btn-primary"
+                    on:click={() =>
+                        LearningEnvironment.receiver.closeCurrentAppWindow()}
+                >
+                    {$t("lunit.endit")}
+                </button>
             </div>
         </div>
     </div>

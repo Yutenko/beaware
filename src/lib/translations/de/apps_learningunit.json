@@ -1,6 +1,11 @@
 {
     "start": "Start",
-    "next": "Nächste",
+    "next": "Weiter",
     "finished": "Fertig",
-    "endit": "beenden"
+    "endit": "beenden",
+    "time": {
+        "hoursShort": "h",
+        "minutesShort": "m",
+        "secondsShort": "s"
+    }
 }

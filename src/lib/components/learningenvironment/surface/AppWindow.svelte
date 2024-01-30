@@ -1,9 +1,11 @@
 <script>
+    import { onMount } from "svelte";
     import { lestore } from "../store.js";
     import { APP_STATE } from "../constants.json";
     import { AppIcon, Modal } from "$components";
     import { isRealMobileBrowser } from "$lib/utils";
     import { fade } from "svelte/transition";
+    import LearningEnvironment from "../shared";
 
     export let id;
     export let state = APP_STATE.CLOSED;
@@ -68,6 +70,12 @@
     $: isMeResizing =
         $lestore.currentApp.target === appwindow &&
         $lestore.currentApp.isResizing;
+
+    onMount(() => {
+        LearningEnvironment.sender.init({
+            onCloseCurrentAppwindow: handleClose,
+        });
+    });
 </script>
 
 {#if state !== APP_STATE.CLOSED && !isrealmobilebrowser}

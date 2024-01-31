@@ -328,6 +328,7 @@
                 let el = elements[i];
                 if (el.src && el.type) {
                     temp.push({
+                        id: el.id,
                         group: el.group,
                         src: el.src,
                         type: el.type,

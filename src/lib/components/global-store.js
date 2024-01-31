@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { APP_STATE } from '$components/learningenvironment/constants.json';
+import { APP_STATE } from '$components/learningenvironment/constants';
 import APP_TYPE from '$components/apps/types';
 
 
@@ -10,7 +10,7 @@ function createGlobalStore() {
                 "1234": {
                     id: "1234",
                     title: "PHedge",
-                    icon: "phrome",
+                    icon: "phedge",
                     program: APP_TYPE.BROWSER,
                     badge: 0,
                     target: null,
@@ -36,9 +36,48 @@ function createGlobalStore() {
                 "3456": {
                     id: "3456",
                     title: "Datenschutz Allgemein",
-                    icon: null,
+                    icon: "quiz",
                     program: APP_TYPE.LEARNINGUNIT,
                     badge: 15,
+                    target: null,
+                    state: APP_STATE.CLOSED,
+                    opened: null,
+                    isResizing: false,
+                    width: 0,
+                    height: 0
+                },
+                "4567": {
+                    id: "4567",
+                    title: "WiMA",
+                    icon: "quiz",
+                    program: APP_TYPE.LEARNINGUNIT,
+                    badge: 4,
+                    target: null,
+                    state: APP_STATE.CLOSED,
+                    opened: null,
+                    isResizing: false,
+                    width: 0,
+                    height: 0
+                },
+                "5678": {
+                    id: "5678",
+                    title: "Resultate",
+                    icon: "stats",
+                    program: APP_TYPE.LEARNINGUNIT,
+                    badge: 4,
+                    target: null,
+                    state: APP_STATE.CLOSED,
+                    opened: null,
+                    isResizing: false,
+                    width: 0,
+                    height: 0
+                },
+                "6789": {
+                    id: "6789",
+                    title: "Main",
+                    icon: "main",
+                    program: APP_TYPE.LEARNINGUNIT,
+                    badge: 4,
                     target: null,
                     state: APP_STATE.CLOSED,
                     opened: null,

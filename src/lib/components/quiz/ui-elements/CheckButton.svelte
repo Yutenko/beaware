@@ -16,6 +16,7 @@
             visible = false;
         }
     }
+
     $: if (assignedElementsCount && mode.instant) {
         checkButton.click();
     } else if (finished && mode.end) {

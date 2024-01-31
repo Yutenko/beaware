@@ -11,6 +11,7 @@
     }
 
     function handleClose() {
+        open = false;
         dialog.close();
         dispatch("close");
     }

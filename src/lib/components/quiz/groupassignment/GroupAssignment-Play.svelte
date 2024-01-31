@@ -8,12 +8,13 @@
     import { draggable } from "@neodrag/svelte";
     import { onMount } from "svelte";
     import Quiz from "../shared";
+    import QUIZ_TYPE from "$components/quiz/types";
     import {
         MIN_GROUPS,
         MAX_GROUPS,
         MAX_ELEMENTS,
         POSITIONS,
-    } from "./constants.json";
+    } from "./constants";
 
     import { resizetext, linkify, zoom } from "$lib/actions";
 
@@ -175,6 +176,8 @@
     onMount(() => {
         if (validGamestate) {
             Quiz.shuffle(elements);
+            Quiz.receiver.start();
+
             resizeUserCard();
         }
 
@@ -201,6 +204,7 @@
         {checkSolution}
         {onFeedbackClosed}
         {feedbacks}
+        type={QUIZ_TYPE.groupassignment}
     />
 
     <!-- svelte-ignore missing-declaration -->

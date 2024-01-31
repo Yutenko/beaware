@@ -2,8 +2,8 @@ import { browser } from '$app/environment'
 
 
 const messages = {
-    FINISHED: 'finished',
-    PROGRESS: 'progress'
+    START: 'start',
+    FINISHED: 'finished'
 }
 
 const Casestudy = {
@@ -14,8 +14,8 @@ const Casestudy = {
                 console.log("Initialized Casestudy");
             }
         },
-        progress: (data) => {
-            Casestudy.receiver._send({ cmd: messages.PROGRESS, data });
+        start: (data) => {
+            Casestudy.receiver._send({ cmd: messages.START, data });
         },
         finished: (data) => {
             Casestudy.receiver._send({ cmd: messages.FINISHED, data });
@@ -30,16 +30,16 @@ const Casestudy = {
         init: (options) => {
             if (browser) {
 
-                const { onFinished, onProgress } = options;
+                const { onStart, onFinished } = options;
 
                 window.addEventListener('message', function (event) {
                     if (event.data) {
                         let message = JSON.parse(event.data);
 
                         if (message.cmd === messages.FINISHED) {
-                            onFinished();
-                        } else if (message.cmd === messages.PROGRESS) {
-                            onProgress(JSON.parse(message.data));
+                            onFinished(message.data);
+                        } else if (message.cmd === messages.START) {
+                            onStart();
                         }
                     }
                 });
@@ -50,6 +50,10 @@ const Casestudy = {
             iframe.contentWindow.postMessage(JSON.stringify(options), "*")
         }
     }
+}
+
+export function evalCasestudy(data) {
+    return [{ points: 1 }]
 }
 
 export default Casestudy

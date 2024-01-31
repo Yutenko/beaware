@@ -3,6 +3,7 @@
     import { onMount } from "svelte";
     import { t } from "$lib/translations";
     import { isRealMobileBrowser } from "$lib/utils";
+    import { clickoutside } from "$lib/actions";
 
     export let config = {};
     config = {
@@ -115,7 +116,6 @@
         return !/^https?:\/\//i.test(url) ? `https://${url}` : url;
     }
     function openCertificateModalHandler() {
-        console.log("modal");
         openCertificateModal = true;
     }
 
@@ -202,23 +202,15 @@
     <div class="navbar bg-base-200" bind:clientHeight={browserNavHeight}>
         {#if !isrealmobilebrowser}
             <div class="justify-start">
-                <div
-                    tabindex="0"
-                    role="button"
-                    class="btn btn-ghost btn-circle"
-                >
+                <div role="button" class="btn btn-ghost btn-circle">
                     <i class="fas fa-long-arrow-left"></i>
                 </div>
-                <div
-                    tabindex="0"
-                    role="button"
-                    class="btn btn-ghost btn-circle"
-                >
+                <div role="button" class="btn btn-ghost btn-circle">
                     <i class="fas fa-long-arrow-right"></i>
                 </div>
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-interactive-supports-focus -->
                 <div
-                    tabindex="0"
                     role="button"
                     class="btn btn-ghost btn-circle"
                     on:click={reload}
@@ -229,16 +221,16 @@
         {/if}
         <div class="justify-center w-11/12">
             <div class="w-full flex items-center">
-                <div class="absolute z-10">
-                    <div class="dropdown">
-                        {#if currentTab.url}
-                            <div
-                                tabindex="0"
-                                role="button"
+                {#if currentTab.url}
+                    <div class="absolute z-10">
+                        <details class="dropdown">
+                            <!-- svelte-ignore a11y-click-events-have-key-events -->
+                            <!-- svelte-ignore a11y-no-static-element-interactions -->
+                            <summary
                                 class="btn btn-sm btn-ghost btn-circle ml-2 text-success"
                             >
                                 <i class="far fa-lock"></i>
-                            </div>
+                            </summary>
                             <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
                             <div
                                 tabindex="0"
@@ -249,7 +241,7 @@
                                         {$t("browser.security")}
                                     </h3>
                                     <p class="text-sm opacity-50">
-                                        {currentTab.url.origin}
+                                        {currentTab?.url?.origin}
                                     </p>
                                     <div class="overflow-x-auto">
                                         <table class="table">
@@ -315,10 +307,14 @@
                                     </div>
                                 </div>
                             </div>
-                        {/if}
+                        </details>
                     </div>
-                </div>
+                {/if}
                 <input
+                    on:click={(e) => {
+                        // hack, without the input is not focusable
+                        e.target.focus();
+                    }}
                     bind:this={urlInput}
                     on:keydown={enterURL}
                     bind:value={url}

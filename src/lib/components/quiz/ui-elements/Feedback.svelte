@@ -3,7 +3,6 @@
     import { confetti } from "@neoconfetti/svelte";
     import { tweened } from "svelte/motion";
     import { cubicOut } from "svelte/easing";
-    import Quiz from "../shared";
 
     export let solved;
     export let feedbacks;
@@ -19,7 +18,6 @@
     $: progressPercent = parseInt($progress * 100);
 
     $: if (dialog && solved) {
-        Quiz.receiver.finished();
         feedback = getFeedback();
         progress.set(result / 100);
         dialog.showModal();

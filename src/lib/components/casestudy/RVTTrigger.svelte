@@ -1,7 +1,7 @@
 <script>
     import { onMount } from "svelte";
     import { viewport } from "$lib/actions";
-    import Casestudy from "./shared";
+    import Casestudy, { evalCasestudy } from "./shared";
     import { t } from "$lib/translations";
 
     export let time = 0;
@@ -32,7 +32,8 @@
 
     function checkFinished() {
         if (timePassed && scrolledToTheEnd) {
-            Casestudy.receiver.finished();
+            const evaluation = evalCasestudy();
+            Casestudy.receiver.finished(evaluation);
             clearInterval(interval);
         }
     }

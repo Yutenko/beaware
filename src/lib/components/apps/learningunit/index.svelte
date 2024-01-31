@@ -4,7 +4,7 @@
     import { blur } from "svelte/transition";
     import Quiz from "$components/quiz/shared";
     import Casestudy from "$components/casestudy/shared";
-    import types from "./types";
+    import LU_TYPE from "./types";
     import LearningEnvironment from "$components/learningenvironment/shared";
     import { order } from "./constants";
 
@@ -16,22 +16,24 @@
         order: order.SQUENTIAL,
         apps: [
             {
-                type: types.CASESTUDY,
+                type: LU_TYPE.CASESTUDY,
                 id: "5c4c8252-c1e3-4e18-9028-78de3b9ef7c8",
                 play: "/casestudy/5c4c8252-c1e3-4e18-9028-78de3b9ef7c8",
             },
             {
-                type: types.QUIZ,
-                id: "a8d238e2-5c86-4b08-87d7-cb1f310687a8",
-                play: "/quiz/1/embed?id=a8d238e2-5c86-4b08-87d7-cb1f310687a8",
+                type: LU_TYPE.QUIZ,
+                id: "f3ea52c0-f382-471d-9ec5-f8eb50d0261d",
+                play: "/quiz/1/embed?id=f3ea52c0-f382-471d-9ec5-f8eb50d0261d",
             },
             {
-                type: types.CASESTUDY,
+                type: LU_TYPE.CASESTUDY,
                 id: "dcc00729-c6e3-42bd-8c42-c3e7fca0cff2",
                 play: "/casestudy/dcc00729-c6e3-42bd-8c42-c3e7fca0cff2",
             },
         ],
     };
+
+    let savegame = {};
 
     let step = -1;
     let gameFinished = false;
@@ -52,19 +54,36 @@
         next();
     }
 
+    function handleStart() {
+        const collectionId = config.id;
+        const appId = config.apps[step].id;
+
+        savegame[collectionId][appId] = {};
+        savegame[collectionId][appId].progress = [];
+        savegame[collectionId][appId].timeStarted = new Date().getTime();
+        savegame[collectionId][appId].timeFinished = null;
+    }
     function handleFinished(data) {
         gameFinished = true;
+
+        const collectionId = config.id;
+        const appId = config.apps[step].id;
+
+        savegame[collectionId][appId].progress = data;
+        savegame[collectionId][appId].timeFinished = new Date().getTime();
     }
-    function handleProgress(data) {}
 
     onMount(async () => {
+        const collectionId = config.id;
+        savegame[collectionId] = {};
+
         Quiz.sender.init({
+            onStart: handleStart,
             onFinished: handleFinished,
-            onProgress: handleProgress,
         });
         Casestudy.sender.init({
+            onStart: handleStart,
             onFinished: handleFinished,
-            onProgress: handleProgress,
         });
 
         if (config.order === order.RANDOM) {

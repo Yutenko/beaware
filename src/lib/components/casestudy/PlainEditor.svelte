@@ -11,6 +11,7 @@
     import { store } from "./store";
     import { t } from "$lib/translations";
     import RVTTrigger from "./RVTTrigger.svelte";
+    import Casestudy from "./shared";
 
     export let readOnly = false;
     let loaded = false;
@@ -129,6 +130,10 @@
     onMount(async () => {
         await initEditorJS();
         loaded = true;
+
+        if (readOnly && loaded) {
+            Casestudy.receiver.start();
+        }
 
         return save;
     });

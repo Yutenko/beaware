@@ -1,4 +1,5 @@
 import { browser } from '$app/environment'
+import QUIZ_TYPE from './types';
 
 
 const messages = {
@@ -13,8 +14,8 @@ const messages = {
     INITIAL_DATA: 'initial-data',
 
     // evaluation
-    FINISHED: 'finished',
-    PROGRESS: 'progress'
+    START: 'start',
+    FINISHED: 'finished'
 
 }
 
@@ -58,8 +59,8 @@ const Quiz = {
             if (Quiz.receiver._updateFn)
                 Quiz.receiver._send({ cmd: messages.UPDATE_PARENT, data: Quiz.receiver._updateFn() });
         },
-        progress: (data) => {
-            Quiz.receiver._send({ cmd: messages.PROGRESS, data });
+        start: (data) => {
+            Quiz.receiver._send({ cmd: messages.START, data });
         },
         finished: (data) => {
             Quiz.receiver._send({ cmd: messages.FINISHED, data });
@@ -75,7 +76,7 @@ const Quiz = {
         init: (options) => {
             if (browser) {
 
-                const { onUpdate, onInitalData, onFinished, onProgress } = options;
+                const { onUpdate, onInitalData, onStart, onFinished } = options;
 
                 window.addEventListener('message', function (event) {
                     if (event.data) {
@@ -85,10 +86,10 @@ const Quiz = {
                             onUpdate(JSON.parse(message.data));
                         } else if (message.cmd === messages.INITIAL_DATA) {
                             onInitalData(JSON.parse(message.data));
+                        } else if (message.cmd === messages.START) {
+                            onStart();
                         } else if (message.cmd === messages.FINISHED) {
-                            onFinished();
-                        } else if (message.cmd === messages.PROGRESS) {
-                            onProgress(JSON.parse(message.data));
+                            onFinished(message.data);
                         }
                     }
                 });
@@ -116,6 +117,17 @@ const Quiz = {
     shuffle: (array) => {
         return array => array.sort(() => 0.5 - Math.random());
     }
+}
+
+export function evalQuiz(type, data) {
+    if (type === QUIZ_TYPE.groupassignment) {
+        return data.map(el => {
+            return { id: el.id, points: el.solved ? 1 : 0, attempts: el.timesAssigned }
+        })
+    }
+
+
+    return data
 }
 
 export default Quiz

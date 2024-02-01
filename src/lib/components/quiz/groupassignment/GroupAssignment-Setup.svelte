@@ -5,6 +5,7 @@
     import { enhance } from "$app/forms";
     import { OPTIONS } from "./constants";
     import { page } from "$app/stores";
+    import OptionsModal from "../ui-elements/Options.svelte";
 
     let learningappsurl = "";
     let importLAForm = null;
@@ -18,19 +19,6 @@
     let openImportLaModal = false;
     let openDeleteQuizModal = false;
     let options = OPTIONS;
-
-    function setCheckMode(mode) {
-        options.mode.exam = mode === "exam";
-        options.mode.free = mode === "free";
-        options.mode.instant = mode === "instant";
-        options.mode.end = mode === "end";
-    }
-
-    function setHintMode(mode) {
-        options.hints.smart = mode === "smart";
-        options.hints.always = mode === "always";
-        options.hints.available = mode === "available";
-    }
 
     $: state = JSON.stringify(
         Object.assign(iframeData, { title, task, feedbacks, options }),
@@ -170,6 +158,18 @@
                 "quiz.groupassignment.addGroup",
             )}</button
         >
+        {#if options.threshold && !options.mode.free > 0}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <div
+                class="self-center text-info btn btn-ghost"
+                on:click={() => {
+                    openOptionsModal = true;
+                }}
+            >
+                {options.threshold}% {$t("quiz.toSucceed")}
+            </div>
+        {/if}
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div class="self-end">
             <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -258,140 +258,7 @@
     </form>
 </div>
 
-<Modal bind:open={openOptionsModal}>
-    <h3 class="font-bold text-lg" slot="header">{$t("quiz.settings.title")}</h3>
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div slot="body">
-        <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <div class="mt-8 mb-4 collapse cursor-pointer bg-base-200">
-            <input type="checkbox" />
-            <div class="collapse-title text-base font-medium">
-                {$t("quiz.settings.mode.title")}
-            </div>
-            <div class="collapse-content">
-                <div class="form-control">
-                    <label class="label cursor-pointer">
-                        <span class="label-text font-semibold"
-                            >{$t("quiz.settings.mode.free")}</span
-                        ><br />
-                        <span>{$t("quiz.settings.mode.freeDescription")} </span>
-                        <input
-                            type="radio"
-                            name="radio-20"
-                            class="radio"
-                            on:change={() => setCheckMode("free")}
-                            checked={options.mode.free}
-                        />
-                    </label>
-                </div>
-                <div class="form-control">
-                    <label class="label cursor-pointer">
-                        <span class="label-text font-semibold"
-                            >{$t("quiz.settings.mode.exam")}</span
-                        ><br />
-                        <span>{$t("quiz.settings.mode.examDescription")} </span>
-                        <input
-                            type="radio"
-                            name="radio-20"
-                            class="radio"
-                            on:change={() => setCheckMode("exam")}
-                            checked={options.mode.exam}
-                        />
-                    </label>
-                </div>
-                <div class="form-control">
-                    <label class="label cursor-pointer">
-                        <span class="label-text font-semibold"
-                            >{$t("quiz.settings.mode.instant")}</span
-                        ><br />
-                        <span
-                            >{$t("quiz.settings.mode.instantDescription")}
-                        </span>
-                        <input
-                            type="radio"
-                            name="radio-20"
-                            class="radio"
-                            on:change={() => setCheckMode("instant")}
-                            checked={options.mode.instant}
-                        />
-                    </label>
-                </div>
-                <div class="form-control">
-                    <label class="label cursor-pointer">
-                        <span class="label-text font-semibold"
-                            >{$t("quiz.settings.mode.end")}</span
-                        ><br />
-                        <span>{$t("quiz.settings.mode.endDescription")} </span>
-                        <input
-                            type="radio"
-                            name="radio-20"
-                            class="radio"
-                            on:change={() => setCheckMode("end")}
-                            checked={options.mode.end}
-                        />
-                    </label>
-                </div>
-            </div>
-        </div>
-
-        <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <div class="mb-4 collapse cursor-pointer bg-base-200">
-            <input type="checkbox" />
-            <div class="collapse-title text-base font-medium">
-                {$t("quiz.settings.hints.title")}
-            </div>
-            <div class="collapse-content">
-                <div class="form-control">
-                    <label class="label cursor-pointer">
-                        <span class="label-text"
-                            >{$t("quiz.settings.hints.available")}
-                        </span>
-                        <input
-                            type="radio"
-                            name="radio-40"
-                            class="radio"
-                            on:change={() => setHintMode("available")}
-                            checked={options.hints.available}
-                        />
-                    </label>
-                </div>
-                <div class="form-control">
-                    <label class="label cursor-pointer">
-                        <span class="label-text"
-                            >{$t("quiz.settings.hints.always")}</span
-                        >
-                        <input
-                            type="radio"
-                            name="radio-40"
-                            class="radio"
-                            on:change={() => setHintMode("always")}
-                            checked={options.hints.always}
-                        />
-                    </label>
-                </div>
-                <div class="form-control">
-                    <label class="label cursor-pointer">
-                        <span class="label-text"
-                            >{$t("quiz.settings.hints.smart")}</span
-                        >
-                        <input
-                            type="radio"
-                            name="radio-40"
-                            class="radio"
-                            on:change={() => setHintMode("smart")}
-                            checked={options.hints.smart}
-                        />
-                    </label>
-                </div>
-            </div>
-        </div>
-    </div>
-    <button class="btn btn-primary" slot="footer">
-        {$t("core.close")}
-    </button>
-</Modal>
+<OptionsModal bind:open={openOptionsModal} bind:options />
 
 <Modal bind:open={openImportLaModal}>
     <h3 class="font-bold text-lg" slot="header">{$t("quiz.importLA")}</h3>

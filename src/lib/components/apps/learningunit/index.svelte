@@ -44,6 +44,7 @@
         if (step + 1 < config.apps.length) {
             step++;
         } else {
+            console.table(savegame);
             allGamesFinished = true;
         }
     }

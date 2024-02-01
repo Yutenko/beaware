@@ -33,7 +33,9 @@
     >
         <slot name="header" />
         <slot name="body" />
-        <slot name="footer" />
+        <form method="dialog">
+            <slot name="footer" />
+        </form>
     </div>
 </dialog>
 

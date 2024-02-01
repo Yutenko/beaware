@@ -1,10 +1,10 @@
 {
     "quiz": "Quiz",
-    "delete":"Quiz löschen",
-    "deletePermanent":"Endgültig löschen",
+    "delete": "Quiz löschen",
+    "deletePermanent": "Endgültig löschen",
     "deleteDescription": "Möchtest Du das Quiz endgültig löschen?",
     "importLA": "LearningApps.org importieren",
-    "convert":"konvertieren",
+    "convert": "konvertieren",
     "types": {
         "0": "Alle Varianten",
         "1": "Gruppenzuordnung"
@@ -61,6 +61,8 @@
             "always": "werden immer angezeigt",
             "available": "werden bei Aufruf angezeigt",
             "smart": "werden unterstützend angezeigt"
-        }
-    }
+        },
+        "threshold": "Gilt als bestanden ab"
+    },
+    "toSucceed": "zum Bestehen"
 }

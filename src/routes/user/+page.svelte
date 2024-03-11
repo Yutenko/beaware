@@ -1,9 +1,9 @@
 <script>
     import {
         LearningEnvironment,
-        MailClient,
-        Browser,
-        LearningUnit,
+        App_MailClient,
+        App_Browser,
+        App_LearningUnit,
     } from "$components";
 </script>
 

@@ -20,11 +20,16 @@ export { default as Modal } from './modal/Modal.svelte';
 // User Desktop
 export { default as LearningEnvironment } from './learningenvironment/index.svelte';
 export { default as AppIcon } from './learningenvironment/surface/AppIcon.svelte';
-export { default as MailClient } from './apps/mail/index.svelte';
-export { default as MailClientEmbed } from './apps/mail/Embed.svelte';
-export { default as Browser } from './apps/browser/index.svelte';
-export { default as LearningUnit } from './apps/learningunit/index.svelte';
-export { default as LearningUnitEmbed } from './apps/learningunit/Embed.svelte';
+// Apps
+export { default as App_MailClient } from './apps/mail/index.svelte';
+export { default as App_MailClientEmbed } from './apps/mail/Embed.svelte';
+export { default as App_Browser } from './apps/browser/index.svelte';
+export { default as App_LearningUnit } from './apps/learningunit/index.svelte';
+export { default as App_LearningUnitEmbed } from './apps/learningunit/Embed.svelte';
+export { default as App_Results } from './apps/results/index.svelte';
+export { default as App_ResultsShort } from './apps/results/Short.svelte';
+export { default as App_ResultsDetails } from './apps/results/Details.svelte';
+export { default as App_ResultsCertificate } from './apps/results/Certificate.svelte';
 
 
 // Simulation

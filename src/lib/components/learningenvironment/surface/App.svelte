@@ -5,24 +5,21 @@
     import { globalStore } from "$components/global-store";
     import { APP_STATE } from "../constants.json";
     import {
-        MailClientEmbed,
-        LearningUnitEmbed,
-        Browser,
+        App_MailClientEmbed,
+        App_LearningUnitEmbed,
+        App_Browser,
         AppIcon,
     } from "$components";
     import { onMount } from "svelte";
     import APP_TYPE from "$components/apps/types";
 
-    export let installed = true;
-    export let id;
-
-    $: app = $globalStore.config.apps[id] || {};
+    export let app = {};
 
     let appIconSize = 100;
     let appBadgeSize = (appIconSize * 29) / 100;
     const progressFillColor = "white";
     const progressOpacity = 0.9;
-    const progressDuration = installed ? 0 : 10;
+    const progressDuration = app.installed ? 0 : 10;
 
     $: setAppIconSize($breakpoint);
 
@@ -36,13 +33,32 @@
     }
 
     function getAppComponent() {
-        if (app.program === APP_TYPE.BROWSER) return Browser;
-        if (app.program === APP_TYPE.MAIL) return MailClientEmbed;
-        if (app.program === APP_TYPE.LEARNINGUNIT) return LearningUnitEmbed;
+        if (app.type === APP_TYPE.BROWSER) return App_Browser;
+        if (app.type === APP_TYPE.MAIL) return App_MailClientEmbed;
+        if (app.type === APP_TYPE.LEARNINGUNIT) return App_LearningUnitEmbed;
+    }
+
+    function openApp() {
+        if (app.installed) {
+            globalStore.setAppState(app.id, APP_STATE.OPEN);
+        }
+    }
+
+    function checkInstalled() {
+        // app not installed, wait for animation and set flag to installed = true
+        if (!app.installed) {
+            setTimeout(
+                function () {
+                    globalStore.setAppInstalled(app.id);
+                },
+                (progressDuration + 3) * 1000,
+            );
+        }
     }
 
     onMount(() => {
         app.component = getAppComponent();
+        checkInstalled();
     });
 </script>
 
@@ -60,19 +76,19 @@
 <div
     class="indicator items-center mb-[1rem] mt-[1rem]"
     style="padding:{$breakpoint.isSm ? 0 : 1}rem"
-    on:click={() => globalStore.setAppState(id, APP_STATE.OPEN)}
+    on:click={openApp}
 >
     <div
         class="app-icon"
         style="--appiconsize:{appIconSize}px;
-    --installed:{installed ? '' : "'"};
-    --appiconsizeunitless:{appIconSize};
-    --progressopacity:{progressOpacity};
-    --progressfillcolor:{progressFillColor};
-    --progressdurationplustwo:{progressDuration + 2}s;
-    --progressdurationplusthree:{progressDuration + 3}s;"
+               --installed:{app.installed ? '' : "'"};
+               --appiconsizeunitless:{appIconSize};
+               --progressopacity:{progressOpacity};
+               --progressfillcolor:{progressFillColor};
+               --progressdurationplustwo:{progressDuration + 2}s;
+               --progressdurationplusthree:{progressDuration + 3}s;"
     >
-        {#if !installed}
+        {#if !app.installed}
             <div class="progress z-10">
                 <svg>
                     <circle

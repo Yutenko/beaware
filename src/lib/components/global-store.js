@@ -2,94 +2,23 @@ import { writable } from 'svelte/store';
 import { APP_STATE } from '$components/learningenvironment/constants';
 import APP_TYPE from '$components/apps/types';
 
+import apps from "$lib/configs/apps.config.json";
 
 function createGlobalStore() {
     const { update, subscribe } = writable({
         config: {
-            apps: {
-                "1234": {
-                    id: "1234",
-                    title: "PHedge",
-                    icon: "phedge",
-                    program: APP_TYPE.BROWSER,
-                    badge: 0,
-                    target: null,
-                    state: APP_STATE.CLOSED,
-                    opened: null,
-                    isResizing: false,
-                    width: 0,
-                    height: 0
-                },
-                "2345": {
-                    id: "2345",
-                    title: "PHmail",
-                    icon: "mail",
-                    program: APP_TYPE.MAIL,
-                    badge: 2,
-                    target: null,
-                    state: APP_STATE.CLOSED,
-                    opened: null,
-                    isResizing: false,
-                    width: 0,
-                    height: 0
-                },
-                "3456": {
-                    id: "3456",
-                    title: "Datenschutz Allgemein",
-                    icon: "quiz",
-                    program: APP_TYPE.LEARNINGUNIT,
-                    badge: 15,
-                    target: null,
-                    state: APP_STATE.CLOSED,
-                    opened: null,
-                    isResizing: false,
-                    width: 0,
-                    height: 0
-                },
-                "4567": {
-                    id: "4567",
-                    title: "WiMA",
-                    icon: "quiz",
-                    program: APP_TYPE.LEARNINGUNIT,
-                    badge: 4,
-                    target: null,
-                    state: APP_STATE.CLOSED,
-                    opened: null,
-                    isResizing: false,
-                    width: 0,
-                    height: 0
-                },
-                "5678": {
-                    id: "5678",
-                    title: "Resultate",
-                    icon: "stats",
-                    program: APP_TYPE.LEARNINGUNIT,
-                    badge: 4,
-                    target: null,
-                    state: APP_STATE.CLOSED,
-                    opened: null,
-                    isResizing: false,
-                    width: 0,
-                    height: 0
-                },
-                "6789": {
-                    id: "6789",
-                    title: "Main",
-                    icon: "main",
-                    program: APP_TYPE.LEARNINGUNIT,
-                    badge: 4,
-                    target: null,
-                    state: APP_STATE.CLOSED,
-                    opened: null,
-                    isResizing: false,
-                    width: 0,
-                    height: 0
-                }
-            }
+            apps: apps,
         },
+        results: {},
         currentApp: {}
     });
 
+    function updateResults(collectionResults) {
+        update(state => {
+            state.results = Object.assign({}, state.results, collectionResults)
+            return { ...state }
+        })
+    }
 
     function setCurrentApp(id, appwindow) {
         update(state => {
@@ -134,6 +63,35 @@ function createGlobalStore() {
         })
     }
 
+    function setAppInstalled(id) {
+        update(state => {
+            state.config.apps[id].installed = true
+            return { ...state }
+        })
+    }
+
+    function installApp(id) {
+        let newApp = {
+            id,
+            title: "Main",
+            icon: "main",
+            type: APP_TYPE.LEARNINGUNIT,
+            badge: 4,
+            target: null,
+            installed: false,
+            state: APP_STATE.CLOSED,
+            opened: null,
+            isResizing: false,
+            width: 0,
+            height: 0
+        }
+
+        update(state => {
+            state.config.apps[newApp.id] = newApp
+            return { ...state }
+        })
+    }
+
     function minimizeAllOpenApps() {
         update(state => {
             Object.values(state.config.apps).forEach(app => {
@@ -163,6 +121,9 @@ function createGlobalStore() {
         setAppDimensions,
         minimizeAllOpenApps,
         openAllMinimizedApps,
+        installApp,
+        setAppInstalled,
+        updateResults
     }
 }
 

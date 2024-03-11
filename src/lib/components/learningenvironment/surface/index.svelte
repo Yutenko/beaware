@@ -5,10 +5,8 @@
     import { APPS_PER_PAGE, APP_STATE } from "../constants.json";
     import Moveable from "svelte-moveable";
 
-    let config = $globalStore.config;
-    let apps = Object.keys(config.apps);
-
-    const pages = new Array(Math.ceil(apps.length / APPS_PER_PAGE));
+    $: apps = Object.keys($globalStore.config.apps);
+    $: pages = new Array(Math.ceil(apps.length / APPS_PER_PAGE));
 
     let currentPage = 0;
     let carousel;
@@ -29,6 +27,7 @@
             currentPage = newSlide;
         }
     }
+
 
     onMount(() => {
         carousel.addEventListener("scroll", handleScroll);
@@ -80,7 +79,7 @@
                 >
                     {#each getAppsForPage(index) as id}
                         <div>
-                            <App {id} />
+                            <App app={$globalStore.config.apps[id]} />
                         </div>
                     {/each}
                 </div>

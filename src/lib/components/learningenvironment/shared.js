@@ -2,7 +2,8 @@ import { browser } from '$app/environment'
 
 
 const messages = {
-    CLOSE_CURRENT_APPWINDOW: 'close',
+    CLOSE_CURRENT_APPWINDOW: 'close-current-appwindow',
+    UPDATE_RESULTS: 'update-results',
 }
 
 const LearningEnvironment = {
@@ -16,6 +17,9 @@ const LearningEnvironment = {
         closeCurrentAppWindow: () => {
             LearningEnvironment.receiver._send({ cmd: messages.CLOSE_CURRENT_APPWINDOW });
         },
+        updateResults: (data) => {
+            LearningEnvironment.receiver._send({ cmd: messages.UPDATE_RESULTS, data });
+        },
         _send: (options) => {
             window.parent.postMessage(JSON.stringify(options), "*")
         },
@@ -26,7 +30,7 @@ const LearningEnvironment = {
         init: (options) => {
             if (browser) {
 
-                const { onCloseCurrentAppwindow } = options;
+                const { onCloseCurrentAppwindow, onUpdateResults } = options;
 
                 window.addEventListener('message', function (event) {
                     if (event.data) {
@@ -34,6 +38,9 @@ const LearningEnvironment = {
 
                         if (message.cmd === messages.CLOSE_CURRENT_APPWINDOW) {
                             onCloseCurrentAppwindow();
+                        }
+                        else if (message.cmd === messages.UPDATE_RESULTS) {
+                            onUpdateResults(message.data);
                         }
                     }
                 });

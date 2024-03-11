@@ -14,7 +14,6 @@
     export let component;
 
     let isrealmobilebrowser = isRealMobileBrowser();
-    $: openFullscreenApp = state !== APP_STATE.CLOSED;
 
     let appwindow = null;
     let stylesBeforeMaximation = {};
@@ -24,13 +23,31 @@
     $: if (state === APP_STATE.OPEN) {
         globalStore.setCurrentApp(id, appwindow);
     }
+    $: openFullscreenApp = state !== APP_STATE.CLOSED;
     $: minimized = state === APP_STATE.MINIMIZED;
+    $: isForeground = $globalStore.currentApp.target === appwindow;
+    $: dimensions = {
+        w: $globalStore.currentApp.width
+            ? $globalStore.currentApp.width
+            : $globalStore.currentApp.target?.clientWidth,
+        h: $globalStore.currentApp.height
+            ? $globalStore.currentApp.height
+            : $globalStore.currentApp.target?.clientHeight,
+    };
+
+    $: isMeResizing =
+        $globalStore.currentApp.target === appwindow &&
+        $globalStore.currentApp.isResizing;
 
     function handleClose() {
         globalStore.setAppState(id, APP_STATE.CLOSED);
     }
     function handleMinimize() {
         globalStore.setAppState(id, APP_STATE.MINIMIZED);
+    }
+
+    function handleUpdateResults(data) {
+        globalStore.updateResults(data);
     }
 
     function toggleMaximization() {
@@ -57,23 +74,11 @@
             globalStore.setAppState(id, APP_STATE.MAXIMIZED);
         }
     }
-    $: isForeground = $globalStore.currentApp.target === appwindow;
-    $: dimensions = {
-        w: $globalStore.currentApp.width
-            ? $globalStore.currentApp.width
-            : $globalStore.currentApp.target?.clientWidth,
-        h: $globalStore.currentApp.height
-            ? $globalStore.currentApp.height
-            : $globalStore.currentApp.target?.clientHeight,
-    };
-
-    $: isMeResizing =
-        $globalStore.currentApp.target === appwindow &&
-        $globalStore.currentApp.isResizing;
 
     onMount(() => {
         LearningEnvironment.sender.init({
             onCloseCurrentAppwindow: handleClose,
+            onUpdateResults: handleUpdateResults,
         });
     });
 </script>

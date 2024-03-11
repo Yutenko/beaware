@@ -3,7 +3,7 @@ import { browser } from '$app/environment'
 
 const messages = {
     START: 'start',
-    FINISHED: 'finished'
+    FINISHED_CASESTUDY: 'finished_casestudy'
 }
 
 const Casestudy = {
@@ -18,7 +18,7 @@ const Casestudy = {
             Casestudy.receiver._send({ cmd: messages.START, data });
         },
         finished: (data) => {
-            Casestudy.receiver._send({ cmd: messages.FINISHED, data });
+            Casestudy.receiver._send({ cmd: messages.FINISHED_CASESTUDY, data });
         },
         _send: (options) => {
             window.parent.postMessage(JSON.stringify(options), "*")
@@ -36,7 +36,7 @@ const Casestudy = {
                     if (event.data) {
                         let message = JSON.parse(event.data);
 
-                        if (message.cmd === messages.FINISHED) {
+                        if (message.cmd === messages.FINISHED_CASESTUDY) {
                             onFinished(message.data);
                         } else if (message.cmd === messages.START) {
                             onStart();

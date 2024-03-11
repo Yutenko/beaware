@@ -15,7 +15,7 @@ const messages = {
 
     // evaluation
     START: 'start',
-    FINISHED: 'finished'
+    FINISHED_QUIZ: 'finished_quiz'
 
 }
 
@@ -63,7 +63,7 @@ const Quiz = {
             Quiz.receiver._send({ cmd: messages.START, data });
         },
         finished: (data) => {
-            Quiz.receiver._send({ cmd: messages.FINISHED, data });
+            Quiz.receiver._send({ cmd: messages.FINISHED_QUIZ, data });
         },
         _send: (options) => {
             window.parent.postMessage(JSON.stringify(options), "*")
@@ -88,7 +88,7 @@ const Quiz = {
                             onInitalData(JSON.parse(message.data));
                         } else if (message.cmd === messages.START) {
                             onStart();
-                        } else if (message.cmd === messages.FINISHED) {
+                        } else if (message.cmd === messages.FINISHED_QUIZ) {
                             onFinished(message.data);
                         }
                     }

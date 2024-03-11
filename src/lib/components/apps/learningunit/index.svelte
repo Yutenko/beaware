@@ -14,7 +14,7 @@
         description:
             "In diesem Projekt können Sie die Datenschutz allgemeinen Fragen zur Verfügung gestellt werden.",
         order: order.SQUENTIAL,
-        apps: [
+        units: [
             {
                 type: LU_TYPE.CASESTUDY,
                 id: "5c4c8252-c1e3-4e18-9028-78de3b9ef7c8",
@@ -33,7 +33,7 @@
         ],
     };
 
-    let savegame = {};
+    let results = {};
 
     let step = -1;
     let gameFinished = false;
@@ -41,10 +41,9 @@
 
     function next() {
         gameFinished = false;
-        if (step + 1 < config.apps.length) {
+        if (step + 1 < config.units.length) {
             step++;
         } else {
-            console.table(savegame);
             allGamesFinished = true;
         }
     }
@@ -55,28 +54,36 @@
         next();
     }
 
+    function closeLearningUnit() {
+        LearningEnvironment.receiver.closeCurrentAppWindow();
+    }
+
     function handleStart() {
         const collectionId = config.id;
-        const appId = config.apps[step].id;
+        const unitId = config.units[step].id;
 
-        savegame[collectionId][appId] = {};
-        savegame[collectionId][appId].progress = [];
-        savegame[collectionId][appId].timeStarted = new Date().getTime();
-        savegame[collectionId][appId].timeFinished = null;
+        results[collectionId][unitId] = {};
+        results[collectionId][unitId].progress = [];
+        results[collectionId][unitId].timeStarted = new Date().getTime();
+        results[collectionId][unitId].timeFinished = null;
+
+        LearningEnvironment.receiver.updateResults(results);
     }
     function handleFinished(data) {
         gameFinished = true;
 
         const collectionId = config.id;
-        const appId = config.apps[step].id;
+        const unitId = config.units[step].id;
 
-        savegame[collectionId][appId].progress = data;
-        savegame[collectionId][appId].timeFinished = new Date().getTime();
+        results[collectionId][unitId].progress = data;
+        results[collectionId][unitId].timeFinished = new Date().getTime();
+
+        LearningEnvironment.receiver.updateResults(results);
     }
 
     onMount(async () => {
         const collectionId = config.id;
-        savegame[collectionId] = {};
+        results[collectionId] = {};
 
         Quiz.sender.init({
             onStart: handleStart,
@@ -88,9 +95,9 @@
         });
 
         if (config.order === order.RANDOM) {
-            const firstElement = config.apps.shift();
-            config.apps = config.apps.sort(() => 0.5 - Math.random());
-            config.apps = [firstElement, ...config.apps];
+            const firstElement = config.units.shift();
+            config.units = config.units.sort(() => 0.5 - Math.random());
+            config.units = [firstElement, ...config.units];
         }
     });
 
@@ -121,7 +128,7 @@
 {#if inProgress}
     <div class="min-h-screen">
         <iframe
-            src={config.apps[step].play}
+            src={config.units[step].play}
             transition:blur={{ amount: 10 }}
             title="lu-content"
         ></iframe>
@@ -146,11 +153,7 @@
             <div class="max-w-md">
                 <h1 class="mb-5 text-5xl font-bold">{$t("lunit.finished")}</h1>
                 <p class="mb-5"></p>
-                <button
-                    class="btn btn-primary"
-                    on:click={() =>
-                        LearningEnvironment.receiver.closeCurrentAppWindow()}
-                >
+                <button class="btn btn-primary" on:click={closeLearningUnit}>
                     {$t("lunit.endit")}
                 </button>
             </div>

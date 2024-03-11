@@ -1,5 +1,5 @@
 <script>
-    import { MailClient, LearningUnit } from "$components";
+    import { App_MailClient, App_LearningUnit } from "$components";
     import types from "$components/apps/types";
     export let data;
 
@@ -7,7 +7,7 @@
 </script>
 
 {#if type == types.MAIL}
-    <MailClient />
+    <App_MailClient />
 {:else if type == types.LEARNINGUNIT}
-    <LearningUnit />    
+    <App_LearningUnit />    
 {/if}

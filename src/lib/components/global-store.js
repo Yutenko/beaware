@@ -3,11 +3,15 @@ import { APP_STATE } from '$components/learningenvironment/constants';
 import APP_TYPE from '$components/apps/types';
 
 import apps from "$lib/configs/apps.config.json";
+import collections from "$lib/configs/collections.config.json";
+import certificate from "$lib/configs/certificate.config.json";
 
 function createGlobalStore() {
     const { update, subscribe } = writable({
         config: {
             apps: apps,
+            collections: collections,
+            certificate: certificate
         },
         results: {},
         currentApp: {}

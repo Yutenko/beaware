@@ -29,6 +29,7 @@
     },
     "3456": {
         "id": "3456",
+        "collectionId": "collection-id-1",
         "title": "Datenschutz Allgemein",
         "icon": "quiz",
         "type": 3,
@@ -43,6 +44,7 @@
     },
     "4567": {
         "id": "4567",
+        "collectionId": "collection-id-2",
         "title": "WiMA",
         "icon": "quiz",
         "type": 3,
@@ -59,7 +61,7 @@
         "id": "5678",
         "title": "Resultate",
         "icon": "stats",
-        "type": 3,
+        "type": 4,
         "badge": 4,
         "target": null,
         "installed": true,

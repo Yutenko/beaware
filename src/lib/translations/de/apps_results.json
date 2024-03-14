@@ -1,0 +1,9 @@
+{
+    "certificate": {
+        "title": "Teilnahmebestätigung",
+        "hasTheCourse": "hat den Online-Kurs",
+        "completed": "absolviert",
+        "goals": "Ziele",
+        "content": "Inhalte"
+    }
+}

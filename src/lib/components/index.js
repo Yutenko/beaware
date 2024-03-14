@@ -28,8 +28,7 @@ export { default as App_LearningUnit } from './apps/learningunit/index.svelte';
 export { default as App_LearningUnitEmbed } from './apps/learningunit/Embed.svelte';
 export { default as App_Results } from './apps/results/index.svelte';
 export { default as App_ResultsShort } from './apps/results/Short.svelte';
-export { default as App_ResultsDetails } from './apps/results/Details.svelte';
-export { default as App_ResultsCertificate } from './apps/results/Certificate.svelte';
+export { default as App_ResultsEmbed } from './apps/results/Embed.svelte';
 
 
 // Simulation

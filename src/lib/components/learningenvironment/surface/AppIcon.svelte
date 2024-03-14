@@ -1,6 +1,6 @@
 <script>
     export let icon = "default";
-    export let width;
+    export let width = 0;
     export let opacity = 100;
 
     $: icon = icon ? icon : "default";

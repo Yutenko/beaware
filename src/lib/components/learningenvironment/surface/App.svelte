@@ -7,6 +7,7 @@
     import {
         App_MailClientEmbed,
         App_LearningUnitEmbed,
+        App_ResultsEmbed,
         App_Browser,
         AppIcon,
     } from "$components";
@@ -36,6 +37,7 @@
         if (app.type === APP_TYPE.BROWSER) return App_Browser;
         if (app.type === APP_TYPE.MAIL) return App_MailClientEmbed;
         if (app.type === APP_TYPE.LEARNINGUNIT) return App_LearningUnitEmbed;
+        if (app.type === APP_TYPE.RESULTS) return App_ResultsEmbed;
     }
 
     function openApp() {

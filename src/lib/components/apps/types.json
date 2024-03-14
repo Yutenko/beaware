@@ -1,5 +1,6 @@
 {
     "MAIL": 1,
     "BROWSER": 2,
-    "LEARNINGUNIT": 3
+    "LEARNINGUNIT": 3,
+    "RESULTS": 4
 }

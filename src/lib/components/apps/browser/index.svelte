@@ -3,7 +3,6 @@
     import { onMount } from "svelte";
     import { t } from "$lib/translations";
     import { isRealMobileBrowser } from "$lib/utils";
-    import { clickoutside } from "$lib/actions";
 
     export let config = {};
     config = {

@@ -39,6 +39,11 @@ export const config = {
     },
     {
       locale: 'de',
+      key: 'results',
+      loader: async () => (await import('./de/apps_results.json')).default,
+    },
+    {
+      locale: 'de',
       key: 'phishing',
       loader: async () => (await import('./de/simulation_phishing.json')).default,
     },

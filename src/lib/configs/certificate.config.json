@@ -1,0 +1,15 @@
+{
+    "logo": {
+        "path": "/media/certificate/phlogo.png",
+        "position": "left",
+        "width": "200px"
+    },
+    "coursename": "BE-Aware - WBT",
+    "note": "Das Bildungsangebot BE-Secure ist ein Pflichtmodul für die ganze Kantonsverwaltung. Die Mitarbeitenden lernen darin, wie sie mit sensiblen Daten richtig umgehen. Die persönliche Sensibilisierung in den Bereichen Informationssicherheit und Datenschutz steht hierbei im Mittelpunkt.",
+    "signature": {
+        "organisation":"Amt für Informatik und Organisation<br>des Kantons Bern",
+        "path": "/media/certificate/phbern-signature.png",
+        "name":"Diana Nyffenegger",
+        "role":"Fachbereichsleiterin Personal und Entwicklung"
+    }
+}

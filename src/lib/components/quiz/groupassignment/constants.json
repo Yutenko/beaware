@@ -208,6 +208,6 @@
             "always": false,
             "smart": false
         },
-        "treshold": 0
+        "threshold": 0
     }
 }

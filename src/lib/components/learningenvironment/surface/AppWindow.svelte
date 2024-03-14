@@ -6,12 +6,15 @@
     import { fade } from "svelte/transition";
     import LearningEnvironment from "../shared";
     import { globalStore } from "$components/global-store";
+    import appType from "$components/apps/types";
 
     export let id;
     export let state = APP_STATE.CLOSED;
     export let icon;
     export let title;
     export let component;
+
+    $: props = generateComponentProps(id);
 
     let isrealmobilebrowser = isRealMobileBrowser();
 
@@ -38,6 +41,16 @@
     $: isMeResizing =
         $globalStore.currentApp.target === appwindow &&
         $globalStore.currentApp.isResizing;
+
+    function generateComponentProps(id) {
+        const app = $globalStore.config.apps[id];
+
+        if (app.type === appType.LEARNINGUNIT) {
+            return { collectionId: app.collectionId };
+        }
+
+        return {};
+    }
 
     function handleClose() {
         globalStore.setAppState(id, APP_STATE.CLOSED);
@@ -129,7 +142,7 @@
                 </p>
             </div>
         {/if}
-        <svelte:component this={component} />
+        <svelte:component this={component} {...props} />
     </div>
 {/if}
 

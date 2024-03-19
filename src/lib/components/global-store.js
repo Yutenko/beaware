@@ -13,8 +13,22 @@ function createGlobalStore() {
             collections: collections,
             certificate: certificate
         },
-        results: {},
-        currentApp: {}
+        results: {
+            "collection-id-1": {
+                "unit-id-1": {
+                    progress: [
+                        { id: 0, points: 1, attempts: 2 },
+                        { id: 1, points: 1, attempts: 1 },
+                    ],
+                    timeStarted: new Date().getTime(),
+                    timeFinished: new Date().getTime()
+                }
+            }
+        },
+        currentApp: {},
+        user: {
+            name: "Christian"
+        }
     });
 
     function updateResults(collectionResults) {

@@ -27,7 +27,7 @@ export { default as App_Browser } from './apps/browser/index.svelte';
 export { default as App_LearningUnit } from './apps/learningunit/index.svelte';
 export { default as App_LearningUnitEmbed } from './apps/learningunit/Embed.svelte';
 export { default as App_Results } from './apps/results/index.svelte';
-export { default as App_ResultsShort } from './apps/results/Short.svelte';
+export { default as App_ResultsOverview } from './apps/results/Overview.svelte';
 export { default as App_ResultsEmbed } from './apps/results/Embed.svelte';
 
 

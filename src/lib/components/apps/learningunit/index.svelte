@@ -1,5 +1,5 @@
 <script>
-    import { onMount } from "svelte";
+    import { onMount, onDestroy } from "svelte";
     import { t } from "$lib/translations";
     import { blur } from "svelte/transition";
     import Quiz from "$components/quiz/shared";
@@ -16,6 +16,9 @@
     let step = -1;
     let gameFinished = false;
     let allGamesFinished = false;
+
+    $: isStart = step === -1;
+    $: inProgress = step > -1 && !allGamesFinished;
 
     function next() {
         gameFinished = false;
@@ -76,8 +79,10 @@
         }
     });
 
-    $: isStart = step === -1;
-    $: inProgress = step > -1 && !allGamesFinished;
+    onDestroy(async () => {
+        Quiz.cleanUp();
+        Casestudy.cleanUp();
+    });
 </script>
 
 {#if isStart}

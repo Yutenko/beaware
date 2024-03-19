@@ -1,5 +1,5 @@
 <script>
-    import { App_ResultsShort } from "$components";
+    import { App_ResultsOverview } from "$components";
 </script>
 
-<App_ResultsShort />
+<App_ResultsOverview />

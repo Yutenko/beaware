@@ -32,7 +32,7 @@ const Casestudy = {
 
                 const { onStart, onFinished } = options;
 
-                window.addEventListener('message', function (event) {
+                function handleSenderMessages(event) {
                     if (event.data) {
                         let message = JSON.parse(event.data);
 
@@ -42,12 +42,21 @@ const Casestudy = {
                             onStart();
                         }
                     }
-                });
+                }
+
+                window.addEventListener('message', handleSenderMessages);
+                Casestudy.sender._messagesFn = handleSenderMessages;
             }
         },
         _send: (options) => {
             const iframe = document.querySelector('iframe[data-is-cs-receiver="true"]')
             iframe.contentWindow.postMessage(JSON.stringify(options), "*")
+        },
+        _messagesFn: null
+    },
+    cleanUp: () => {
+        if (browser) {
+            window.removeEventListener('message', Casestudy.sender._messagesFn)
         }
     }
 }

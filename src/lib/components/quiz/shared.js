@@ -25,9 +25,8 @@ const Quiz = {
         init: (options) => {
             if (browser && options && Object.keys(options).length > 0) {
                 const { addContainer, removeContainer, resetContainer, addElement, removeElement, updateParent, initalData } = options;
-                Quiz.receiver._updateFn = updateParent;
 
-                window.addEventListener('message', function (event) {
+                function handleReceiverMessages(event) {
                     if (event.data) {
                         let message = JSON.parse(event.data);
 
@@ -47,7 +46,12 @@ const Quiz = {
 
                         Quiz.receiver.updateParent();
                     }
-                });
+                }
+
+                window.addEventListener('message', handleReceiverMessages);
+
+                Quiz.receiver._updateFn = updateParent;
+                Quiz.receiver._messagesFn = handleReceiverMessages;
 
                 // send initial data
                 if (initalData) {
@@ -68,7 +72,8 @@ const Quiz = {
         _send: (options) => {
             window.parent.postMessage(JSON.stringify(options), "*")
         },
-        _updateFn: null
+        _updateFn: null,
+        _messagesFn: null
     },
 
     // parent to child = sender
@@ -78,7 +83,7 @@ const Quiz = {
 
                 const { onUpdate, onInitalData, onStart, onFinished } = options;
 
-                window.addEventListener('message', function (event) {
+                function handleSenderMessages(event) {
                     if (event.data) {
                         let message = JSON.parse(event.data);
 
@@ -92,7 +97,11 @@ const Quiz = {
                             onFinished(message.data);
                         }
                     }
-                });
+                }
+
+                window.addEventListener('message', handleSenderMessages);
+
+                Quiz.sender._messagesFn = handleSenderMessages;
             }
         },
         _send: (options) => {
@@ -112,10 +121,17 @@ const Quiz = {
             updateParent: () => {
                 Quiz.sender._send({ cmd: messages.UPDATE_PARENT });
             }
-        }
+        },
+        _messagesFn: null
     },
     shuffle: (array) => {
         return array => array.sort(() => 0.5 - Math.random());
+    },
+    cleanUp: () => {
+        if (browser) {
+            window.removeEventListener('message', Quiz.receiver._messagesFn)
+            window.removeEventListener('message', Quiz.sender._messagesFn)
+        }
     }
 }
 

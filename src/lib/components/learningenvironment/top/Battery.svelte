@@ -1,6 +1,6 @@
 <script>
     import { onMount } from "svelte";
-    import { linear } from "svelte/easing";
+
     const powerLevel = ["full", "half", "quarter", "empty"].reverse();
     let powerPercent = 84;
     let step = 0;
@@ -26,8 +26,5 @@
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
     <ul class="menu bg-base-200 w-56 rounded-box dropdown-content z-10">
         <li class="menu-title">Power</li>
-        <li><a>Item 1</a></li>
-        <li><a>Item 2</a></li>
-        <li><a>Item 3</a></li>
     </ul>
 </div>

@@ -2,5 +2,9 @@
     "order": {
         "SEQUENTIAL": 1,
         "RANDOM": 2
+    },
+    "types": {
+        "QUIZ": 1,
+        "CASESTUDY": 2
     }
 }

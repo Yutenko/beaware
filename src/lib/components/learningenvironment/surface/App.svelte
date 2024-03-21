@@ -2,8 +2,8 @@
     import AppWindow from "./AppWindow.svelte";
 
     import { breakpoint } from "$lib/utils";
-    import { globalStore } from "$components/global-store";
-    import { APP_STATE } from "../constants.json";
+    import { appCurrent } from "$lib/stores-global";
+    import { APP_STATE } from "$components/learningenvironment/constants.json";
     import {
         App_MailClientEmbed,
         App_LearningUnitEmbed,
@@ -42,7 +42,7 @@
 
     function openApp() {
         if (app.installed) {
-            globalStore.setAppState(app.id, APP_STATE.OPEN);
+            appCurrent.setAppState(app.id, APP_STATE.OPEN);
         }
     }
 
@@ -51,7 +51,7 @@
         if (!app.installed) {
             setTimeout(
                 function () {
-                    globalStore.setAppInstalled(app.id);
+                    appCurrent.setAppInstalled(app.id);
                 },
                 (progressDuration + 3) * 1000,
             );

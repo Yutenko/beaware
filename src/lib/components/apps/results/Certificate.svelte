@@ -1,16 +1,13 @@
 <script>
-    import { globalStore } from "$components/global-store";
+    import { userProfile, systemCertificate } from "$lib/stores-global";
+    import { t } from "$lib/translations";
+    import { jsPDF } from "jspdf";
     import dayjs from "dayjs";
     import html2canvas from "html2canvas-pro";
-    import { jsPDF } from "jspdf";
-    import { t } from "$lib/translations";
 
-    const { logo, coursename, note, signature } =
-        $globalStore.config.certificate;
+    const { logo, coursename, note, signature } = $systemCertificate;
 
-    const results = $globalStore.config.results;
-
-    const username = "Christian Dietz";
+    const username = $userProfile.name;
     const today = dayjs().format("DD.MM.YYYY");
 
     function printIt() {

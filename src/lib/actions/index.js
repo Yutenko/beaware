@@ -256,4 +256,49 @@ export function viewport(element) {
     }
 }
 
+export function fullscreen(node) {
+    var elem = document.documentElement;
+
+    function enterFullscreen() {
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE11 */
+            elem.msRequestFullscreen();
+        }
+    }
+
+    function exitFullscreen() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+        }
+    }
+
+    var isFullscreen = false;
+    function toggle() {
+        if (isFullscreen) exitFullscreen();
+        else enterFullscreen();
+
+        isFullscreen = !isFullscreen;
+    }
+
+
+    node.addEventListener('click', toggle, true);
+
+    return {
+        destroy: () => {
+            node.removeEventListener('click', toggle, true);
+        }
+    }
+}
+
+
+
+
+
 

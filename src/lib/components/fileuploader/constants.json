@@ -1,0 +1,8 @@
+{
+    "types": {
+        "text": true,
+        "image": true,
+        "video": true,
+        "audio": true
+    }
+}

@@ -1,16 +1,17 @@
 <script>
     import OverviewProgress from "./OverviewProgress.svelte";
-    import { globalStore } from "$components/global-store";
+    import {
+        userProfile,
+        userResults,
+        systemCollections,
+    } from "$lib/stores-global";
     import { t } from "$lib/translations";
     import { tooltip } from "$lib/actions";
-
-    let user = $globalStore.user;
-    $: results = $globalStore.results;
 </script>
 
 <div class="dropdown dropdown-end">
     <div tabindex="0" role="button" class="text-base-100 btn btn-ghost">
-        {user.name}
+        {$userProfile.name}
     </div>
     <ul class="menu bg-base-200 rounded-box dropdown-content z-10">
         <button
@@ -21,11 +22,11 @@
         <li class="menu-title">
             {$t("results.profile")}
         </li>
-        {#each Object.keys(results) as cid}
+        {#each Object.keys($userResults) as cid}
             <li>
                 <OverviewProgress
-                    collection={$globalStore.config.collections[cid]}
-                    results={results[cid]}
+                    collection={$systemCollections[cid]}
+                    results={$userResults[cid]}
                 />
             </li>
         {/each}

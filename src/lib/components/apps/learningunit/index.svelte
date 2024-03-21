@@ -6,10 +6,10 @@
     import Casestudy from "$components/casestudy/shared";
     import LearningEnvironment from "$components/learningenvironment/shared";
     import { order } from "./constants";
-    import { globalStore } from "$components/global-store";
+    import { systemCollections } from "$lib/stores-global";
 
     export let id = "";
-    $: collection = $globalStore.config.collections[id];
+    $: collection = $systemCollections[id];
 
     let results = {};
 

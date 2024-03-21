@@ -1,13 +1,13 @@
 <script>
-    import { globalStore } from "$components/global-store";
-    import { APP_STATE } from "../constants.json";
+    import { systemApps, appCurrent } from "$lib/stores-global";
+    import { APP_STATE } from "$components/learningenvironment/constants";
     import { tooltip } from "$lib/actions";
     import { AppIcon } from "$components";
     import { t } from "$lib/translations";
     import { isRealMobileBrowser } from "$lib/utils";
     import { fade } from "svelte/transition";
 
-    $: minimizedapps = Object.values($globalStore.config.apps)
+    $: minimizedapps = Object.values($systemApps)
         .filter((app) => app.state !== APP_STATE.CLOSED)
         .sort((a, b) => a.opened - b.opened);
 
@@ -20,14 +20,14 @@
         if (app.state === APP_STATE.MINIMIZED) {
             app.state = APP_STATE.OPEN;
         }
-        globalStore.setCurrentApp(app.id, app.target);
+        appCurrent.setApp(app.id, app.target);
     }
     function handleAllApps() {
         if (lastAction === APP_STATE.OPEN) {
-            globalStore.minimizeAllOpenApps();
+            systemApps.minimizeAllOpenApps();
             lastAction = APP_STATE.MINIMIZED;
         } else {
-            globalStore.openAllMinimizedApps();
+            systemApps.openAllMinimizedApps();
             lastAction = APP_STATE.OPEN;
         }
     }

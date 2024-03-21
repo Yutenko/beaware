@@ -33,6 +33,7 @@
                 counts["item" + [emails[i].category]]++;
             }
         }
+
     }
     $: updateCounts(emails);
 </script>
@@ -81,7 +82,7 @@
             {/if}
         </a>
     </li>
-   
+
     <li>
         <!-- svelte-ignore a11y-missing-attribute -->
         <!-- svelte-ignore a11y-click-events-have-key-events -->

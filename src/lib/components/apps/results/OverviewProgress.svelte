@@ -5,6 +5,8 @@
     $: completed = parseInt(
         (Object.keys(results).length * 100) / collection.units.length,
     );
+
+    // Farbe der Progressbar gibt an, wie gut man unterwegs ist bisher
 </script>
 
 <div>
@@ -14,19 +16,11 @@
         </div>
         <div class="flex flex-row items-center gap-2 relative">
             <progress
-                class="progress progress-success w-56"
+                class="progress progress-success w-full min-w-[14rem]"
                 value={completed}
                 max="100"
             >
             </progress>
-            <div class="absolute left-0 top-0 z-10 w-56">
-                <div
-                    class="relative"
-                    style="margin-left:{collection.threshold}%"
-                >
-                    <i class="fas fa-map-marker-check text-success"></i>
-                </div>
-            </div>
             <div class="stat-value text-sm">{completed}%</div>
         </div>
     </div>

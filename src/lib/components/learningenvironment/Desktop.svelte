@@ -1,8 +1,7 @@
 <script>
-    const config = {
-        background:
-            "/media/learningenvironment/backgrounds/Background_01_BeAware.svg",
-    };
+    import { systemSettings } from "$lib/stores-global/index";
+
+    let config = $systemSettings;
 </script>
 
 <section class="bg" style="background-image:url({config.background})">

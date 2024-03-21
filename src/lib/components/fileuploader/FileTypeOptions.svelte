@@ -1,7 +1,7 @@
 <script>
     import { t } from "$lib/translations";
     import { createEventDispatcher } from "svelte";
-    import { default as fileTypes } from "./types.json";
+    import { types } from "./constants";
 
     const dispatch = createEventDispatcher();
 
@@ -28,7 +28,6 @@
     export let imageText = $t("core.fileuploader.image");
     export let videoText = $t("core.fileuploader.video");
     export let audioText = $t("core.fileuploader.audio");
-    export let types = fileTypes;
 
     let isMedia = types.image && types.video && types.audio;
 </script>

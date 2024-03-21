@@ -1,6 +1,10 @@
 <script>
-    import types from "../types";
-    import "../app.css";
+    import types from "$components/apps/types";
+    import "$components/apps/app.css";
 </script>
 
-<iframe src="/user/apps/{types.MAIL}/embed" title="frames-user-app"></iframe>
+<iframe
+    src="/user/apps/{types.MAIL}/embed"
+    title="frames-user-app"
+    data-is-appwindow-receiver="true"
+></iframe>

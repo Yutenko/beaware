@@ -4,6 +4,7 @@
     import Profile from "./Profile.svelte";
     import WLAN from "./WLAN.svelte";
     import Battery from "./Battery.svelte";
+    import Fullscreen from "./Fullscreen.svelte";
 </script>
 
 <div class="flex flex-row pt-2 pl-2 pb-2 pr-2">
@@ -15,5 +16,6 @@
         <Profile />
         <WLAN />
         <Battery />
+        <Fullscreen />
     </div>
 </div>

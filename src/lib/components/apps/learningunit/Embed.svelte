@@ -1,6 +1,6 @@
 <script>
-    import types from "../types";
-    import "../app.css";
+    import types from "$components/apps/types";
+    import "$components/apps/app.css";
 
     export let collectionId;
 </script>

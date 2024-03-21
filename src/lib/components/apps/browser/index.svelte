@@ -5,25 +5,6 @@
     import { isRealMobileBrowser } from "$lib/utils";
 
     export let config = {};
-    config = {
-        startscreen: "http://localhost:5173/p/microsoft",
-        bookmarks: [],
-        specialURLs: [
-            {
-                url: "http://localhost:5173/p/google",
-                favicon: "/media/simulation/p/google/favicon.ico",
-                title: $t("phishing.google.tabtitle"),
-                displayname: "https://accounts.google.com/v3/signin/",
-            },
-            {
-                url: "http://localhost:5173/p/microsoft",
-                favicon: "/media/simulation/p/ms/favicon.ico",
-                title: $t("phishing.ms.tabtitle"),
-                displayname:
-                    "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
-            },
-        ],
-    };
 
     let counter = 0;
     let tabs = [];
@@ -82,7 +63,7 @@
                 if (config.specialURLs[i].url === url) {
                     displayname = config.specialURLs[i].displayname;
                     favicon = config.specialURLs[i].favicon;
-                    title = config.specialURLs[i].title;
+                    title = $t(config.specialURLs[i].title);
                 }
             }
         }

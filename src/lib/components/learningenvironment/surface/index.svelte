@@ -1,11 +1,14 @@
 <script>
     import { onMount } from "svelte";
     import App from "./App.svelte";
-    import { globalStore } from "$components/global-store";
-    import { APPS_PER_PAGE, APP_STATE } from "../constants.json";
+    import { systemApps, appCurrent } from "$lib/stores-global";
+    import {
+        APPS_PER_PAGE,
+        APP_STATE,
+    } from "$components/learningenvironment/constants.json";
     import Moveable from "svelte-moveable";
 
-    $: apps = Object.keys($globalStore.config.apps);
+    $: apps = Object.keys($systemApps);
     $: pages = new Array(Math.ceil(apps.length / APPS_PER_PAGE));
 
     let currentPage = 0;
@@ -28,15 +31,14 @@
         }
     }
 
-
     onMount(() => {
         carousel.addEventListener("scroll", handleScroll);
     });
 </script>
 
-{#if $globalStore.currentApp.state === APP_STATE.OPEN}
+{#if $appCurrent.state === APP_STATE.OPEN}
     <Moveable
-        target={$globalStore.currentApp.target}
+        target={$appCurrent.target}
         draggable={true}
         throttleDrag={1}
         resizable={true}
@@ -56,16 +58,16 @@
             e.target.style.transform = e.transform;
         }}
         on:resizeStart={() => {
-            globalStore.setAppResizing(true);
+            appCurrent.setAppResizing(true);
         }}
         on:resize={({ detail: e }) => {
             e.target.style.width = `${e.width}px`;
             e.target.style.height = `${e.height}px`;
             e.target.style.transform = e.drag.transform;
-            globalStore.setAppDimensions(e.width, e.height);
+            appCurrent.setAppDimensions(e.width, e.height);
         }}
         on:resizeEnd={() => {
-            globalStore.setAppResizing(false);
+            appCurrent.setAppResizing(false);
         }}
     />
 {/if}
@@ -79,7 +81,7 @@
                 >
                     {#each getAppsForPage(index) as id}
                         <div>
-                            <App app={$globalStore.config.apps[id]} />
+                            <App app={$systemApps[id]} />
                         </div>
                     {/each}
                 </div>

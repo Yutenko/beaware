@@ -4,8 +4,14 @@
     import { AppIcon, Modal } from "$components";
     import { isRealMobileBrowser } from "$lib/utils";
     import { fade } from "svelte/transition";
-    import LearningEnvironment from "../shared";
-    import { globalStore } from "$components/global-store";
+    import {
+        appCurrent,
+        systemApps,
+        userMails,
+        userResults,
+        systemBrowser,
+    } from "$lib/stores-global";
+    import LearningEnvironment from "$components/learningenvironment/shared";
     import appType from "$components/apps/types";
 
     export let id;
@@ -14,8 +20,6 @@
     export let title;
     export let component;
 
-    $: props = generateComponentProps(id);
-
     let isrealmobilebrowser = isRealMobileBrowser();
 
     let appwindow = null;
@@ -23,44 +27,56 @@
     let startWidth = 1100;
     let startHeight = 600;
 
-    $: if (state === APP_STATE.OPEN) {
-        globalStore.setCurrentApp(id, appwindow);
-    }
+    $: props = generateComponentProps(id);
     $: openFullscreenApp = state !== APP_STATE.CLOSED;
     $: minimized = state === APP_STATE.MINIMIZED;
-    $: isForeground = $globalStore.currentApp.target === appwindow;
+    $: isForeground = $appCurrent.target === appwindow;
     $: dimensions = {
-        w: $globalStore.currentApp.width
-            ? $globalStore.currentApp.width
-            : $globalStore.currentApp.target?.clientWidth,
-        h: $globalStore.currentApp.height
-            ? $globalStore.currentApp.height
-            : $globalStore.currentApp.target?.clientHeight,
+        w: $appCurrent.width
+            ? $appCurrent.width
+            : $appCurrent.target?.clientWidth,
+        h: $appCurrent.height
+            ? $appCurrent.height
+            : $appCurrent.target?.clientHeight,
     };
 
     $: isMeResizing =
-        $globalStore.currentApp.target === appwindow &&
-        $globalStore.currentApp.isResizing;
+        $appCurrent.target === appwindow && $appCurrent.isResizing;
+
+    $: if (state === APP_STATE.OPEN) {
+        appCurrent.setApp(id, appwindow);
+    }
 
     function generateComponentProps(id) {
-        const app = $globalStore.config.apps[id];
+        const app = $systemApps[id];
 
+        if (app.type === appType.MAIL) {
+            return { config: $userMails };
+        }
+        if (app.type === appType.BROWSER) {
+            return { config: $systemBrowser };
+        }
         if (app.type === appType.LEARNINGUNIT) {
             return { collectionId: app.collectionId };
         }
-
+        if (app.type === appType.RESULTS) {
+        }
         return {};
     }
 
     function handleClose() {
-        globalStore.setAppState(id, APP_STATE.CLOSED);
+        appCurrent.setAppState(id, APP_STATE.CLOSED);
     }
     function handleMinimize() {
-        globalStore.setAppState(id, APP_STATE.MINIMIZED);
+        appCurrent.setAppState(id, APP_STATE.MINIMIZED);
     }
 
     function handleUpdateResults(data) {
-        globalStore.updateResults(data);
+        userResults.updateResults(data);
+    }
+
+    function handleGetMails() {
+        LearningEnvironment.sender.receiveMails($userMails);
     }
 
     function toggleMaximization() {
@@ -71,7 +87,7 @@
             appwindow.style.left = "3rem";
             appwindow.style.top = "3rem";
 
-            globalStore.setAppState(id, APP_STATE.OPEN);
+            appCurrent.setAppState(id, APP_STATE.OPEN);
         } else {
             stylesBeforeMaximation.width = appwindow.style.width;
             stylesBeforeMaximation.height = appwindow.style.height;
@@ -84,7 +100,7 @@
             appwindow.style.left = "0";
             appwindow.style.transform = "";
 
-            globalStore.setAppState(id, APP_STATE.MAXIMIZED);
+            appCurrent.setAppState(id, APP_STATE.MAXIMIZED);
         }
     }
 
@@ -92,6 +108,7 @@
         LearningEnvironment.sender.init({
             onCloseCurrentAppwindow: handleClose,
             onUpdateResults: handleUpdateResults,
+            onGetMails: handleGetMails,
         });
     });
 </script>
@@ -101,7 +118,7 @@
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
         bind:this={appwindow}
-        on:click={() => globalStore.setCurrentApp(id, appwindow)}
+        on:click={() => appCurrent.setApp(id, appwindow)}
         transition:fade
         class="mockup-window {minimized
             ? 'hidden'
@@ -117,7 +134,7 @@
         {#if !isForeground}
             <div
                 class="absolute w-full h-full top-0 left-0 z-50"
-                on:click={() => globalStore.setCurrentApp(id, appwindow)}
+                on:click={() => appCurrent.setApp(id, appwindow)}
             ></div>
         {/if}
         <div class="title-bar" on:dblclick={toggleMaximization}>
@@ -169,7 +186,7 @@
             </div>
         </div>
         <div class="h-[100vh]" slot="body">
-            <svelte:component this={component} />
+            <svelte:component this={component} {...props} />
         </div>
     </Modal>
 {/if}

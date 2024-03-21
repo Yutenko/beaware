@@ -1,20 +1,21 @@
 <script>
     import { slide, fade } from "svelte/transition";
-    import { categories } from "./constants.json";
+    import { categories } from "./constants";
     import { createEventDispatcher } from "svelte";
     import { t } from "$lib/translations";
     import dayjs from "dayjs";
 
     export let emails = [];
     export let category = categories.INBOX;
+
     let filteredEmails = emails;
     let searchText = "";
     let navbarHeight = 0;
 
     $: title = $t(`mail.categories.${category}`);
-    $: filterEmails(emails);
     $: isAllMailsEmpty = isEmpty(category, emails);
     $: isFilteredMailsEmpty = filteredEmails.length === 0;
+    $: filterEmails(emails);
 
     function filterEmails(emails) {
         filteredEmails =

@@ -1,50 +1,18 @@
 <script>
+    import { onMount } from "svelte";
     import Table from "./Table.svelte";
     import Categories from "./Categories.svelte";
     import Content from "./Content.svelte";
     import { breakpoint } from "$lib/utils";
     import { categories } from "./constants";
+    import LearningEnvironment from "$components/learningenvironment/shared";
 
-    let emails = [
-        {
-            id: "a",
-            from: "Christian Dietz",
-            to: "masterofdesaster@beaware.be",
-            subject: "Erinnerung",
-            content:
-                "Dies ist eine E-Mail, welche einen Eintrag von Christian Dietz erinnert wurde. anskjdnjkasnd kjsakjnd nsajknd kaskdnj sandknksa djknsaj dksan kdjnsan dkjasnjk nasknd jkasnd kjasndj naskjndj sandjknsa kdjnask ndsa",
-            created: new Date().getTime(),
-            read: false,
-            category: categories.INBOX,
-        },
-        {
-            id: "b",
-            from: "Kurt Reber",
-            to: "masterofdesaster@beaware.be",
-            subject: "Degustation",
-            content:
-                "Wein Käse anskjdnjkasnd kjsakjnd nsajknd kaskdnj sandknksa djknsaj dksan kdjnsan dkjasnjk nasknd jkasnd kjasndj naskjndj sandjknsa kdjnask ndsa",
-            created: new Date().getTime(),
-            read: false,
-            category: categories.INBOX,
-        },
-        {
-            id: "c",
-            from: "Oliver Ott",
-            to: "masterofdesaster@beaware.be",
-            subject: "Übernahme",
-            content:
-                "In Thailand und Asien überhaupt wurde anskjdnjkasnd kjsakjnd nsajknd kaskdnj sandknksa djknsaj dksan kdjnsan dkjasnjk nasknd jkasnd kjasndj naskjndj sandjknsa kdjnask ndsa",
-            created: new Date().getTime(),
-            read: false,
-            category: categories.SPAM,
-        },
-    ];
-
-    let currentMail = emails[0];
+    let currentMail;
     let currentCategory = categories.INBOX;
     let openMail = false;
+
     $: isMobile = $breakpoint.isSm || $breakpoint.isMd || $breakpoint.isLg;
+    $: emails = [];
 
     function closeMailContent() {
         openMail = false;
@@ -68,7 +36,7 @@
         if (currentCategory === categories.TRASH) {
             emails = emails.filter((mail) => mail.id !== e.detail.id);
         } else {
-            // move to trash = category 3
+            // move to trash
             let index = emails.findIndex((mail) => mail.id === e.detail.id);
             emails[index].category = categories.TRASH;
             emails = emails;
@@ -76,6 +44,16 @@
 
         closeMailContent();
     }
+
+    function onGetMails(mails) {
+        emails = mails;
+        currentMail = emails[0];
+    }
+
+    onMount(() => {
+        LearningEnvironment.receiver.init({ onGetMails });
+        LearningEnvironment.receiver.getMails();
+    });
 </script>
 
 {#if !isMobile}

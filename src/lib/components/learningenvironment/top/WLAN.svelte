@@ -7,8 +7,5 @@
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
     <ul class="menu bg-base-200 w-56 rounded-box dropdown-content z-10">
         <li class="menu-title">WLAN</li>
-        <li><a>Item 1</a></li>
-        <li><a>Item 2</a></li>
-        <li><a>Item 3</a></li>
     </ul>
 </div>

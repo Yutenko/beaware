@@ -5,6 +5,7 @@
         App_Results,
     } from "$components";
     import types from "$components/apps/types";
+    
     export let data;
 
     let { type } = data.params;

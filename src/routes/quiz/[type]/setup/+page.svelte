@@ -1,5 +1,5 @@
 <script>
-    import { GroupAssignmentSetup } from "$components/index";
+    import { GroupAssignmentSetup } from "$components";
 </script>
 
 <GroupAssignmentSetup />

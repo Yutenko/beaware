@@ -3,21 +3,21 @@
         "id": "collection-id-1",
         "title": "Datenschutz allgemein",
         "description": "In diesem Projekt können Sie die Datenschutz allgemeinen Fragen zur Verfügung gestellt werden.",
-        "order": 1,
+        "order": "SEQUENTIAL",
         "threshold": 80,
         "units": [
             {
-                "type": 2,
+                "type": "CASESTUDY",
                 "id": "5c4c8252-c1e3-4e18-9028-78de3b9ef7c8",
                 "play": "/casestudy/5c4c8252-c1e3-4e18-9028-78de3b9ef7c8"
             },
             {
-                "type": 1,
+                "type": "QUIZ",
                 "id": "f3ea52c0-f382-471d-9ec5-f8eb50d0261d",
                 "play": "/quiz/1/embed?id=f3ea52c0-f382-471d-9ec5-f8eb50d0261d"
             },
             {
-                "type": 2,
+                "type": "CASESTUDY",
                 "id": "dcc00729-c6e3-42bd-8c42-c3e7fca0cff2",
                 "play": "/casestudy/dcc00729-c6e3-42bd-8c42-c3e7fca0cff2"
             }
@@ -27,21 +27,21 @@
         "id": "collection-id-2",
         "title": "WiMA",
         "description": "Wima bezogene Datenschutz Fragen",
-        "order": 1,
+        "order": "SEQUENTIAL",
         "threshold": 50,
         "units": [
             {
-                "type": 2,
+                "type": "CASESTUDY",
                 "id": "5c4c8252-c1e3-4e18-9028-78de3b9ef7c8",
                 "play": "/casestudy/5c4c8252-c1e3-4e18-9028-78de3b9ef7c8"
             },
             {
-                "type": 1,
+                "type": "QUIZ",
                 "id": "f3ea52c0-f382-471d-9ec5-f8eb50d0261d",
                 "play": "/quiz/1/embed?id=f3ea52c0-f382-471d-9ec5-f8eb50d0261d"
             },
             {
-                "type": 2,
+                "type": "CASESTUDY",
                 "id": "dcc00729-c6e3-42bd-8c42-c3e7fca0cff2",
                 "play": "/casestudy/dcc00729-c6e3-42bd-8c42-c3e7fca0cff2"
             }

@@ -1,10 +1,10 @@
 {
     "order": {
-        "SEQUENTIAL": 1,
-        "RANDOM": 2
+        "SEQUENTIAL": "SEQUENTIAL",
+        "RANDOM": "RANDOM"
     },
     "types": {
-        "QUIZ": 1,
-        "CASESTUDY": 2
+        "QUIZ": "QUIZ",
+        "CASESTUDY": "CASESTUDY"
     }
 }

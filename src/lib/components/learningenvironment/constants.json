@@ -1,9 +1,9 @@
 {
     "APPS_PER_PAGE": 15,
     "APP_STATE": {
-        "CLOSED": 0,
-        "OPEN": 1,
-        "MINIMIZED": 2,
-        "MAXIMIZED": 3
+        "CLOSED": "CLOSED",
+        "OPEN": "OPEN",
+        "MINIMIZED": "MINIMIZED",
+        "MAXIMIZED": "MAXIMIZED"
     }
 }

@@ -1,10 +1,8 @@
 <script>
     import { systemSettings } from "$lib/stores-global/index";
-
-    let config = $systemSettings;
 </script>
 
-<section class="bg" style="background-image:url({config.background})">
+<section class="bg" style="background-image:url({$systemSettings.background})">
     <slot />
 </section>
 

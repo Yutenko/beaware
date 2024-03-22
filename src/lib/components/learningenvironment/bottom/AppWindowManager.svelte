@@ -1,5 +1,5 @@
 <script>
-    import { systemApps, appCurrent } from "$lib/stores-global";
+    import { systemApps } from "$lib/stores-global";
     import { APP_STATE } from "$components/learningenvironment/constants";
     import { tooltip } from "$lib/actions";
     import { AppIcon } from "$components";
@@ -20,7 +20,7 @@
         if (app.state === APP_STATE.MINIMIZED) {
             app.state = APP_STATE.OPEN;
         }
-        appCurrent.setApp(app.id, app.target);
+        systemApps.setCurrent(app.id, app.target);
     }
     function handleAllApps() {
         if (lastAction === APP_STATE.OPEN) {

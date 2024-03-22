@@ -1,11 +1,11 @@
 <script>
     import { onMount } from "svelte";
     import App from "./App.svelte";
-    import { systemApps, appCurrent } from "$lib/stores-global";
+    import { systemApps, currentApp } from "$lib/stores-global";
     import {
         APPS_PER_PAGE,
         APP_STATE,
-    } from "$components/learningenvironment/constants.json";
+    } from "$components/learningenvironment/constants";
     import Moveable from "svelte-moveable";
 
     $: apps = Object.keys($systemApps);
@@ -36,9 +36,9 @@
     });
 </script>
 
-{#if $appCurrent.state === APP_STATE.OPEN}
+{#if $currentApp?.state === APP_STATE.OPEN}
     <Moveable
-        target={$appCurrent.target}
+        target={$currentApp.target}
         draggable={true}
         throttleDrag={1}
         resizable={true}
@@ -58,16 +58,16 @@
             e.target.style.transform = e.transform;
         }}
         on:resizeStart={() => {
-            appCurrent.setAppResizing(true);
+            systemApps.setAppResizing($currentApp.id, true);
         }}
         on:resize={({ detail: e }) => {
             e.target.style.width = `${e.width}px`;
             e.target.style.height = `${e.height}px`;
             e.target.style.transform = e.drag.transform;
-            appCurrent.setAppDimensions(e.width, e.height);
+            systemApps.setAppDimensions($currentApp.id, e.width, e.height);
         }}
         on:resizeEnd={() => {
-            appCurrent.setAppResizing(false);
+            systemApps.setAppResizing($currentApp.id, false);
         }}
     />
 {/if}

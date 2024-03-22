@@ -1,15 +1,75 @@
-import { writable } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
 import { APP_STATE } from '$components/learningenvironment/constants';
 import APP_TYPE from '$components/apps/types';
 
 import apps from "$lib/configs/apps.config.json";
 
+export const currentApp = derived(apps, $apps => {
+    const currentKey = Object.keys($apps).find(key => $apps[key].current === true);
+    return currentKey ? apps[currentKey] : {};
+});
+
+//let openApps = derived(apps, ($apps) => Object.values($apps).filter(app => app.state === APP_STATE.OPEN))
+//export let minimizedapps = Object.values(apps).filter((app) => app.state !== APP_STATE.CLOSED).sort((a, b) => a.opened - b.opened);
+
 function createSystemAppsStore(store) {
     const { subscribe, update } = writable(store);
 
+
+    function setAppCurrent(id, target) {
+        update(state => {
+            currentApp.current = false
+            state[id].current = true
+            state[id].target = target
+            return { ...state }
+        })
+    }
+
     function setAppInstalled(id) {
         update(state => {
-            state.apps[id].installed = true
+            state[id].installed = true
+            return { ...state }
+        })
+    }
+
+    function setAppBadge(id, badge) {
+        update(state => {
+            state[id].badge = badge
+            return { ...state }
+        })
+    }
+
+    function setAppState(id, appstate) {
+        update(state => {
+            state[id].state = appstate
+            if (appstate === APP_STATE.OPEN) {
+                state[id].opened = new Date().getTime()
+            }
+
+            // if apps get closed or minimized, set the current app to the last opened app
+            const len = openApps.length
+            if (len > 0) {
+                setTimeout(function () {
+                    setAppCurrent(openApps[len - 1].id, openApps[len - 1].target)
+                })
+            }
+
+            return { ...state }
+        })
+    }
+
+    function setAppResizing(id, isResizing, w, h) {
+        update(state => {
+            state[id].isResizing = isResizing
+            state[id].width = w
+            state[id].height = h
+            return { ...state }
+        })
+    }
+    function setAppDimensions(id, w, h) {
+        update(state => {
+            state[id].width = w
+            state[id].height = h
             return { ...state }
         })
     }
@@ -31,14 +91,14 @@ function createSystemAppsStore(store) {
         }
 
         update(state => {
-            state.apps[newApp.id] = newApp
+            state[newApp.id] = newApp
             return { ...state }
         })
     }
 
     function minimizeAllOpenApps() {
         update(state => {
-            Object.values(state.apps).forEach(app => {
+            Object.values(state).forEach(app => {
                 if (app.state === APP_STATE.OPEN) {
                     setAppState(app.id, APP_STATE.MINIMIZED)
                 }
@@ -48,7 +108,7 @@ function createSystemAppsStore(store) {
     }
     function openAllMinimizedApps() {
         update(state => {
-            Object.values(state.apps).forEach(app => {
+            Object.values(state).forEach(app => {
                 if (app.state === APP_STATE.MINIMIZED) {
                     setAppState(app.id, APP_STATE.OPEN)
                 }
@@ -59,9 +119,16 @@ function createSystemAppsStore(store) {
 
     return {
         subscribe,
-
+        setAppCurrent,
+        setAppInstalled,
+        setAppBadge,
+        setAppState,
+        setAppResizing,
+        setAppDimensions,
+        installApp,
+        minimizeAllOpenApps,
+        openAllMinimizedApps
     }
 }
 
-const store = createSystemAppsStore(apps);
-export default store;
+export const store = createSystemAppsStore(apps);;

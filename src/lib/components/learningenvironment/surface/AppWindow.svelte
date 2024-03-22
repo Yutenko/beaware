@@ -5,14 +5,16 @@
     import { isRealMobileBrowser } from "$lib/utils";
     import { fade } from "svelte/transition";
     import {
-        appCurrent,
         systemApps,
+        currentApp,
+        systemBrowser,
+        systemCollections,
         userMails,
         userResults,
-        systemBrowser,
     } from "$lib/stores-global";
     import LearningEnvironment from "$components/learningenvironment/shared";
     import appType from "$components/apps/types";
+
 
     export let id;
     export let state = APP_STATE.CLOSED;
@@ -30,49 +32,59 @@
     $: props = generateComponentProps(id);
     $: openFullscreenApp = state !== APP_STATE.CLOSED;
     $: minimized = state === APP_STATE.MINIMIZED;
-    $: isForeground = $appCurrent.target === appwindow;
+    $: isForeground = $currentApp.target === appwindow;
     $: dimensions = {
-        w: $appCurrent.width
-            ? $appCurrent.width
-            : $appCurrent.target?.clientWidth,
-        h: $appCurrent.height
-            ? $appCurrent.height
-            : $appCurrent.target?.clientHeight,
+        w: $currentApp.width
+            ? $currentApp.width
+            : $currentApp.target?.clientWidth,
+        h: $currentApp.height
+            ? $currentApp.height
+            : $currentApp.target?.clientHeight,
     };
 
     $: isMeResizing =
-        $appCurrent.target === appwindow && $appCurrent.isResizing;
+        $currentApp.target === appwindow && $currentApp.isResizing;
 
     $: if (state === APP_STATE.OPEN) {
-        appCurrent.setApp(id, appwindow);
+        setAppCurrent();
+    }
+
+    function setAppCurrent() {
+        systemApps.setAppCurrent(id, appwindow);
     }
 
     function generateComponentProps(id) {
-        const app = $systemApps[id];
-
-        if (app.type === appType.MAIL) {
+        if ($currentApp.type === appType.MAIL) {
             return { config: $userMails };
         }
-        if (app.type === appType.BROWSER) {
+        if ($currentApp.type === appType.BROWSER) {
             return { config: $systemBrowser };
         }
-        if (app.type === appType.LEARNINGUNIT) {
-            return { collectionId: app.collectionId };
+        if ($currentApp.type === appType.LEARNINGUNIT) {
+            return { collectionId: $currentApp.collectionId };
         }
-        if (app.type === appType.RESULTS) {
+        if ($currentApp.type === appType.RESULTS) {
         }
         return {};
     }
 
     function handleClose() {
-        appCurrent.setAppState(id, APP_STATE.CLOSED);
+        systemApps.setAppState(id, APP_STATE.CLOSED);
     }
     function handleMinimize() {
-        appCurrent.setAppState(id, APP_STATE.MINIMIZED);
+        systemApps.setAppState(id, APP_STATE.MINIMIZED);
     }
 
     function handleUpdateResults(data) {
+        // update user statistics
         userResults.updateResults(data);
+
+        // update app badge
+        let collectionId = Object.keys(data)[0];
+        let unitsTotal = systemCollections[collectionId].units.length;
+        let unitsTouched = Object.keys(data[collectionId]).length;
+
+        systemApps.setAppBadge(unitsTotal - unitsTouched);
     }
 
     function handleGetMails() {
@@ -87,7 +99,7 @@
             appwindow.style.left = "3rem";
             appwindow.style.top = "3rem";
 
-            appCurrent.setAppState(id, APP_STATE.OPEN);
+            $currentApp.setAppState(id, APP_STATE.OPEN);
         } else {
             stylesBeforeMaximation.width = appwindow.style.width;
             stylesBeforeMaximation.height = appwindow.style.height;
@@ -100,13 +112,13 @@
             appwindow.style.left = "0";
             appwindow.style.transform = "";
 
-            appCurrent.setAppState(id, APP_STATE.MAXIMIZED);
+            systemApps.setAppState(id, APP_STATE.MAXIMIZED);
         }
     }
 
     onMount(() => {
         LearningEnvironment.sender.init({
-            onCloseCurrentAppwindow: handleClose,
+            onClosecurrentAppwindow: handleClose,
             onUpdateResults: handleUpdateResults,
             onGetMails: handleGetMails,
         });
@@ -118,7 +130,7 @@
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
         bind:this={appwindow}
-        on:click={() => appCurrent.setApp(id, appwindow)}
+        on:click={setAppCurrent}
         transition:fade
         class="mockup-window {minimized
             ? 'hidden'
@@ -134,7 +146,7 @@
         {#if !isForeground}
             <div
                 class="absolute w-full h-full top-0 left-0 z-50"
-                on:click={() => appCurrent.setApp(id, appwindow)}
+                on:click={setAppCurrent}
             ></div>
         {/if}
         <div class="title-bar" on:dblclick={toggleMaximization}>

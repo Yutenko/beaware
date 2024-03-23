@@ -7,7 +7,7 @@ function createUserResultsStore(store) {
 
     function updateResults(collectionResults) {
         update(state => {
-            stateresults = Object.assign({}, state.results, collectionResults)
+            state = Object.assign({}, state, collectionResults)
 
             return { ...state }
         })

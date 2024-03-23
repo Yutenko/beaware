@@ -4,21 +4,19 @@ import APP_TYPE from '$components/apps/types';
 
 import apps from "$lib/configs/apps.config.json";
 
-export const currentApp = derived(apps, $apps => {
-    const currentKey = Object.keys($apps).find(key => $apps[key].current === true);
-    return currentKey ? apps[currentKey] : {};
+const appStore = writable(apps);
+
+export const currentApp = derived(appStore, $appStore => {
+    const currentKey = Object.keys($appStore).find(key => $appStore[key].current === true);
+    return currentKey ? $appStore[currentKey] : {};
 });
 
-//let openApps = derived(apps, ($apps) => Object.values($apps).filter(app => app.state === APP_STATE.OPEN))
-//export let minimizedapps = Object.values(apps).filter((app) => app.state !== APP_STATE.CLOSED).sort((a, b) => a.opened - b.opened);
-
-function createSystemAppsStore(store) {
-    const { subscribe, update } = writable(store);
-
+function createSystemAppsStore() {
+    const { subscribe, update } = appStore;
 
     function setAppCurrent(id, target) {
         update(state => {
-            currentApp.current = false
+            Object.keys(state).forEach(key => { state[key].current = false; });
             state[id].current = true
             state[id].target = target
             return { ...state }
@@ -47,7 +45,9 @@ function createSystemAppsStore(store) {
             }
 
             // if apps get closed or minimized, set the current app to the last opened app
+            let openApps = Object.values(state).filter(app => app.state === APP_STATE.OPEN)
             const len = openApps.length
+
             if (len > 0) {
                 setTimeout(function () {
                     setAppCurrent(openApps[len - 1].id, openApps[len - 1].target)
@@ -131,4 +131,7 @@ function createSystemAppsStore(store) {
     }
 }
 
-export const store = createSystemAppsStore(apps);;
+export const store = createSystemAppsStore();
+
+
+

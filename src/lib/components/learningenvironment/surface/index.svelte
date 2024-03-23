@@ -36,7 +36,7 @@
     });
 </script>
 
-{#if $currentApp?.state === APP_STATE.OPEN}
+{#if $currentApp.state === APP_STATE.OPEN}
     <Moveable
         target={$currentApp.target}
         draggable={true}

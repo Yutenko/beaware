@@ -3,6 +3,7 @@
     import "$components/apps/app.css";
 
     export let collectionId;
+    
 </script>
 
 <iframe

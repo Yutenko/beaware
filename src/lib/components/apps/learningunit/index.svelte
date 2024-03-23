@@ -10,7 +10,7 @@
 
     export let id = "";
     $: collection = $systemCollections[id];
-
+    
     let results = {};
 
     let step = -1;

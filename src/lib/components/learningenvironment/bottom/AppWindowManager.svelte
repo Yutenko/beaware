@@ -20,7 +20,7 @@
         if (app.state === APP_STATE.MINIMIZED) {
             app.state = APP_STATE.OPEN;
         }
-        systemApps.setCurrent(app.id, app.target);
+        systemApps.setAppCurrent(app.id, app.target);
     }
     function handleAllApps() {
         if (lastAction === APP_STATE.OPEN) {

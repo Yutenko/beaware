@@ -3,7 +3,7 @@
     import { systemCollections, userResults } from "$lib/stores-global";
     import { types as LU_TYPE } from "$components/apps/learningunit/constants";
 
-    $: collectionsTouched = Object.keys(results);
+    $: collectionsTouched = Object.keys($userResults);
 </script>
 
 <button class="btn btn-outline-primary">Zertifikat</button>

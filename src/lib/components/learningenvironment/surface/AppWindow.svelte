@@ -5,8 +5,8 @@
     import { isRealMobileBrowser } from "$lib/utils";
     import { fade } from "svelte/transition";
     import {
-        systemApps,
         currentApp,
+        systemApps,
         systemBrowser,
         systemCollections,
         userMails,
@@ -14,7 +14,6 @@
     } from "$lib/stores-global";
     import LearningEnvironment from "$components/learningenvironment/shared";
     import appType from "$components/apps/types";
-
 
     export let id;
     export let state = APP_STATE.CLOSED;
@@ -45,7 +44,7 @@
     $: isMeResizing =
         $currentApp.target === appwindow && $currentApp.isResizing;
 
-    $: if (state === APP_STATE.OPEN) {
+    $: if (appwindow && state === APP_STATE.OPEN) {
         setAppCurrent();
     }
 
@@ -54,16 +53,16 @@
     }
 
     function generateComponentProps(id) {
-        if ($currentApp.type === appType.MAIL) {
+        if ($systemApps[id].type === appType.MAIL) {
             return { config: $userMails };
         }
-        if ($currentApp.type === appType.BROWSER) {
+        if ($systemApps[id].type === appType.BROWSER) {
             return { config: $systemBrowser };
         }
-        if ($currentApp.type === appType.LEARNINGUNIT) {
-            return { collectionId: $currentApp.collectionId };
+        if ($systemApps[id].type === appType.LEARNINGUNIT) {
+            return { collectionId: $systemApps[id].collectionId };
         }
-        if ($currentApp.type === appType.RESULTS) {
+        if ($systemApps[id].type === appType.RESULTS) {
         }
         return {};
     }
@@ -81,10 +80,10 @@
 
         // update app badge
         let collectionId = Object.keys(data)[0];
-        let unitsTotal = systemCollections[collectionId].units.length;
+        let unitsTotal = $systemCollections[collectionId].units.length;
         let unitsTouched = Object.keys(data[collectionId]).length;
 
-        systemApps.setAppBadge(unitsTotal - unitsTouched);
+        systemApps.setAppBadge(id, unitsTotal - unitsTouched);
     }
 
     function handleGetMails() {
@@ -99,7 +98,7 @@
             appwindow.style.left = "3rem";
             appwindow.style.top = "3rem";
 
-            $currentApp.setAppState(id, APP_STATE.OPEN);
+            systemApps.setAppState(id, APP_STATE.OPEN);
         } else {
             stylesBeforeMaximation.width = appwindow.style.width;
             stylesBeforeMaximation.height = appwindow.style.height;
@@ -118,7 +117,7 @@
 
     onMount(() => {
         LearningEnvironment.sender.init({
-            onClosecurrentAppwindow: handleClose,
+            onCloseCurrentAppwindow: handleClose,
             onUpdateResults: handleUpdateResults,
             onGetMails: handleGetMails,
         });

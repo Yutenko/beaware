@@ -31,18 +31,19 @@
     $: props = generateComponentProps(id);
     $: openFullscreenApp = state !== APP_STATE.CLOSED;
     $: minimized = state === APP_STATE.MINIMIZED;
-    $: isForeground = $currentApp.target === appwindow;
+    $: isForeground = $systemApps[$currentApp.id].target === appwindow;
     $: dimensions = {
-        w: $currentApp.width
-            ? $currentApp.width
-            : $currentApp.target?.clientWidth,
-        h: $currentApp.height
-            ? $currentApp.height
-            : $currentApp.target?.clientHeight,
+        w: $systemApps[$currentApp.id].width
+            ? $systemApps[$currentApp.id].width
+            : $systemApps[$currentApp.id].target?.clientWidth,
+        h: $systemApps[$currentApp.id].height
+            ? $systemApps[$currentApp.id].height
+            : $systemApps[$currentApp.id].target?.clientHeight,
     };
 
     $: isMeResizing =
-        $currentApp.target === appwindow && $currentApp.isResizing;
+        $systemApps[$currentApp.id].target === appwindow &&
+        $systemApps[$currentApp.id].isResizing;
 
     $: if (appwindow && state === APP_STATE.OPEN) {
         setAppCurrent();
@@ -83,7 +84,7 @@
         let unitsTotal = $systemCollections[collectionId].units.length;
         let unitsTouched = Object.keys(data[collectionId]).length;
 
-        systemApps.setAppBadge(id, unitsTotal - unitsTouched);
+        systemApps.setAppBadge($currentApp.id, unitsTotal - unitsTouched);
     }
 
     function handleGetMails() {
@@ -98,7 +99,7 @@
             appwindow.style.left = "3rem";
             appwindow.style.top = "3rem";
 
-            systemApps.setAppState(id, APP_STATE.OPEN);
+            systemApps.setAppState($currentApp.id, APP_STATE.OPEN);
         } else {
             stylesBeforeMaximation.width = appwindow.style.width;
             stylesBeforeMaximation.height = appwindow.style.height;
@@ -111,7 +112,7 @@
             appwindow.style.left = "0";
             appwindow.style.transform = "";
 
-            systemApps.setAppState(id, APP_STATE.MAXIMIZED);
+            systemApps.setAppState($currentApp.id, APP_STATE.MAXIMIZED);
         }
     }
 

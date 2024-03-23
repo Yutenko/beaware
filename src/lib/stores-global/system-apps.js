@@ -2,6 +2,9 @@ import { writable, derived } from 'svelte/store';
 import { APP_STATE } from '$components/learningenvironment/constants';
 import APP_TYPE from '$components/apps/types';
 
+
+// when an app is resizing OR (TODO) is dragged, show this invisible frame to drag it smoothly
+
 import apps from "$lib/configs/apps.config.json";
 
 const appStore = writable(apps);

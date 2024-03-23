@@ -13,7 +13,9 @@
     <div tabindex="0" role="button" class="text-base-100 btn btn-ghost">
         {$userProfile.name}
     </div>
-    <ul class="menu bg-base-200 rounded-box dropdown-content z-10">
+    <ul
+        class="menu bg-base-200 rounded-box dropdown-content z-10 min-w-[14rem]"
+    >
         <button
             class="absolute right-2 top-2 btn btn-circle btn-xs z-20"
             use:tooltip={{ content: $t("results.certificate.name") }}

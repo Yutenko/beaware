@@ -25,6 +25,8 @@
         currentMail = emails[index];
         currentMail.read = true;
         emails = emails;
+
+        updateMails();
         openMailContent();
     }
     function selectCategory(e) {
@@ -42,7 +44,12 @@
             emails = emails;
         }
 
+        updateMails();
         closeMailContent();
+    }
+
+    function updateMails() {
+        LearningEnvironment.receiver.updateMails(emails);
     }
 
     function onGetMails(mails) {

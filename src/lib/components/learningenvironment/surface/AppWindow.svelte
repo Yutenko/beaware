@@ -1,5 +1,5 @@
 <script>
-    import { onMount } from "svelte";
+    import { onMount, onDestroy } from "svelte";
     import { APP_STATE } from "../constants.json";
     import { AppIcon, Modal } from "$components";
     import { isRealMobileBrowser } from "$lib/utils";
@@ -41,9 +41,11 @@
             : $systemApps[$currentApp.id].target?.clientHeight,
     };
 
-    $: isMeResizing =
-        $systemApps[$currentApp.id].target === appwindow &&
-        $systemApps[$currentApp.id].isResizing;
+    $: isMe =
+        id === $currentApp.id &&
+        $systemApps[$currentApp.id].target === appwindow;
+
+    $: isMeResizing = isMe && $systemApps[$currentApp.id].isResizing;
 
     $: if (appwindow && state === APP_STATE.OPEN) {
         setAppCurrent();
@@ -64,15 +66,16 @@
             return { collectionId: $systemApps[id].collectionId };
         }
         if ($systemApps[id].type === appType.RESULTS) {
+            return { config: $userResults };
         }
         return {};
     }
 
     function handleClose() {
-        systemApps.setAppState(id, APP_STATE.CLOSED);
+        systemApps.setAppState($currentApp.id, APP_STATE.CLOSED);
     }
     function handleMinimize() {
-        systemApps.setAppState(id, APP_STATE.MINIMIZED);
+        systemApps.setAppState($currentApp.id, APP_STATE.MINIMIZED);
     }
 
     function handleUpdateResults(data) {
@@ -87,8 +90,21 @@
         systemApps.setAppBadge($currentApp.id, unitsTotal - unitsTouched);
     }
 
+    function handleUpdateMails(data) {
+        userMails.updateMails(data);
+    }
+
     function handleGetMails() {
         LearningEnvironment.sender.receiveMails($userMails);
+    }
+    function handleGetResults(collectionId) {
+        LearningEnvironment.sender.receiveResults($userResults[collectionId]);
+    }
+    function handleGetDetails() {
+        LearningEnvironment.sender.receiveDetails({
+            systemCollections: $systemCollections,
+            userResults: $userResults,
+        });
     }
 
     function toggleMaximization() {
@@ -117,11 +133,22 @@
     }
 
     onMount(() => {
-        LearningEnvironment.sender.init({
-            onCloseCurrentAppwindow: handleClose,
-            onUpdateResults: handleUpdateResults,
-            onGetMails: handleGetMails,
-        });
+        if (isMe) {
+            LearningEnvironment.sender.init({
+                onCloseCurrentAppwindow: handleClose,
+
+                onGetMails: handleGetMails,
+                onGetResults: handleGetResults,
+                onGetDetails: handleGetDetails,
+
+                onUpdateMails: handleUpdateMails,
+                onUpdateResults: handleUpdateResults,
+            });
+        }
+    });
+
+    onDestroy(() => {
+        LearningEnvironment.cleanUp();
     });
 </script>
 

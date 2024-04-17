@@ -2,10 +2,19 @@ import { writable } from 'svelte/store';
 import { categories } from '$components/apps/mail/constants';
 
 function createUserMailsStore(store) {
-    const { subscribe, update, set } = writable(store);
+    const { subscribe, update } = writable(store);
+
+    function updateMails(mails) {
+        update(state => {
+            state = mails
+
+            return [...state]
+        })
+    }
 
     return {
         subscribe,
+        updateMails
     }
 }
 

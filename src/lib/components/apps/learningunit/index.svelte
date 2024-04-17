@@ -10,7 +10,7 @@
 
     export let id = "";
     $: collection = $systemCollections[id];
-    
+
     let results = {};
 
     let step = -1;
@@ -60,6 +60,10 @@
         LearningEnvironment.receiver.updateResults(results);
     }
 
+    function onGetResults(data) {
+        results[collection.id] = data || {};
+    }
+
     onMount(async () => {
         results[collection.id] = {};
 
@@ -77,6 +81,9 @@
             collection.units = collection.units.sort(() => 0.5 - Math.random());
             collection.units = [firstElement, ...collection.units];
         }
+
+        LearningEnvironment.receiver.init({ onGetResults });
+        LearningEnvironment.receiver.getResults(collection.id);
     });
 
     onDestroy(async () => {

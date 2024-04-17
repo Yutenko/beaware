@@ -8,10 +8,10 @@
     export let emails = [];
     export let category = categories.INBOX;
 
-    let filteredEmails = emails;
     let searchText = "";
     let navbarHeight = 0;
 
+    $: filteredEmails = emails;
     $: title = $t(`mail.categories.${category}`);
     $: isAllMailsEmpty = isEmpty(category, emails);
     $: isFilteredMailsEmpty = filteredEmails.length === 0;

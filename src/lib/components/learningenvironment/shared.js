@@ -3,8 +3,15 @@ import { browser } from '$app/environment'
 
 const messages = {
     CLOSE_CURRENT_APPWINDOW: 'close-current-appwindow',
+
+    GET_MAILS: 'get-mails',
+    UPDATE_MAILS: 'update-mails',
+
+    GET_RESULTS: 'get-results',
     UPDATE_RESULTS: 'update-results',
-    GET_MAILS: 'get-mails'
+
+    GET_DETAILS: 'get-details',
+
 }
 
 const LearningEnvironment = {
@@ -12,7 +19,7 @@ const LearningEnvironment = {
     receiver: {
         init: (options) => {
             if (browser && options && Object.keys(options).length > 0) {
-                const { onGetMails } = options;
+                const { onGetMails, onGetResults, onGetDetails } = options;
 
                 function handleReceiverMessages(event) {
                     if (event.data) {
@@ -20,6 +27,10 @@ const LearningEnvironment = {
 
                         if (message.cmd === messages.GET_MAILS) {
                             onGetMails(message.data);
+                        } else if (message.cmd === messages.GET_RESULTS) {
+                            onGetResults(message.data);
+                        } else if (message.cmd === messages.GET_DETAILS) {
+                            onGetDetails(message.data);
                         }
                     }
                 }
@@ -31,11 +42,20 @@ const LearningEnvironment = {
         closeCurrentAppWindow: () => {
             LearningEnvironment.receiver._send({ cmd: messages.CLOSE_CURRENT_APPWINDOW });
         },
+        getMails: () => {
+            LearningEnvironment.receiver._send({ cmd: messages.GET_MAILS });
+        },
+        updateMails: (data) => {
+            LearningEnvironment.receiver._send({ cmd: messages.UPDATE_MAILS, data });
+        },
+        getResults: (data) => {
+            LearningEnvironment.receiver._send({ cmd: messages.GET_RESULTS, data });
+        },
         updateResults: (data) => {
             LearningEnvironment.receiver._send({ cmd: messages.UPDATE_RESULTS, data });
         },
-        getMails: () => {
-            LearningEnvironment.receiver._send({ cmd: messages.GET_MAILS });
+        getDetails: (data) => {
+            LearningEnvironment.receiver._send({ cmd: messages.GET_DETAILS, data });
         },
         _send: (options) => {
             window.parent.postMessage(JSON.stringify(options), "*")
@@ -48,7 +68,7 @@ const LearningEnvironment = {
         init: (options) => {
             if (browser) {
 
-                const { onCloseCurrentAppwindow, onUpdateResults, onGetMails } = options;
+                const { onCloseCurrentAppwindow, onGetResults, onUpdateResults, onGetMails, onUpdateMails, onGetDetails } = options;
 
                 function handleSenderMessages(event) {
 
@@ -61,9 +81,17 @@ const LearningEnvironment = {
                         else if (message.cmd === messages.UPDATE_RESULTS) {
                             onUpdateResults(message.data);
                         }
+                        else if (message.cmd === messages.UPDATE_MAILS) {
+                            onUpdateMails(message.data);
+                        }
                         else if (message.cmd === messages.GET_MAILS) {
                             onGetMails();
+                        } else if (message.cmd === messages.GET_RESULTS) {
+                            onGetResults(message.data);
+                        } else if (message.cmd === messages.GET_DETAILS) {
+                            onGetDetails(message.data);
                         }
+
                     }
                 }
 
@@ -73,6 +101,12 @@ const LearningEnvironment = {
         },
         receiveMails: (data) => {
             LearningEnvironment.sender._send({ cmd: messages.GET_MAILS, data });
+        },
+        receiveResults: (data) => {
+            LearningEnvironment.sender._send({ cmd: messages.GET_RESULTS, data });
+        },
+        receiveDetails: (data) => {
+            LearningEnvironment.sender._send({ cmd: messages.GET_DETAILS, data });
         },
         _send: (options) => {
             const iframe = document.querySelector('iframe[data-is-appwindow-receiver="true"]')
